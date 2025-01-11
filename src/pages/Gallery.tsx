@@ -1,5 +1,5 @@
+import { motion } from "motion/react";
 import { useState } from "react";
-import { motion } from "framer-motion";
 
 function Feed({ items, setIndex }:{ items:any[], setIndex:any }) {
   return (

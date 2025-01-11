@@ -1,20 +1,24 @@
 import React, { useState, TouchEvent } from 'react';
-import { motion, AnimatePresence, AnimateSharedLayout } from 'framer-motion';
 import Gallery from './Gallery';
 import "./styles.css";
+import { AnimatePresence, motion } from 'motion/react';
+import { SlideUpText } from './common/CommonStyled';
 
-// 개별 이미지 컴포넌트 정의
-const PageOne = () => (
+const PageOne: React.FC = () => {
+  return(
+  <>
   <div style={{ backgroundColor: '#ffddcc', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <h1>Page 1</h1>
-    <p>This is the first page.</p>
+    <SlideUpText>This is the first page.</SlideUpText>
   </div>
-);
+  </>);
+
+  };
 
 const PageTwo = () => (
   <div style={{ backgroundColor: '#ccffdd', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <h1>Page 2</h1>
-    <p>This is the second page.</p>
+    <SlideUpText>This is the 2 page.</SlideUpText>
   </div>
 );
 
@@ -33,6 +37,7 @@ const SwipeableScreen: React.FC = () => {
 
   // Wheel event for desktop
   const handleWheel = (event: React.WheelEvent) => {
+    
     if (event.deltaY > 0) {
       handleNextPage();
     } else {
