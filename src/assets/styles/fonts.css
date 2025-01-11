@@ -1,0 +1,74 @@
+/*Bold*/
+@font-face {
+  font-family: "helvetica";
+  src: url("/src/assets/fonts/helveticanowtext-bold.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "RoobertTRIAL";
+  src: url("/src/assets/fonts/RoobertTRIAL-Medium.otf") format("opentype");
+}
+@font-face {
+  font-family: "Freesentation";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2")
+    format("woff2");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "FunnelSans";
+  src: url("https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Timmana&display=swap")
+    format("woff2");
+  font-style: normal;
+}
+
+/*thin*/
+@font-face {
+  font-family: "satoshi";
+  src: url("/src/assets/fonts/Satoshi-Variable.ttf") format("truetype");
+}
+
+/*필기체*/
+@font-face {
+  font-family: "PPPlayground";
+  src: url("/src/assets/fonts/PPPlayground-Medium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "PPEditorialNew";
+  src: url("/src/assets/fonts/PPEditorialNew-Ultralight.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "PPEditorialOldItalic";
+  src: url("/src/assets/fonts/PPEditorialOld-UltralightItalic.otf")
+    format("opentype");
+}
+
+@font-face {
+  font-family: "PPEditorialOld";
+  src: url("/src/assets/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
+}
+
+/*컴퓨터*/
+@font-face {
+  font-family: "JetBrainsMono";
+  src: url("/src/assets/fonts/JetBrainsMono.ttf") format("truetype");
+}
+
+/*한글*/
+@font-face {
+  font-family: "SUITRegular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ChosunGu";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
