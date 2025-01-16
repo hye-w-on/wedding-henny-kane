@@ -41,14 +41,14 @@
 }
 
 @font-face {
-  font-family: "PPEditorialOldItalic";
-  src: url("/src/assets/fonts/PPEditorialOld-UltralightItalic.otf")
-    format("opentype");
+  font-family: "PPEditorialOld";
+  src: url("/src/assets/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
 }
 
 @font-face {
-  font-family: "PPEditorialOld";
-  src: url("/src/assets/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
+  font-family: "PPEditorialOldItalic";
+  src: url("/src/assets/fonts/PPEditorialOld-UltralightItalic.otf")
+    format("opentype");
 }
 
 /*컴퓨터*/

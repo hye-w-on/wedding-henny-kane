@@ -1,27 +1,42 @@
-import React, { useState, TouchEvent } from 'react';
-import Gallery from './Gallery';
+import React, { useState, TouchEvent } from "react";
+import Gallery from "./Gallery.lazy";
 import "./styles.css";
-import { AnimatePresence, motion } from 'motion/react';
-import { SlideUpText } from './common/CommonStyled';
+import { AnimatePresence, motion } from "motion/react";
+import { SlideUpText } from "./common/CommonStyled";
 
 const PageOne: React.FC = () => {
-  return(
-  <>
-  <div style={{ backgroundColor: '#ffddcc', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <h1>Page 1</h1>
-    <SlideUpText>This is the first page.</SlideUpText>
-  </div>
-  </>);
-
-  };
+  return (
+    <>
+      <div
+        style={{
+          backgroundColor: "#ffddcc",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <h1>Page 1</h1>
+        <SlideUpText>This is the first page.</SlideUpText>
+      </div>
+    </>
+  );
+};
 
 const PageTwo = () => (
-  <div style={{ backgroundColor: '#ccffdd', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <div
+    style={{
+      backgroundColor: "#ccffdd",
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
     <h1>Page 2</h1>
     <SlideUpText>This is the 2 page.</SlideUpText>
   </div>
 );
-
 
 const SwipeableScreen: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -37,7 +52,6 @@ const SwipeableScreen: React.FC = () => {
 
   // Wheel event for desktop
   const handleWheel = (event: React.WheelEvent) => {
-    
     if (event.deltaY > 0) {
       handleNextPage();
     } else {
@@ -86,7 +100,7 @@ const SwipeableScreen: React.FC = () => {
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      style={{ height: '100vh', overflow: 'hidden', position: 'relative' }}
+      style={{ height: "100vh", overflow: "hidden", position: "relative" }}
     >
       <AnimatePresence custom={page}>
         <motion.div
@@ -98,11 +112,11 @@ const SwipeableScreen: React.FC = () => {
           exit="exit"
           transition={{ duration: 0.5 }}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100vh',
+            width: "100%",
+            height: "100vh",
           }}
         >
           {pages[page]}

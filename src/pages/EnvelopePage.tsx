@@ -3,6 +3,7 @@ import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import colorToken from "../utils/colorToken";
 import Letter from "../components/Letter";
+import textureImage from "../assets/images/paper-texture.jpg";
 const EnvelopePage = () => {
   const containerRef = useRef(null); // 특정 컨테이너 참조
 
@@ -20,7 +21,7 @@ const EnvelopePage = () => {
 
   // 편지지 애니메이션: rotateX와 y 값 변환
   const paperRotateX = useTransform(scrollYProgress, [0.5, 0], [40, 0]);
-  const paperY = useTransform(scrollYProgress, [0.5, 0], [0, -220]);
+  const paperY = useTransform(scrollYProgress, [0.5, 0], [0, -200]);
   // 부드러운 애니메이션 적용
   const smoothPaperRotateX = useSpring(paperRotateX, {
     stiffness: 200,
@@ -76,9 +77,9 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "450px",
-          width: 350,
-          height: 200,
+          top: "440px",
+          width: "350px",
+          height: "200px",
           backgroundColor: "#F2F1F0",
           clipPath: "polygon(0 0, 100% 0, 100% 50%, 50% 100%, 0 50%)",
           originY: 0, // 상단 축 기준으로 회전
@@ -88,23 +89,15 @@ const EnvelopePage = () => {
           zIndex: topZIndex, // 동적으로 변경되는 z-index
           transform: "translateZ(1px)", // 초기 렌더링 우선순위 조정
         }}
-      >
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            backfaceVisibility: "hidden",
-          }}
-        ></div>
-      </motion.div>
+      />
       {/* 중앙 박스 */}
       <motion.div
         style={{
           position: "absolute",
-          top: "450px",
-          width: 350,
-          height: 200,
-          backgroundColor: "#ccc",
+          top: "440px",
+          width: "350px",
+          height: "200px",
+          backgroundColor: "#dad9d9",
           transformStyle: "preserve-3d", // 3D 유지
           originY: 0, // 상단 축 기준으로 회전
           rotateX: 40, // 부드러운 회전 값 적용
@@ -119,9 +112,9 @@ const EnvelopePage = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          top: "450px",
-          width: 330,
-          height: 210,
+          top: "440px",
+          width: "330px",
+          height: "200px",
           backgroundColor: "#121212", // 편지지 색상
           borderRadius: "5px", // 모서리 라운드 추가
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // 그림자 효과 추가
@@ -138,27 +131,58 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "450px",
-          width: 350,
-          height: 220,
-          backgroundColor: "#F2F1F0",
-          borderRadius: "4px",
-          clipPath: "polygon(0 100%, 100% 100%, 100% 50%, 50% 80%, 0 50%)",
-          transformStyle: "preserve-3d", // 3D 유지
+          top: "440px",
+          width: "350px",
+          height: "200px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-end",
+          transformStyle: "preserve-3d",
           originY: 0, // 상단 축 기준으로 회전
-          rotateX: 40, // 부드러운 회전 값 적용
-          zIndex: 10, // 중앙 사각형 위로
+          rotateX: 40,
+          zIndex: 10,
         }}
       >
-        <div
+        <motion.div
           style={{
-            width: 300,
+            position: "absolute",
+            top: "0",
+            width: "100%",
             height: "100%",
-            backfaceVisibility: "hidden", // 뒷면 숨기기
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            backgroundColor: "#F2F1F0",
+            clipPath: "polygon(50% 30%, 100% 100%, 0% 100%)",
+
+            zIndex: 11,
           }}
         >
-          하단
-        </div>
+          <div
+            style={{
+              fontFamily: "PPEditorialNew",
+              textShadow:
+                "-0.6px -0.5px 2px rgba(255, 255, 255, 0.9), 0.6px 0.5px 1px rgba(70, 70, 70, 0.5)",
+              color: "#F2F2F2",
+              fontSize: "2rem",
+            }}
+          >
+            INVITATION
+          </div>
+        </motion.div>
+        <motion.div
+          style={{
+            position: "absolute",
+            top: "0",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#e6e5e4",
+            boxShadow: "rgba(0, 0, 0, 0.45) 0px 30px 20px 50px",
+            borderRadius: "4px",
+            clipPath: "polygon(0 100%, 100% 100%, 100% 20%, 50% 80%, 0 20%)",
+            zIndex: 10,
+          }}
+        />
       </motion.div>
       <motion.div
         style={{

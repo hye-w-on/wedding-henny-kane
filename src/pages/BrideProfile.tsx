@@ -10,6 +10,7 @@ import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Balloon from "../components/Balloon";
+import colorToken from "../utils/colorToken";
 
 // Chart.js에서 사용하는 요소 등록
 Chart.register(BarElement, CategoryScale, LinearScale);
@@ -94,13 +95,26 @@ function Profile() {
     >
       <div
         style={{
+          width: "100%",
           display: "flex",
           justifyContent: "center",
-          width: "90%",
-          height: "400px",
+          fontFamily: "helvetica",
+          color: colorToken.black,
+          //lineHeight: "0.6em",
+          letterSpacing: "-0.05em",
         }}
       >
-        <img src={"https://placehold.co/400x600"} />
+        INTRODUCE
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          width: "300px",
+          height: "300px",
+        }}
+      >
+        <img src={"https://placehold.co/300"} />
       </div>
       <div
         ref={chartContainerRef}
@@ -110,7 +124,7 @@ function Profile() {
           alignItems: "center",
           position: "relative",
           width: "90%",
-          height: "250px",
+          height: "150px",
         }}
       >
         <Bar options={options} data={data} />

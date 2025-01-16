@@ -13,6 +13,7 @@ import { useRef, useState } from "react";
 import { Radar } from "react-chartjs-2";
 import Balloon from "../components/Balloon";
 import colorToken from "../utils/colorToken";
+import { margin, padding } from "@mui/system";
 
 Chart.register(
   RadialLinearScale,
@@ -28,10 +29,12 @@ const data = {
   datasets: [
     {
       data: [10, 10, 9, 9, 9, 9],
-      backgroundColor: "rgba(255, 77, 154, 0.2)",
-      borderColor: "rgba(242, 107, 156, 1)",
-      pointBackgroundColor: "rgba(100, 50, 50, 1)",
-      poingBorderColor: "rgba(0, 50, 50, 1)",
+      backgroundColor: "rgba(50, 50, 50, 0.7)",
+      borderColor: "rgba(50, 50, 50, 1)",
+      borderWidth: 0,
+      //pointBackgroundColor: "rgba(50, 50, 50, 1)",
+      // pointBorderColor: "rgba(50, 50, 50, 1)",
+      pointStyle: false,
     },
   ],
 };
@@ -46,20 +49,25 @@ const options = {
       min: 0,
       max: 10,
       angleLines: {
-        color: "rgba(242, 107, 156, .2)",
+        color: "rgba(0, 0, 0, .1)",
         lineWidth: 1,
-        display: true, // 각 데이터 포인트의 각도선을 표시
+        display: true,
       },
       grid: {
-        color: "rgba(242, 107, 156, .2)",
+        color: "rgba(0, 0, 0, .2)",
       },
       ticks: {
+        display: false,
         stepSize: 3,
         showLabelBackdrop: false,
+      },
+      pointLabels: {
+        display: false,
       },
     },
   },
 };
+
 function Profile() {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [balloons] = useState([
@@ -74,6 +82,23 @@ function Profile() {
     { id: 2, x: 100, y: 190, width: 40, height: 20, text: "여기에 있습니다" },
   ]);
 
+  const labels = [
+    { text: "잘생김", value: "00" },
+    { text: "다정함", value: "00" },
+    { text: "멘탈힐링", value: "00" },
+    { text: "센스", value: "00" },
+    { text: "유머", value: "00" },
+    { text: "집안일", value: "00" },
+  ];
+
+  const getPosition = (index: number, total: number, radius: number) => {
+    const angle = (index * 2 * Math.PI) / total - Math.PI / 2; // 시작 각도 조정
+    return {
+      left: `${50 + radius * Math.cos(angle)}%`,
+      top: `${50 + radius * Math.sin(angle)}%`,
+    };
+  };
+
   return (
     <div
       style={{
@@ -82,7 +107,7 @@ function Profile() {
         alignItems: "center",
         width: "100%",
         height: "100%",
-        padding: "80px 20px",
+        padding: "20px 20px",
       }}
     >
       <div
@@ -92,7 +117,7 @@ function Profile() {
           justifyContent: "center",
           fontFamily: "helvetica",
           color: colorToken.black,
-          lineHeight: "0.6em",
+          //lineHeight: "0.6em",
           letterSpacing: "-0.05em",
         }}
       >
@@ -102,11 +127,11 @@ function Profile() {
         style={{
           display: "flex",
           justifyContent: "center",
-          width: "90%",
+          width: "300px",
           height: "300px",
         }}
       >
-        <img src={"https://placehold.co/400x600"} />
+        <img src={"https://placehold.co/300"} />
       </div>
       <div
         ref={chartContainerRef}
@@ -115,8 +140,9 @@ function Profile() {
           flexDirection: "column",
           alignItems: "center",
           position: "relative",
-          width: "90%",
-          height: "200px",
+          width: "180px",
+          height: "180px",
+          padding: "5px",
         }}
       >
         <Radar data={data} options={options} />
@@ -139,6 +165,34 @@ function Profile() {
             {balloon.text}
           </Balloon>
         ))}
+        {labels.map((label, index) => {
+          const position = getPosition(index, labels.length, 60);
+          return (
+            <div
+              key={index}
+              style={{
+                position: "absolute",
+                fontFamily: "SUITRegular",
+                color: "#121212",
+                fontSize: "0.6rem",
+                fontWeight: "100",
+                top: position.top,
+                left: position.left,
+                transform: "translate(-50%, -50%)",
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "PPEditorialNew",
+                  fontSize: "1.2rem",
+                  lineHeight: "0.8em",
+                }}
+              ></div>
+              {label.text}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ function Letter() {
   return (
     <div
       style={{
-        width: 320,
+        width: 330,
         height: 200,
         borderRadius: "5px",
         border: "double 3px #121212",
