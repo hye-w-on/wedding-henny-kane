@@ -16,10 +16,8 @@ import image from "@/assets/images/p01.png";
 // Chart.js에서 사용하는 요소 등록
 Chart.register(BarElement, CategoryScale, LinearScale);
 
-const options = {
-  indexAxis: "y",
-  borderSkipped: "left",
-  reverse: true,
+const options: ChartOptions<"bar"> = {
+  indexAxis: "y" as const, // 타입을 명시적으로 지정
   maintainAspectRatio: false,
   plugins: {
     legend: {
@@ -37,21 +35,18 @@ const options = {
       },
     },
   },
-  layout: {
-    width: 200,
-  },
 };
 
 const data = {
   labels: ["장점1", "장점2", "장점3", "장점4", "장점5", "요리"],
   datasets: [
     {
-      axis: "y",
-      fill: false,
       data: [90, 90, 90, 90, 90, 100],
-      backgroundColor: ["rgba(50, 50, 50, 1)"],
-      borderColor: ["rgba(50, 50, 50, 1)"],
+      backgroundColor: "rgba(50, 50, 50, 1)",
+      borderColor: "rgba(50, 50, 50, 1)",
       borderWidth: 1,
+      borderSkipped: "left" as const, // 타입을 명시적으로 지정
+      fill: false,
     },
   ],
 };

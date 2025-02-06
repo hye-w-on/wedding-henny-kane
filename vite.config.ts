@@ -4,13 +4,13 @@ import { fileURLToPath } from "url";
 import svgr from "vite-plugin-svgr";
 //router
 import viteReact from "@vitejs/plugin-react";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [TanStackRouterVite(), viteReact(), svgr()],
+  plugins: [viteReact(), svgr()],
+  base: "/wedding-henny-kane/",
   resolve: {
     alias: {
       three: "three",

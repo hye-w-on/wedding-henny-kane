@@ -33,7 +33,7 @@ const data = {
       borderWidth: 0,
       //pointBackgroundColor: "rgba(50, 50, 50, 1)",
       // pointBorderColor: "rgba(50, 50, 50, 1)",
-      pointStyle: false,
+      pointStyle: "circle",
     },
   ],
 };

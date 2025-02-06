@@ -16,14 +16,6 @@ const Card = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  /*
-  backgroundImage: `repeating-linear-gradient(
-    to right,
-    #121212 0px,
-    #121212 1px,
-    transparent 2px,
-    transparent 3px
-  )`,*/
   filter: "blur(0.3px)",
 });
 
