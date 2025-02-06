@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { SlideUpText } from "./CommonStyled";
-import { motion, useScroll, useSpring } from "motion/react";
+import { motion, useScroll, useSpring, AnimatePresence } from "motion/react";
 import ScrollProgressBar from "../../components/ScrollProgressBar";
 import colorToken from "../../utils/colorToken";
 import StarSvg from "../../assets/icons/star.svg?react";
+import CrushSvg from "@/assets/icons/crush.svg?react";
+import HeartSvg from "@/assets/icons/heart.svg?react";
 
 const Header = styled.header`
   position: fixed;
@@ -25,7 +27,7 @@ const Header = styled.header`
 
 const HeaderItem = styled.div`
   font-family: "satoshi";
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 100;
   cursor: pointer;
 `;
@@ -62,15 +64,6 @@ const MenuList = styled(motion.div)<{ isOpen: boolean }>(({ isOpen }) => ({
   visibility: isOpen ? "visible" : "hidden",
   transition: "opacity 0.3s ease, visibility 0.3s ease",
   zIndex: 999,
-  "&:last-child": {
-    marginBottom: 0,
-  },
-  variants: {
-    hidden: { opacity: 0, x: -50 },
-    visible: { opacity: 1, x: 0 },
-  },
-  initial: "hidden",
-  animate: isOpen ? "visible" : "hidden",
 }));
 
 const MenuItem = styled(motion.div)({
@@ -105,10 +98,34 @@ const menuVariants = {
   visible: { opacity: 1, x: 0 },
 };
 
-const MainFrame: React.FC<{ children?: React.ReactNode }> = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface MainFrameProps {
+  scrollToSection: (ref: React.RefObject<HTMLDivElement>) => void;
+  refs: {
+    profileRef: React.RefObject<HTMLDivElement>;
+    photoSlideRef: React.RefObject<HTMLDivElement>;
+    locationRef: React.RefObject<HTMLDivElement>;
+    weddingDayRef: React.RefObject<HTMLDivElement>;
+    envelopeRef: React.RefObject<HTMLDivElement>;
+  };
+}
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+    setShowOverlay(!showOverlay);
+  };
+
+  const handleMenuClick = (ref: React.RefObject<HTMLDivElement>) => {
+    setIsOpen(false);
+    scrollToSection(ref);
+
+    setTimeout(() => {
+      setShowOverlay(false);
+    }, 500);
+  };
 
   return (
     <>
@@ -119,68 +136,85 @@ const MainFrame: React.FC<{ children?: React.ReactNode }> = () => {
             style={{ width: "20px", height: "20px", color: colorToken.black }}
           />
         </HeaderItem>
-        <HeaderItem onClick={toggleMenu}>Menu</HeaderItem>
+        <HeaderItem onClick={toggleMenu}>MENU</HeaderItem>
       </Header>
-      {/* Overlay */}
-      <Overlay isOpen={isOpen} onClick={toggleMenu} />
-      {/* Menu List */}
-      <MenuList
-        isOpen={isOpen}
-        initial="hidden"
-        animate={isOpen ? "visible" : "hidden"}
-        variants={{
-          visible: {
-            transition: {
-              staggerChildren: 0.3, // 각 항목당 0.1초 딜레이
-            },
-          },
-        }}
-      >
-        {isOpen && (
-          <>
-            <MenuItem
-              onClick={toggleMenu}
-              variants={menuVariants}
-              transition={{ type: "spring", stiffness: 100 }}
-            >
-              <SlideUpText>About</SlideUpText>
-              <MenuDescription>------------------ 소개</MenuDescription>
-            </MenuItem>
-            <MenuItem
-              onClick={toggleMenu}
-              variants={menuVariants}
-              transition={{ type: "spring", stiffness: 100 }}
-            >
-              <MenuDescription>사진 ----------</MenuDescription>
-              <SlideUpText>Gallery</SlideUpText>
-            </MenuItem>
-            <MenuItem
-              onClick={toggleMenu}
-              variants={menuVariants}
-              transition={{ type: "spring", stiffness: 100 }}
-            >
-              <SlideUpText>Location</SlideUpText>
-              <MenuDescription>-- 오시는 길</MenuDescription>
-            </MenuItem>
-            <MenuItem
-              onClick={toggleMenu}
-              variants={menuVariants}
-              transition={{ type: "spring", stiffness: 100 }}
-            >
-              <MenuDescription>식순 및 식사--------------</MenuDescription>
-              <SlideUpText>Detail</SlideUpText>
-            </MenuItem>
-            <MenuItem
-              onClick={toggleMenu}
-              variants={menuVariants}
-              transition={{ type: "spring", stiffness: 100 }}
-            >
-              <SlideUpText>BBS</SlideUpText>
-              <MenuDescription>------------------- 축하말</MenuDescription>
-            </MenuItem>
-          </>
-        )}
+
+      <Overlay isOpen={showOverlay} />
+
+      <MenuList isOpen={isOpen}>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.profileRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <SlideUpText>About</SlideUpText>
+          <MenuDescription>------------------ 소개</MenuDescription>
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.photoSlideRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <MenuDescription>사진 ----------</MenuDescription>
+          <SlideUpText>Gallery</SlideUpText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.locationRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <SlideUpText>Location</SlideUpText>
+          <MenuDescription>-- 오시는 길</MenuDescription>
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.weddingDayRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <MenuDescription>식순 및 식사--------------</MenuDescription>
+          <SlideUpText>Detail</SlideUpText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.envelopeRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <SlideUpText>BBS</SlideUpText>
+          <MenuDescription>------------------- 축하말</MenuDescription>
+        </MenuItem>
       </MenuList>
+      {/*
+      <div style={{ position: "relative" }}>
+        <CrushSvg
+          style={{
+            position: "absolute",
+            top: -2,
+            left: 8,
+            width: "50px",
+            height: "50px",
+            color: "#ffffff",
+            zIndex: 2,
+          }}
+        />
+        <HeartSvg
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "50px",
+            height: "50px",
+            color: colorToken.black,
+            zIndex: 1,
+          }}
+        />
+                  <CrushSvg
+            style={{
+              width: "40px",
+              height: "40px",
+              color: "#000",
+            }}
+          />
+      </div>*/}
     </>
   );
 };

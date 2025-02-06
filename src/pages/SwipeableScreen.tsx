@@ -1,5 +1,4 @@
 import React, { useState, TouchEvent } from "react";
-import Gallery from "./Gallery.lazy";
 import "./styles.css";
 import { AnimatePresence, motion } from "motion/react";
 import { SlideUpText } from "./common/CommonStyled";
@@ -78,7 +77,7 @@ const SwipeableScreen: React.FC = () => {
   };
 
   // 페이지 배열에 각 컴포넌트 추가
-  const pages = [<PageOne key={0} />, <PageTwo key={1} />, <Gallery key={2} />];
+  const pages = [<PageOne key={0} />, <PageTwo key={1} />];
 
   const variants = {
     enter: (direction: number) => ({
@@ -100,7 +99,12 @@ const SwipeableScreen: React.FC = () => {
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      style={{ height: "100vh", overflow: "hidden", position: "relative" }}
+      style={{
+        width: "100vh",
+        height: "100vh",
+        overflow: "hidden",
+        position: "relative",
+      }}
     >
       <AnimatePresence custom={page}>
         <motion.div

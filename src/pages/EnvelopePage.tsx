@@ -3,7 +3,10 @@ import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import colorToken from "../utils/colorToken";
 import Letter from "../components/Letter";
-import textureImage from "../assets/images/paper-texture.jpg";
+import envelope from "@/assets/images/envelope.png";
+import envelopeTop from "@/assets/images/envelopeTop.png";
+import envelopeInner from "@/assets/images/envelopeInner.png";
+
 const EnvelopePage = () => {
   const containerRef = useRef(null); // 특정 컨테이너 참조
 
@@ -12,15 +15,14 @@ const EnvelopePage = () => {
     target: containerRef, // 특정 컨테이너 기준
     offset: ["center center", "center end"], // 중앙 기준으로 회전 완료
   });
-
   // 위쪽 박스 회전 값 변환
-  const topRotate = useTransform(scrollYProgress, [1, 0.5], [40, 200]);
+  const topRotate = useTransform(scrollYProgress, [1, 0.1], [30, 200]);
   const smoothTopRotate = useSpring(topRotate, { stiffness: 200, damping: 15 });
   // 상단 박스 z-index 동적 변경
-  const topZIndex = useTransform(scrollYProgress, [0.8, 0.5], [5, 1]); // 0.5 이전: 3(위), 이후: 1(아래)
+  const topZIndex = useTransform(scrollYProgress, [0.8, 0.5], [5, 1]);
 
   // 편지지 애니메이션: rotateX와 y 값 변환
-  const paperRotateX = useTransform(scrollYProgress, [0.5, 0], [40, 0]);
+  const paperRotateX = useTransform(scrollYProgress, [0.5, 0], [30, 0]);
   const paperY = useTransform(scrollYProgress, [0.5, 0], [0, -200]);
   // 부드러운 애니메이션 적용
   const smoothPaperRotateX = useSpring(paperRotateX, {
@@ -88,6 +90,11 @@ const EnvelopePage = () => {
           rotateX: smoothTopRotate, // 부드러운 회전 값 적용
           zIndex: topZIndex, // 동적으로 변경되는 z-index
           transform: "translateZ(1px)", // 초기 렌더링 우선순위 조정
+          backgroundImage: `url(${envelopeTop})`,
+          backgroundPosition: "bottom center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% auto", // 넓이에 맞춰 확대, 높이는 자동 비율
+          overflow: "hidden",
         }}
       />
       {/* 중앙 박스 */}
@@ -100,8 +107,13 @@ const EnvelopePage = () => {
           backgroundColor: "#dad9d9",
           transformStyle: "preserve-3d", // 3D 유지
           originY: 0, // 상단 축 기준으로 회전
-          rotateX: 40, // 부드러운 회전 값 적용
+          rotateX: 30, // 부드러운 회전 값 적용
           zIndex: 1, // 상단과 하단 박스 아래로 배치
+          backgroundImage: `url(${envelopeInner})`,
+          backgroundPosition: "bottom center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% auto",
+          overflow: "hidden",
         }}
       />
       {/* 편지지 박스 */}
@@ -139,7 +151,7 @@ const EnvelopePage = () => {
           alignItems: "flex-end",
           transformStyle: "preserve-3d",
           originY: 0, // 상단 축 기준으로 회전
-          rotateX: 40,
+          rotateX: 30,
           zIndex: 10,
         }}
       >
@@ -153,23 +165,15 @@ const EnvelopePage = () => {
             justifyContent: "center",
             alignItems: "flex-end",
             backgroundColor: "#F2F1F0",
-            clipPath: "polygon(50% 30%, 100% 100%, 0% 100%)",
-
+            clipPath: "polygon(20% 45%, 80% 45%, 100% 100%, 0% 100%)",
             zIndex: 11,
+            backgroundImage: `url(${envelope})`,
+            backgroundPosition: "bottom center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% auto",
+            overflow: "hidden",
           }}
-        >
-          <div
-            style={{
-              fontFamily: "PPEditorialNew",
-              textShadow:
-                "-0.6px -0.5px 2px rgba(255, 255, 255, 0.9), 0.6px 0.5px 1px rgba(70, 70, 70, 0.5)",
-              color: "#F2F2F2",
-              fontSize: "2rem",
-            }}
-          >
-            INVITATION
-          </div>
-        </motion.div>
+        ></motion.div>
         <motion.div
           style={{
             position: "absolute",
@@ -177,9 +181,13 @@ const EnvelopePage = () => {
             width: "100%",
             height: "100%",
             backgroundColor: "#e6e5e4",
-            boxShadow: "rgba(0, 0, 0, 0.45) 0px 30px 20px 50px",
             borderRadius: "4px",
             clipPath: "polygon(0 100%, 100% 100%, 100% 20%, 50% 80%, 0 20%)",
+            backgroundImage: `url(${envelope})`,
+            backgroundPosition: "bottom center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% auto",
+            overflow: "hidden",
             zIndex: 10,
           }}
         />

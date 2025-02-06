@@ -1,21 +1,65 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 import styled from "@emotion/styled";
 
-const ScreenCanvas = styled(Canvas)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw; /* 뷰포트 가로 전체 */
-  height: 100vh; /* 뷰포트 세로 전체 */
+const Section = styled.section`
+  height: 200vh; // 스크롤 영역 확보
+  position: relative;
 `;
-const Heart: React.FC = () => {
+
+const StickyContainer = styled.div`
+  position: sticky;
+  top: 0;
+  height: 300px;
+  width: 100%;
+`;
+
+const ScreenCanvas = styled(Canvas)`
+  width: 100vw;
+  height: 300px;
+  pointer-events: none;
+`;
+
+const RotatingHeart: React.FC = () => {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (meshRef.current) {
+        // 섹션 내에서의 스크롤 진행도 계산
+        const section = document.querySelector(".heart-section");
+        if (!section) return;
+
+        const sectionTop = section.getBoundingClientRect().top;
+        const sectionHeight = section.clientHeight - window.innerHeight;
+
+        // 섹션 내 스크롤 진행도 (0~1)
+        let progress = -sectionTop / sectionHeight;
+        progress = Math.max(0, Math.min(1, progress));
+
+        // 첫 1/3에서만 회전하도록 조정
+        const rotationProgress = Math.min(progress * 3, 1);
+        meshRef.current.rotation.y = rotationProgress * Math.PI * 4; // 2바퀴 회전
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <mesh>
+    <mesh ref={meshRef} scale={[0.2, 0.2, 0.2]} rotation={[Math.PI, 0, 0]}>
       <HeartGeometry />
-      <meshStandardMaterial color="hotpink" />
+      <meshStandardMaterial
+        color="#E91E63" // 순수한 빨간색
+        roughness={0.2} // 더 반짝이는 효과
+        metalness={0.9} // 금속성 증가
+        emissive="#FF0000" // 빛나는 효과
+        emissiveIntensity={0.3} // 발광 강도
+      />
     </mesh>
   );
 };
@@ -23,21 +67,45 @@ const Heart: React.FC = () => {
 const HeartGeometry: React.FC = () => {
   const heartShape = React.useMemo(() => {
     const shape = new THREE.Shape();
-    shape.moveTo(0, 0); // 하트의 시작점
-    shape.bezierCurveTo(0, 0.8, -1, 1, -1.2, 0.2); // 왼쪽 곡선
-    shape.bezierCurveTo(-1.3, 0, -0.7, -1, 0, -1.4); // 하트의 아래
-    shape.bezierCurveTo(1, -1.2, 1.5, 0, 1, 0.5); // 오른쪽 곡선
-    shape.bezierCurveTo(0.5, 1.2, 0, 0.8, 0, 0.5); // 오른쪽 상단
+
+    // 시작점
+    shape.moveTo(0, 10);
+
+    // 왼쪽 위 곡선
+    shape.bezierCurveTo(-4, -1, 2, -8, 7, -8);
+
+    // 오른쪽 위 곡선
+    shape.bezierCurveTo(14, -8, 15, -2, 14, 1);
+
+    // 오른쪽 아래로 내려오는 곡선
+    shape.bezierCurveTo(13, 4, 11, 6, 7, 9);
+
+    // 중앙 아래 곡선
+    shape.bezierCurveTo(4, 11, 1, 13, 0, 13);
+
+    // 왼쪽 아래 곡선
+    shape.bezierCurveTo(-1, 13, -4, 11, -7, 9);
+
+    // 왼쪽 위로 올라가는 곡선
+    shape.bezierCurveTo(-11, 6, -13, 4, -14, 1);
+
+    // 왼쪽 상단 마무리 곡선
+    shape.bezierCurveTo(-15, -2, -14, -8, -7, -8);
+
+    // 중앙 상단으로 연결
+    shape.bezierCurveTo(-2, -8, 4, -1, 0, 10);
+
     return shape;
   }, []);
 
   const geometry = React.useMemo(() => {
     const extrudeSettings = {
-      depth: 0.5, // 하트의 두께
+      depth: 3, // 두께 증가 (기존 0.5)
       bevelEnabled: true,
-      bevelThickness: 0.1,
-      bevelSize: 0.1,
-      bevelSegments: 3,
+      bevelThickness: 3, // 베벨 두께 증가 (기존 0.1)
+      bevelSize: 2, // 베벨 크기 증가 (기존 0.1)
+      bevelSegments: 10, // 베벨 세그먼트 증가 (더 부드러운 모서리)
+      bevelOffset: 0, // 베벨 오프셋
     };
     return new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
   }, [heartShape]);
@@ -47,17 +115,51 @@ const HeartGeometry: React.FC = () => {
 
 const HeartPage: React.FC = () => {
   return (
-    <ScreenCanvas camera={{ position: [0, 0, 5], fov: 75 }}>
-      {/* 조명 추가 */}
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 5, 5]} />
+    <Section className="heart-section">
+      <StickyContainer>
+        <ScreenCanvas
+          camera={{ position: [0, 0, 5], fov: 75 }}
+          style={{ touchAction: "none" }}
+        >
+          {/* 전체적인 환경광 - 더 어둡게 해서 다른 조명이 잘 보이게 */}
+          <ambientLight intensity={0.1} color="#ffffff" />
 
-      {/* 입체 하트 */}
-      <Heart />
+          {/* 메인 조명 - 강도 증가 */}
+          <directionalLight
+            position={[5, 5, 5]}
+            intensity={2.0}
+            color="#ffffff"
+          />
 
-      {/* 카메라 이동을 위한 컨트롤 */}
-      <OrbitControls />
-    </ScreenCanvas>
+          {/* 반대편 보조 조명 - 빨간빛 강화 */}
+          <directionalLight
+            position={[-5, -5, -5]}
+            intensity={1.0}
+            color="#ff6666"
+          />
+
+          {/* 위에서 비추는 조명 - 더 집중된 빛 */}
+          <spotLight
+            position={[0, 10, 2]}
+            angle={0.3}
+            penumbra={0.7}
+            intensity={2.0}
+            color="#ffffff"
+            distance={20}
+          />
+
+          {/* 하트 주변에 포인트 라이트 - 더 강한 빨간 빛 */}
+          <pointLight
+            position={[0, 0, 3]}
+            intensity={1.0}
+            distance={8}
+            decay={1.5}
+            color="#ff3333"
+          />
+          <RotatingHeart />
+        </ScreenCanvas>
+      </StickyContainer>
+    </Section>
   );
 };
 
