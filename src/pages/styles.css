@@ -1,18 +1,3 @@
-body {
-  padding: 0;
-  margin: 0;
-  background: #fdfdfd;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 .gallery-container {
   background-color: #eeeeee;
   border-radius: 25px;

@@ -18,9 +18,12 @@ const Container = styled("div")({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  width: "100vw",
+  width: "100%",
+  maxWidth: "100vw",
+  margin: 0,
+  padding: 0,
+  boxSizing: "border-box",
   zIndex: 1,
-  paddingTop: "45px",
 });
 
 const ScrollScreen: React.FC = () => {
@@ -51,7 +54,7 @@ const ScrollScreen: React.FC = () => {
         }}
       />
       <MovingBackground />
-      <Container>
+      <Container id="container">
         <Background />
         <div ref={nameCardRef}>
           <NamePage />
@@ -82,7 +85,7 @@ const Background = styled.div({
   position: "fixed",
   top: 0,
   left: 0,
-  width: "100vw",
+  width: "100%",
   height: "100vh",
   zIndex: -2,
 

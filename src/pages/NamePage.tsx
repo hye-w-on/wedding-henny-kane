@@ -9,8 +9,8 @@ const OvalContainer = styled.div({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  margin: "2px",
-  width: "100px",
+  margin: "0.1rem",
+  width: "6.2rem",
   height: "1.5rem",
   fontSize: "0.8rem",
   fontFamily: "helvetica",
@@ -26,15 +26,16 @@ const NameContainer = styled(motion.div)({
   display: "flex",
   position: "absolute",
 });
+
 const NameText = styled(motion.div)({
   fontFamily: "PPEditorialOld",
-  fontSize: "1.5rem",
+  fontSize: "1.6rem",
   color: colorToken.black,
   textShadow: `
-    -2px -2px 0 #fff,  
-     2px -2px 0 #fff,
-    -2px  2px 0 #fff,
-     2px  2px 0 #fff
+    -1px -1px 0 #fff,  
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff
   `,
 });
 function NamePage() {
@@ -44,6 +45,8 @@ function NamePage() {
         width: "100%",
         height: "100vh",
         background: "#fff",
+        overflowY: "hidden",
+        paddingTop: "45px",
       }}
     >
       <div
@@ -61,8 +64,9 @@ function NamePage() {
       <div
         style={{
           //border: "solid black 1px",
-          height: "130px",
-          width: "350px",
+          //backgroundColor: "black",
+          height: "8rem",
+          width: "22rem",
           position: "relative",
           overflow: "hidden",
           margin: "0 auto", // 가운데 정렬
@@ -76,7 +80,7 @@ function NamePage() {
         >
           <NameText
             initial={{ x: "-100%" }}
-            animate={{ x: "-23%" }}
+            animate={{ x: "-16%" }}
             transition={{
               type: "spring",
               stiffness: 50,
@@ -92,12 +96,12 @@ function NamePage() {
         <NameContainer
           style={{
             justifyContent: "flex-start",
-            top: "3.1rem",
+            top: "2.7rem",
           }}
         >
           <NameText
             initial={{ x: "100%" }}
-            animate={{ x: "22%" }}
+            animate={{ x: "20%" }}
             transition={{
               type: "spring",
               stiffness: 50,
@@ -113,7 +117,7 @@ function NamePage() {
         <NameContainer
           style={{
             justifyContent: "center",
-            top: "4.7rem",
+            top: "4.4rem",
             transform: "translateY(-50%)",
           }}
         >
@@ -126,13 +130,13 @@ function NamePage() {
               damping: 20,
             }}
             style={{
-              fontSize: "1.8rem",
+              fontSize: "1.5rem",
               fontFamily: "PPPlayground",
               textShadow: `
-                -2px -2px 0 #fff,  
-                 2px -2px 0 #fff,
-                -2px  2px 0 #fff,
-                 2px  2px 0 #fff
+                -1px -1px 0 #fff,  
+                1px -1px 0 #fff,
+                -1px  1px 0 #fff,
+                1px  1px 0 #fff
               `,
             }}
           >
@@ -140,8 +144,15 @@ function NamePage() {
           </NameText>
         </NameContainer>
       </div>
-      <div style={{ padding: "10px 50px" }}>
-        <img src={mainPhoto} />
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img src={mainPhoto} style={{ width: "80%", maxWidth: "400px" }} />
       </div>
       {/*      <div>
         <img src={temp3d} />

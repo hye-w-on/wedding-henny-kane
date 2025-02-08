@@ -6,6 +6,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ScrollScreen from "./pages/ScrollScreen";
+import "./App.css";
 
 function App() {
   const router = createBrowserRouter([
