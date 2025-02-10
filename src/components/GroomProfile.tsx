@@ -13,6 +13,8 @@ import { Radar } from "react-chartjs-2";
 import Balloon from "./Balloon";
 import colorToken from "../utils/colorToken";
 import image from "@/assets/images/p01.png";
+import avatarTemp from "@/assets/images/avatarTemp.png";
+import { motion } from "motion/react";
 
 Chart.register(
   RadialLinearScale,
@@ -67,7 +69,11 @@ const options = {
   },
 };
 
-function Profile() {
+interface GroomProfileProps {
+  isVisible?: boolean;
+}
+
+function GroomProfile({ isVisible }: GroomProfileProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [balloons] = useState([
     {
@@ -148,13 +154,20 @@ function Profile() {
           borderRadius: "5px",
           marginTop: "5px",
           border: "1px solid #12121299",
-          width: "200px",
-          height: "200px",
+          width: "210px",
+          height: "600px",
           overflow: "hidden",
         }}
       >
-        <img
-          src={image}
+        <motion.img
+          src={avatarTemp}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: isVisible ? 1 : 1.2 }}
+          transition={{
+            duration: 0.8,
+            delay: 0.2,
+            ease: "easeOut",
+          }}
           style={{
             width: "100%",
             height: "100%",
@@ -176,6 +189,7 @@ function Profile() {
       >
         ★★★★★
       </div>
+      {/*
       <div
         ref={chartContainerRef}
         style={{
@@ -241,9 +255,9 @@ function Profile() {
             </div>
           );
         })}
-      </div>
+      </div>*/}
     </>
   );
 }
 
-export default Profile;
+export default GroomProfile;

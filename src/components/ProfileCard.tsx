@@ -15,6 +15,7 @@ const ProfileCard = styled(motion.div)({
   borderRadius: "15px",
   boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
   paddingTop: "30px",
+  margin: "1rem",
   background: "rgba(255, 255, 255, 0.5)", // 반투명 배경
   backdropFilter: "blur(5px)", // 블러 효과
   WebkitBackdropFilter: "blur(10px)", // Safari 지원

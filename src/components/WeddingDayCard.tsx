@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { DateCalendar } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { motion } from "motion/react";
+import { motion, useInView, animate, cubicBezier } from "motion/react";
 import colorToken from "../utils/colorToken";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
@@ -11,7 +11,7 @@ const targetDate = dayjs("2025-06-21 18:00:00");
 
 const Card = styled(motion.div)({
   height: "100vh",
-  backgroundColor: "#ffffff0",
+  backgroundColor: "#ffffff",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -62,11 +62,10 @@ const DateSlotLabel = styled.div({
   fontFamily: "PPEditorialNew",
   fontSize: "0.8rem",
   textAlign: "center",
-  //borderTop: `1.2px solid #121212`,
   paddingTop: "4px",
 });
 
-const Square = styled.div({
+const Square = styled(motion.div)({
   position: "absolute",
   width: "10px",
   height: "10px",
@@ -100,12 +99,46 @@ const BottomRightSquare = styled(Square)({
   borderBottom: "1px solid #121212",
 });
 
+const squareAnimation = {
+  initial: {
+    x: "-50%",
+    y: "-50%",
+    top: "50%",
+    left: "50%",
+    filter: "blur(4px)",
+  },
+  whileInView: {
+    x: 0,
+    y: 0,
+    top: "0%",
+    left: "0%",
+    filter: "blur(0px)",
+  },
+  transition: { duration: 0.8 },
+  viewport: { once: false },
+};
+
 function WeddingDayCard() {
   const [remainingTime, setRemainingTime] = useState({
     months: 0,
     days: 0,
     hours: 0,
     minutes: 0,
+  });
+
+  const dateRef = useRef(null);
+  const timeRef = useRef(null);
+  const isDateInView = useInView(dateRef, { once: false });
+  const isTimeInView = useInView(timeRef, { once: false });
+
+  const countRef = useRef(null);
+  const isCountInView = useInView(countRef, { once: false });
+
+  const [displayNumbers, setDisplayNumbers] = useState({
+    months: Number(String(remainingTime.months).padStart(2, "0")),
+    days: Number(String(remainingTime.days).padStart(2, "0")),
+    hours: Number(String(remainingTime.hours).padStart(2, "0")),
+    minutes: Number(String(remainingTime.minutes).padStart(2, "0")),
   });
 
   useEffect(() => {
@@ -128,13 +161,68 @@ function WeddingDayCard() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (isCountInView) {
+      const animateNumber = (key: keyof typeof displayNumbers) => {
+        const startValue = remainingTime[key] + 12;
+        animate(startValue, remainingTime[key], {
+          duration: 3,
+          ease: cubicBezier(0.33, 1, 0.68, 1),
+          onUpdate: (value) => {
+            setDisplayNumbers((prev) => ({
+              ...prev,
+              [key]: Math.round(value),
+            }));
+          },
+        });
+      };
+
+      setTimeout(() => animateNumber("months"), 0);
+      setTimeout(() => animateNumber("days"), 400);
+      setTimeout(() => animateNumber("hours"), 800);
+      setTimeout(() => animateNumber("minutes"), 1200);
+    }
+  }, [isCountInView, remainingTime]);
+
   return (
     <Card>
       <InnerBox>
-        <TopLeftSquare />
-        <TopRightSquare />
-        <BottomLeftSquare />
-        <BottomRightSquare />
+        <TopLeftSquare {...squareAnimation} />
+        <TopRightSquare
+          {...{
+            ...squareAnimation,
+            initial: { ...squareAnimation.initial, left: "50%" },
+            whileInView: {
+              ...squareAnimation.whileInView,
+              left: "auto",
+              right: "0%",
+            },
+          }}
+        />
+        <BottomLeftSquare
+          {...{
+            ...squareAnimation,
+            initial: { ...squareAnimation.initial, top: "50%" },
+            whileInView: {
+              ...squareAnimation.whileInView,
+              top: "auto",
+              bottom: "0%",
+            },
+          }}
+        />
+        <BottomRightSquare
+          {...{
+            ...squareAnimation,
+            initial: { ...squareAnimation.initial, left: "50%", top: "50%" },
+            whileInView: {
+              ...squareAnimation.whileInView,
+              left: "auto",
+              top: "auto",
+              right: "0%",
+              bottom: "0%",
+            },
+          }}
+        />
         <div style={{ height: "1.6rem", marginTop: "10px" }}>
           <span
             style={{
@@ -158,7 +246,16 @@ function WeddingDayCard() {
             DATE
           </span>
         </div>
-        <div
+
+        <motion.div
+          ref={dateRef}
+          initial={{ filter: "blur(8px)", opacity: 0 }}
+          animate={
+            isDateInView
+              ? { filter: "blur(0px)", opacity: 1 }
+              : { filter: "blur(8px)", opacity: 0 }
+          }
+          transition={{ duration: 0.3 }}
           style={{
             display: "flex",
             flexDirection: "row",
@@ -170,11 +267,25 @@ function WeddingDayCard() {
           <DateNumber>2025.</DateNumber>
           <DateNumber>06.</DateNumber>
           <DateNumber>21</DateNumber>
-        </div>
+        </motion.div>
+
         <div style={{ fontSize: "0.6rem", fontFamily: "satoshi" }}>
           ✸ SUMMER NIGHT ✸
         </div>
-        <DateNumber>6PM</DateNumber>
+
+        <motion.div
+          ref={timeRef}
+          initial={{ filter: "blur(8px)", opacity: 0 }}
+          animate={
+            isTimeInView
+              ? { filter: "blur(0px)", opacity: 1 }
+              : { filter: "blur(8px)", opacity: 0 }
+          }
+          transition={{ duration: 0.3, delay: 0.5 }}
+        >
+          <DateNumber>6PM</DateNumber>
+        </motion.div>
+
         <div
           style={{
             fontSize: "0.5rem",
@@ -184,24 +295,28 @@ function WeddingDayCard() {
         >
           COMING SOON
         </div>
-        <div style={{ display: "flex", flexDirection: "row", gap: "2px" }}>
+
+        <motion.div
+          ref={countRef}
+          style={{ display: "flex", flexDirection: "row", gap: "2px" }}
+        >
           <DateSlotNumber>
-            {String(remainingTime.months).padStart(2, "0")}
+            {String(displayNumbers.months).padStart(2, "0")}
           </DateSlotNumber>
           <DateSlotLabel>Months</DateSlotLabel>
           <DateSlotNumber>
-            {String(remainingTime.days).padStart(2, "0")}
+            {String(displayNumbers.days).padStart(2, "0")}
           </DateSlotNumber>
           <DateSlotLabel>Days</DateSlotLabel>
           <DateSlotNumber>
-            {String(remainingTime.hours).padStart(2, "0")}
+            {String(displayNumbers.hours).padStart(2, "0")}
           </DateSlotNumber>
           <DateSlotLabel>Hours</DateSlotLabel>
           <DateSlotNumber>
-            {String(remainingTime.minutes).padStart(2, "0")}
+            {String(displayNumbers.minutes).padStart(2, "0")}
           </DateSlotNumber>
           <DateSlotLabel>Minutes</DateSlotLabel>
-        </div>
+        </motion.div>
       </InnerBox>
 
       <DateCalendar

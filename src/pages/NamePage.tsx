@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
 import colorToken from "../utils/colorToken";
 import temp3d from "@/assets/images/temp3d.png";
 import mainPhoto from "@/assets/images/temp_photo.png";
+import { useRef } from "react";
 
 const OvalContainer = styled.div({
   position: "relative",
@@ -38,7 +39,11 @@ const NameText = styled(motion.div)({
      1px  1px 0 #fff
   `,
 });
+
 function NamePage() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false });
+
   return (
     <div
       style={{
@@ -62,14 +67,13 @@ function NamePage() {
         </div>
       </div>
       <div
+        ref={ref}
         style={{
-          //border: "solid black 1px",
-          //backgroundColor: "black",
           height: "8rem",
           width: "22rem",
           position: "relative",
           overflow: "hidden",
-          margin: "0 auto", // 가운데 정렬
+          margin: "0 auto",
         }}
       >
         <NameContainer
@@ -80,7 +84,7 @@ function NamePage() {
         >
           <NameText
             initial={{ x: "-100%" }}
-            animate={{ x: "-16%" }}
+            animate={isInView ? { x: "-16%" } : { x: "-100%" }}
             transition={{
               type: "spring",
               stiffness: 50,
@@ -93,6 +97,7 @@ function NamePage() {
             EE MYEONG JIN
           </NameText>
         </NameContainer>
+
         <NameContainer
           style={{
             justifyContent: "flex-start",
@@ -101,7 +106,7 @@ function NamePage() {
         >
           <NameText
             initial={{ x: "100%" }}
-            animate={{ x: "20%" }}
+            animate={isInView ? { x: "20%" } : { x: "100%" }}
             transition={{
               type: "spring",
               stiffness: 50,
@@ -114,6 +119,7 @@ function NamePage() {
             OON HYE WON
           </NameText>
         </NameContainer>
+
         <NameContainer
           style={{
             justifyContent: "center",
@@ -123,7 +129,7 @@ function NamePage() {
         >
           <NameText
             initial={{ y: "100%" }}
-            animate={{ y: "0%" }}
+            animate={isInView ? { y: "0%" } : { y: "100%" }}
             transition={{
               type: "spring",
               stiffness: 50,

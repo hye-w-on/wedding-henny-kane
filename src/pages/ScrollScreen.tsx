@@ -24,6 +24,13 @@ const Container = styled("div")({
   padding: 0,
   boxSizing: "border-box",
   zIndex: 1,
+  position: "relative",
+  msOverflowStyle: "none",
+  scrollbarWidth: "none",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
+  touchAction: "pan-y",
 });
 
 const ScrollScreen: React.FC = () => {

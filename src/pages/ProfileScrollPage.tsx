@@ -15,7 +15,11 @@ const ProfileScrollPage: React.FC = () => {
     offset: ["start start", "end end"],
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-80%"]);
+  const x = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0%", "-150%"] // 출력 범위를 더 넓게 설정하여 더 큰 이동거리
+  );
 
   const firstCardRef = useRef<HTMLDivElement>(null);
   const secondCardRef = useRef<HTMLDivElement>(null);
@@ -56,6 +60,7 @@ const ProfileScrollPage: React.FC = () => {
         style={{
           height: "800vh",
           position: "relative",
+          overflow: "clip", // hidden 대신 clip 사용
         }}
       >
         <div
@@ -65,13 +70,13 @@ const ProfileScrollPage: React.FC = () => {
             height: "100vh",
             display: "flex",
             alignItems: "center",
-            width: "3000px",
+            width: "2500px", // 너비를 더 넓게 설정
             padding: "200px 100px",
             //background: `url(${photo03})`,
             backgroundSize: "auto 100%",
             backgroundPosition: "left center",
             backgroundRepeat: "no-repeat",
-            overflow: "hidden",
+            transform: "translateZ(0)", // 추가: 하드웨어 가속 활성화
           }}
         >
           <motion.div
@@ -82,13 +87,25 @@ const ProfileScrollPage: React.FC = () => {
           >
             <ProfileCard
               ref={firstCardRef}
-              initial={{ rotate: 30, x: -500 }}
+              initial={{ rotate: -30, x: 500, y: 0 }}
               animate={{
-                rotate: isFirstCardVisible ? 0 : 30,
-                x: isFirstCardVisible ? 0 : -200,
+                rotate: isFirstCardVisible ? 5 : -30,
+                x: isFirstCardVisible ? 0 : 200,
+                y: isFirstCardVisible ? [-10, 10] : 0,
               }}
-              transition={{ duration: 0.5 }}
-              style={{ zIndex: 100 }}
+              transition={{
+                duration: 0.5,
+                y: {
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
+              }}
+              style={{
+                zIndex: 100,
+                filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.15))",
+              }}
             >
               <CardHole />
               <div
@@ -103,18 +120,30 @@ const ProfileScrollPage: React.FC = () => {
                   padding: "10px",
                 }}
               >
-                <GroomProfile />
+                <GroomProfile isVisible={isFirstCardVisible} />
               </div>
             </ProfileCard>
             <ProfileCard
               ref={secondCardRef}
-              initial={{ rotate: -30, x: 500 }}
+              initial={{ rotate: -30, x: 500, y: 0 }}
               animate={{
-                rotate: isSecondCardVisible ? 0 : -30,
+                rotate: isSecondCardVisible ? -5 : -30,
                 x: isSecondCardVisible ? 0 : 200,
+                y: isSecondCardVisible ? [-10, 10] : 0,
               }}
-              transition={{ duration: 0.5 }}
-              style={{ zIndex: 101 }}
+              transition={{
+                duration: 0.5,
+                y: {
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
+              }}
+              style={{
+                zIndex: 101,
+                filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.15))",
+              }}
             >
               <CardHole />
               <div
