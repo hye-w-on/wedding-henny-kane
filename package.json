@@ -5,7 +5,7 @@
   "type": "module",
   "homepage": "https://hye-w-on.github.io/wedding-henny-kane",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --force",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -42,7 +42,7 @@
     "gh-pages": "^6.3.0",
     "globals": "^15.11.0",
     "path": "^0.12.7",
-    "typescript": "~5.6.2",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^8.11.0",
     "url": "^0.11.4",
     "vite": "^5.4.10",

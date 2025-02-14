@@ -13,6 +13,7 @@ import PhotoSlide from "../components/PhotoSlide";
 import colorToken from "../utils/colorToken";
 import MainFrame from "../pages/common/MainFrame";
 import temp3d from "@/assets/images/temp3d.png";
+import TimetablePage from "./TimetablePage";
 
 const Container = styled("div")({
   display: "flex",
@@ -68,6 +69,9 @@ const ScrollScreen: React.FC = () => {
         </div>
         <div ref={weddingDayRef}>
           <WeddingDayCard />
+        </div>
+        <div>
+          <TimetablePage />
         </div>
         <div ref={photoSlideRef}>
           <PhotoSlide />
