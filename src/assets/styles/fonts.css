@@ -22,6 +22,11 @@
     format("woff2");
   font-style: normal;
 }
+@font-face {
+  font-family: "integralCF";
+  src: url("/src/assets/fonts/Fontspring-DEMO-integralcf-regular.otf")
+    format("opentype");
+}
 
 /*thin*/
 @font-face {

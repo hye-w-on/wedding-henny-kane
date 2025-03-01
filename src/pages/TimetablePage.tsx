@@ -1,77 +1,195 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { motion, useScroll, useTransform, animate } from "motion/react";
+import React from "react";
 
-const Container = styled.div`
-  height: 200vh;
-  position: relative;
-`;
+const Container = styled("div")({
+  height: "150vh",
+  position: "relative",
+  backgroundColor: "white",
+});
 
-const StickyContainer = styled.div`
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+const StickyContainer = styled("div")({
+  height: "100vh",
+  position: "sticky",
+  top: 0,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+});
 
-const Circle = styled(motion.div)`
-  width: 300px;
-  height: 300px;
-  border: 1px solid black;
-  border-radius: 50%;
-  position: relative;
-`;
+const CircleWrapper = styled("div")({
+  transform: "translateX(-45vh)",
+});
 
-const Number = styled.div<{ angle: number }>`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform-origin: 0 0;
-  transform: ${({ angle }) => `
-    rotate(${angle}deg)
-    translate(180px)
-    rotate(0deg)
-  `};
-`;
+const Circle = styled(motion.div)({
+  width: "300px",
+  height: "300px",
+  border: "1px solid #ddd",
+  borderRadius: "50%",
+  position: "relative",
+});
+
+const Session = styled("div")<{ angle: number }>(({ angle }) => ({
+  position: "absolute",
+  left: "50%",
+  top: "50%",
+  transformOrigin: "0 0",
+  transform: `rotate(${angle}deg) translate(144px) rotate(0deg)`,
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  minWidth: "200px",
+  whiteSpace: "nowrap",
+}));
+
+const SmallCircle = styled("div")<{ isActive: boolean }>(({ isActive }) => ({
+  width: "10px",
+  height: "10px",
+  backgroundColor: isActive ? "#000" : "#ddd",
+  borderRadius: "50%",
+  transition: "background-color 0.3s ease",
+}));
+
+const Description = styled("div")({
+  position: "absolute",
+  left: "50%",
+  top: "60%",
+  transform: "translate(-50%, -50%)",
+  fontSize: "0.8rem",
+  textAlign: "center",
+});
+
+const PageTitle = styled("div")({
+  position: "absolute",
+  top: "10%",
+  left: "50%",
+  transform: "translateX(-50%)",
+  fontFamily: "integralCF",
+  fontSize: "2rem",
+  fontWeight: "bold",
+});
 
 const TimetablePage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const maxIndex = 4;
+  const lastScrollY = useRef(0);
+  const [isFullyVisible, setIsFullyVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsFullyVisible(true);
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY.current) {
+              setCurrentIndex(maxIndex);
+            } else {
+              setCurrentIndex(0);
+            }
+            lastScrollY.current = currentScrollY;
+          } else {
+            setIsFullyVisible(false);
+          }
+        });
+      },
+      { threshold: 1.0 }
+    );
+
+    if (stickyRef.current) {
+      observer.observe(stickyRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [maxIndex]);
 
   const handleWheel = (event: React.WheelEvent) => {
+    if (!isFullyVisible) return; // 완전히 보일 때만 휠 이벤트 처리
+
     if (event.deltaY > 0) {
-      // 아래로 스크롤할 때는 maxIndex를 넘지 않도록
       setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
     } else {
-      // 위로 스크롤할 때는 0 이하로 내려가지 않도록
       setCurrentIndex((prev) => Math.max(0, prev - 1));
     }
   };
 
   const numbers = [
-    { num: 1, angle: 0 },
-    { num: 2, angle: 45 },
-    { num: 3, angle: 90 },
-    { num: 4, angle: 135 },
-    { num: 5, angle: 180 },
+    {
+      time: "5PM",
+      title: "WELCOME",
+      angle: 0,
+      description:
+        "환영합니다. 웰컴푸드와 칵테일이 준비되어있으니 식전에 즐겨주세요",
+    },
+    {
+      time: "6PM",
+      title: "CEREMONY",
+      angle: 45,
+      description: "결혼식이 시작됩니다",
+    },
+    {
+      time: "7PM",
+      title: "DINNER",
+      angle: 90,
+      description: "예식이 진행된 같은 장소에서 BBQ 뷔페를 제공합니다",
+    },
+    {
+      time: "8PM",
+      title: "TALK AND DRINK",
+      angle: 135,
+      description:
+        "이어서 애프터 파티를 진행합니다. 거창한 이벤트가 아닌 함께 먹고 마시고 얘기해요",
+    },
+    {
+      time: "9PM",
+      title: "LAST CALL",
+      angle: 180,
+      description: "저희의 결혼을 축하해주고, 함께 즐겨주셔서 감사합니다",
+    },
   ];
 
   return (
     <Container ref={containerRef} onWheel={handleWheel}>
-      <StickyContainer>
-        <Circle
-          animate={{ rotate: currentIndex * -45 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          {numbers.map(({ num, angle }) => (
-            <Number key={num} angle={angle}>
-              {num}.
-            </Number>
-          ))}
-        </Circle>
+      <StickyContainer ref={stickyRef}>
+        <PageTitle>TIMETABLE</PageTitle>
+        <CircleWrapper>
+          <Circle
+            animate={{ rotate: currentIndex * -45 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            {numbers.map(({ time, title, angle }, index) => (
+              <Session key={time} angle={angle}>
+                <SmallCircle isActive={index === currentIndex} />
+                <div
+                  style={{
+                    fontFamily: "integralCF",
+                    fontSize: "1.5rem",
+                    filter: index === currentIndex ? "blur(0)" : "blur(3px)",
+                    color: index === currentIndex ? "#000" : "#ddd",
+                    transition: "filter 0.3s ease, color 0.3s ease",
+                  }}
+                >
+                  {time}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "integralCF",
+                    fontSize: "1rem",
+                    filter: index === currentIndex ? "blur(0)" : "blur(3px)",
+                    color: index === currentIndex ? "#000" : "#ddd",
+                    transition: "filter 0.3s ease, color 0.3s ease",
+                  }}
+                >
+                  {title}
+                </div>
+              </Session>
+            ))}
+          </Circle>
+        </CircleWrapper>
+        <Description>{numbers[currentIndex].description}</Description>
       </StickyContainer>
     </Container>
   );

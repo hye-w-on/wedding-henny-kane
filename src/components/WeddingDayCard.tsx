@@ -4,7 +4,8 @@ import dayjs from "dayjs";
 import { motion, useInView, animate, cubicBezier } from "motion/react";
 import colorToken from "../utils/colorToken";
 import { useEffect, useState, useRef } from "react";
-import duration from "dayjs/plugin/duration";
+
+import duration from "dayjs/plugin/duration.js";
 dayjs.extend(duration);
 
 const targetDate = dayjs("2025-06-21 18:00:00");
@@ -270,7 +271,7 @@ function WeddingDayCard() {
         </motion.div>
 
         <div style={{ fontSize: "0.6rem", fontFamily: "satoshi" }}>
-          ✸ SUMMER NIGHT ✸
+         SATURDAY SUMMER NIGHT
         </div>
 
         <motion.div
@@ -288,12 +289,12 @@ function WeddingDayCard() {
 
         <div
           style={{
-            fontSize: "0.5rem",
+            fontSize: "0.6rem",
             fontFamily: "satoshi",
             marginTop: "10px",
           }}
         >
-          COMING SOON
+         ✶ COMING SOON ✶
         </div>
 
         <motion.div
