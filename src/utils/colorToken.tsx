@@ -1,4 +1,5 @@
 const colorToken = {
+  white: "#fff",
   realBlack: "#000",
   black: "#121212",
   black100: "#110B0D",

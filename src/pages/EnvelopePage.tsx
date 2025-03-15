@@ -14,7 +14,7 @@ const EnvelopePage = () => {
   const { scrollYProgress } = useScroll({
     target: containerRef, // 특정 컨테이너 기준
     offset: ["center center", "center end"], // 중앙 기준으로 회전 완료
-  });
+  })
   // 위쪽 박스 회전 값 변환
   const topRotate = useTransform(scrollYProgress, [1, 0.1], [30, 200]);
   const smoothTopRotate = useSpring(topRotate, { stiffness: 200, damping: 15 });

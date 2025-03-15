@@ -15,52 +15,16 @@ const ProfileScrollPage: React.FC = () => {
     offset: ["start start", "end end"],
   });
 
-  const x = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["0%", "-150%"] // 출력 범위를 더 넓게 설정하여 더 큰 이동거리
-  );
-
-  const firstCardRef = useRef<HTMLDivElement>(null);
-  const secondCardRef = useRef<HTMLDivElement>(null);
-
-  const [isFirstCardVisible, setIsFirstCardVisible] = useState(false);
-  const [isSecondCardVisible, setIsSecondCardVisible] = useState(false);
-
-  useEffect(() => {
-    const firstCard = firstCardRef.current;
-    const secondCard = secondCardRef.current;
-
-    const firstObserver = new IntersectionObserver(
-      ([entry]) => {
-        setIsFirstCardVisible(entry.isIntersecting);
-      },
-      { root: null, threshold: [0.7, 0.1] } // 20% 이상, 80% 이상
-    );
-    const secondObserver = new IntersectionObserver(
-      ([entry]) => {
-        setIsSecondCardVisible(entry.isIntersecting);
-      },
-      { root: null, threshold: [0.7, 0.1] }
-    );
-
-    if (firstCard) firstObserver.observe(firstCard);
-    if (secondCard) secondObserver.observe(secondCard);
-
-    return () => {
-      if (firstCard) firstObserver.unobserve(firstCard);
-      if (secondCard) secondObserver.unobserve(secondCard);
-    };
-  }, []);
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-80%"]);
 
   return (
     <>
       <section
         ref={galleryRef}
         style={{
-          height: "800vh",
+          height: "400vh",
           position: "relative",
-          overflow: "clip", // hidden 대신 clip 사용
+          overflow: "clip",
         }}
       >
         <div
@@ -70,13 +34,9 @@ const ProfileScrollPage: React.FC = () => {
             height: "100vh",
             display: "flex",
             alignItems: "center",
-            width: "2500px", // 너비를 더 넓게 설정
-            padding: "200px 100px",
-            //background: `url(${photo03})`,
-            backgroundSize: "auto 100%",
-            backgroundPosition: "left center",
-            backgroundRepeat: "no-repeat",
-            transform: "translateZ(0)", // 추가: 하드웨어 가속 활성화
+            width: "300px",
+            padding: "100px 50px",
+            transform: "translateZ(0)",
           }}
         >
           <motion.div
@@ -86,15 +46,10 @@ const ProfileScrollPage: React.FC = () => {
             }}
           >
             <ProfileCard
-              ref={firstCardRef}
-              initial={{ rotate: -30, x: 500, y: 0 }}
               animate={{
-                rotate: isFirstCardVisible ? 5 : -30,
-                x: isFirstCardVisible ? 0 : 200,
-                y: isFirstCardVisible ? [-10, 10] : 0,
+                y: [-10, 10],
               }}
               transition={{
-                duration: 0.5,
                 y: {
                   duration: 2,
                   repeat: Infinity,
@@ -120,24 +75,20 @@ const ProfileScrollPage: React.FC = () => {
                   padding: "10px",
                 }}
               >
-                <GroomProfile isVisible={isFirstCardVisible} />
+                <GroomProfile isVisible={true} />
               </div>
             </ProfileCard>
             <ProfileCard
-              ref={secondCardRef}
-              initial={{ rotate: -30, x: 500, y: 0 }}
               animate={{
-                rotate: isSecondCardVisible ? -5 : -30,
-                x: isSecondCardVisible ? 0 : 200,
-                y: isSecondCardVisible ? [-10, 10] : 0,
+                y: [-10, 10],
               }}
               transition={{
-                duration: 0.5,
                 y: {
                   duration: 2,
                   repeat: Infinity,
                   repeatType: "reverse",
                   ease: "easeInOut",
+                  delay: 0.2,
                 },
               }}
               style={{
@@ -158,7 +109,7 @@ const ProfileScrollPage: React.FC = () => {
                   padding: "10px",
                 }}
               >
-                <BrideProfile />
+                <BrideProfile isVisible={true} />
               </div>
             </ProfileCard>
           </motion.div>

@@ -21,6 +21,16 @@ function Letter() {
       }}
     >
       <FormContainer>
+        <div
+          style={{
+            fontFamily: "helvetica",
+            fontSize: "1.5rem",
+            color: colorToken.black,
+            letterSpacing: "-0.05em",
+          }}
+        >
+          RSVP
+        </div>
         <InputGroup>
           <NameInput value={name} onChange={(e) => setName(e.target.value)} />
           <Label style={{ width: "150px" }}>NAME</Label>

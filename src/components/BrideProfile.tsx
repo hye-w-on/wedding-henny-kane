@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Balloon from "./Balloon";
 import colorToken from "../utils/colorToken";
-import image from "@/assets/images/p01.png";
+import avatarTemp from "@/assets/images/avatarTemp.png";
 
 // Chart.js에서 사용하는 요소 등록
 Chart.register(BarElement, CategoryScale, LinearScale);
@@ -51,7 +51,11 @@ const data = {
   ],
 };
 
-function Profile() {
+interface BrideProfileProps {
+  isVisible?: boolean;
+}
+
+function BrideProfile({ isVisible }: BrideProfileProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [balloons] = useState([
     {
@@ -115,13 +119,20 @@ function Profile() {
           borderRadius: "5px",
           marginTop: "5px",
           border: "1px solid #12121299",
-          width: "200px",
-          height: "200px",
+          width: "210px",
+          height: "600px",
           overflow: "hidden",
         }}
       >
-        <img
-          src={image}
+        <motion.img
+          src={avatarTemp}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: isVisible ? 1 : 1.2 }}
+          transition={{
+            duration: 0.8,
+            delay: 0.2,
+            ease: "easeOut",
+          }}
           style={{
             width: "100%",
             height: "100%",
@@ -143,6 +154,7 @@ function Profile() {
       >
         ★★★★★
       </div>
+      {/*
       <div
         ref={chartContainerRef}
         style={{
@@ -175,8 +187,9 @@ function Profile() {
           </Balloon>
         ))}
       </div>
+      */}
     </>
   );
 }
 
-export default Profile;
+export default BrideProfile;

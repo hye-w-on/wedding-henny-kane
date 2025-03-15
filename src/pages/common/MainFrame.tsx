@@ -8,43 +8,43 @@ import StarSvg from "../../assets/icons/star.svg?react";
 import CrushSvg from "@/assets/icons/crush.svg?react";
 import HeartSvg from "@/assets/icons/heart.svg?react";
 
-const Header = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  box-sizing: border-box; /* 패딩 포함한 전체 크기 조정 */
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  color: black;
-  z-index: 1000;
-`;
+const Header = styled.header({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "45px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0 20px",
+  boxSizing: "border-box",
+  //backgroundColor: "rgba(255, 255, 255, 0.1)",
+  //backdropFilter: "blur(10px)",
+  color: "black",
+  zIndex: 1000,
+});
 
-const HeaderItem = styled.div`
-  font-family: "satoshi";
-  font-size: 0.9rem;
-  font-weight: 100;
-  cursor: pointer;
-`;
+const HeaderItem = styled.div({
+  fontFamily: "satoshi",
+  fontSize: "0.9rem",
+  fontWeight: 100,
+  cursor: "pointer",
+});
 
-const Overlay = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: ${(props) => (props.isOpen ? 1 : 0)};
-  visibility: ${(props) => (props.isOpen ? "visible" : "hidden")};
-  backdrop-filter: blur(10px);
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  z-index: 998;
-`;
+const Overlay = styled.div<{ isOpen: boolean }>(({ isOpen }) => ({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  opacity: isOpen ? 1 : 0,
+  visibility: isOpen ? "visible" : "hidden",
+  backdropFilter: "blur(10px)",
+  transition: "opacity 0.3s ease, visibility 0.3s ease",
+  zIndex: 998,
+}));
 
 const MenuList = styled(motion.div)<{ isOpen: boolean }>(({ isOpen }) => ({
   position: "fixed",
