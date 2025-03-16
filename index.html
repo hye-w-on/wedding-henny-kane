@@ -8,34 +8,9 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>Project</title>
-    <script
-      charset="UTF-8"
-      class="daum_roughmap_loader_script"
-      src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"
-    ></script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script charset="UTF-8">
-      function initMap() {
-        const container = document.getElementById(
-          "daumRoughmapContainer1736315825113"
-        );
-        if (container) {
-          new daum.roughmap.Lander({
-            timestamp: "1736315825113",
-            key: "2mq5k",
-            mapWidth: "300",
-            mapHeight: "380",
-          }).render();
-        } else {
-          requestAnimationFrame(initMap);
-        }
-      }
-
-      // DOM이 준비되면 실행
-      document.addEventListener("DOMContentLoaded", initMap);
-    </script>
   </body>
 </html>

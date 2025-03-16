@@ -34,7 +34,7 @@ const ProfileScrollPage: React.FC = () => {
             height: "100vh",
             display: "flex",
             alignItems: "center",
-            width: "300px",
+            width: "30px",
             padding: "100px 50px",
             transform: "translateZ(0)",
           }}

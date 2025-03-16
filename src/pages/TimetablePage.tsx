@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { motion, useScroll, useTransform, animate } from "motion/react";
 import React from "react";
+import StarSvg from "@/assets/icons/star.svg?react";
+import colorToken from "../utils/colorToken";
 
 const Container = styled("div")({
   height: "150vh",
   position: "relative",
-  backgroundColor: "white",
+  transition: "background-color 0.5s ease",
 });
 
 const StickyContainer = styled("div")({
@@ -16,6 +18,7 @@ const StickyContainer = styled("div")({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  transition: "background-color 0.5s ease",
 });
 
 const CircleWrapper = styled("div")({
@@ -58,6 +61,7 @@ const Description = styled("div")({
   transform: "translate(-50%, -50%)",
   fontSize: "0.8rem",
   textAlign: "center",
+  transition: "color 0.5s ease",
 });
 
 const PageTitle = styled("div")({
@@ -68,6 +72,15 @@ const PageTitle = styled("div")({
   fontFamily: "integralCF",
   fontSize: "2rem",
   fontWeight: "bold",
+  transition: "color 0.5s ease",
+});
+
+const StarWrapper = styled(motion.div)({
+  position: "absolute",
+  width: "20px",
+  height: "20px",
+  zIndex: 2,
+  color: colorToken.black,
 });
 
 const TimetablePage: React.FC = () => {
@@ -76,7 +89,7 @@ const TimetablePage: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const maxIndex = 4;
   const [isFullyVisible, setIsFullyVisible] = useState(false);
-  const isFirstVisit = useRef(true); // 최초 방문 여부를 체크하는 ref
+  const isFirstVisit = useRef(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -85,12 +98,10 @@ const TimetablePage: React.FC = () => {
           if (entry.isIntersecting) {
             setIsFullyVisible(true);
 
-            // 최초 진입시에만 인덱스를 0으로 설정
             if (isFirstVisit.current) {
               setCurrentIndex(0);
               isFirstVisit.current = false;
             }
-            // 스크롤 방향에 따른 인덱스 설정은 제거
           } else {
             setIsFullyVisible(false);
           }
@@ -104,10 +115,10 @@ const TimetablePage: React.FC = () => {
     }
 
     return () => observer.disconnect();
-  }, []); // maxIndex 의존성 제거
+  }, []);
 
   const handleWheel = (event: React.WheelEvent) => {
-    if (!isFullyVisible) return; // 완전히 보일 때만 휠 이벤트 처리
+    if (!isFullyVisible) return;
 
     if (event.deltaY > 0) {
       setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
@@ -150,24 +161,117 @@ const TimetablePage: React.FC = () => {
     },
   ];
 
+  const isDarkTheme = currentIndex >= 2;
+
   return (
-    <Container ref={containerRef} onWheel={handleWheel}>
-      <StickyContainer ref={stickyRef}>
-        <PageTitle>TIMETABLE</PageTitle>
+    <Container
+      ref={containerRef}
+      onWheel={handleWheel}
+      style={{ backgroundColor: isDarkTheme ? colorToken.nightGray : "white" }}
+    >
+      <StickyContainer
+        ref={stickyRef}
+        style={{
+          backgroundColor: isDarkTheme ? colorToken.nightGray : "white",
+        }}
+      >
+        <StarWrapper
+          style={{
+            top: "15%",
+            left: "15%",
+            color: isDarkTheme ? "white" : colorToken.black,
+            opacity: isDarkTheme ? 1 : 1,
+          }}
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        >
+          <StarSvg width="100%" height="100%" />
+        </StarWrapper>
+
+        <StarWrapper
+          style={{
+            top: "25%",
+            right: "20%",
+            color: isDarkTheme ? "white" : colorToken.black,
+            opacity: isDarkTheme ? 1 : 1,
+          }}
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 0.5,
+          }}
+        >
+          <StarSvg width="100%" height="100%" />
+        </StarWrapper>
+
+        <StarWrapper
+          style={{
+            bottom: "25%",
+            left: "25%",
+            color: isDarkTheme ? "white" : colorToken.black,
+            opacity: isDarkTheme ? 1 : 1,
+          }}
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 1,
+          }}
+        >
+          <StarSvg width="100%" height="100%" />
+        </StarWrapper>
+
+        <PageTitle style={{ color: isDarkTheme ? "white" : "black" }}>
+          TIMETABLE
+        </PageTitle>
         <CircleWrapper>
           <Circle
             animate={{ rotate: currentIndex * -45 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
+            style={{
+              borderColor: isDarkTheme ? "rgba(255, 255, 255, 0.3)" : "#ddd",
+            }}
           >
             {numbers.map(({ time, title, angle }, index) => (
               <Session key={time} angle={angle}>
-                <SmallCircle isActive={index === currentIndex} />
+                <SmallCircle
+                  isActive={index === currentIndex}
+                  style={{
+                    backgroundColor:
+                      index === currentIndex
+                        ? isDarkTheme
+                          ? "white"
+                          : "#000"
+                        : "#ddd",
+                  }}
+                />
                 <div
                   style={{
                     fontFamily: "integralCF",
                     fontSize: "1.5rem",
                     filter: index === currentIndex ? "blur(0)" : "blur(3px)",
-                    color: index === currentIndex ? "#000" : "#ddd",
+                    color:
+                      index === currentIndex
+                        ? isDarkTheme
+                          ? "white"
+                          : "#000"
+                        : "#ddd",
                     transition: "filter 0.3s ease, color 0.3s ease",
                   }}
                 >
@@ -178,7 +282,12 @@ const TimetablePage: React.FC = () => {
                     fontFamily: "integralCF",
                     fontSize: "1rem",
                     filter: index === currentIndex ? "blur(0)" : "blur(3px)",
-                    color: index === currentIndex ? "#000" : "#ddd",
+                    color:
+                      index === currentIndex
+                        ? isDarkTheme
+                          ? "white"
+                          : "#000"
+                        : "#ddd",
                     transition: "filter 0.3s ease, color 0.3s ease",
                   }}
                 >
@@ -188,7 +297,9 @@ const TimetablePage: React.FC = () => {
             ))}
           </Circle>
         </CircleWrapper>
-        <Description>{numbers[currentIndex].description}</Description>
+        <Description style={{ color: isDarkTheme ? "white" : "black" }}>
+          {numbers[currentIndex].description}
+        </Description>
       </StickyContainer>
     </Container>
   );

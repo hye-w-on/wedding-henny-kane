@@ -77,3 +77,21 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: "KoPubDotum";
+  src: url("/src/assets/fonts/KoPub Dotum Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "KoPubDotum";
+  src: url("/src/assets/fonts/KoPub Dotum Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "KoPubDotum";
+  src: url("/src/assets/fonts/KoPub Dotum Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
