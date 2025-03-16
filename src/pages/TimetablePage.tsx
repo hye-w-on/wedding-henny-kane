@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { motion, useScroll, useTransform, animate } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import React from "react";
 import StarSvg from "@/assets/icons/star.svg?react";
 import colorToken from "../utils/colorToken";
 
 const Container = styled("div")({
-  height: "150vh",
+  height: "400vh",
   position: "relative",
-  transition: "background-color 0.5s ease",
+  overflow: "hidden",
 });
 
 const StickyContainer = styled("div")({
@@ -86,87 +86,28 @@ const StarWrapper = styled(motion.div)({
 });
 
 const TimetablePage: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const maxIndex = 4;
-  const [isFullyVisible, setIsFullyVisible] = useState(false);
-  const isFirstVisit = useRef(true);
-  const touchStartRef = useRef<number | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsFullyVisible(true);
-
-            if (isFirstVisit.current) {
-              setCurrentIndex(0);
-              isFirstVisit.current = false;
-            }
-          } else {
-            setIsFullyVisible(false);
-          }
-        });
-      },
-      { threshold: 0.9 }
-    );
-
-    if (stickyRef.current) {
-      observer.observe(stickyRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartRef.current = e.touches[0].clientY;
+    const updateIndex = () => {
+      const progress = scrollYProgress.get();
+      const newIndex = Math.min(
+        maxIndex,
+        Math.floor(progress * (maxIndex + 1))
+      );
+      setCurrentIndex(newIndex);
     };
 
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (!isFullyVisible || touchStartRef.current === null) return;
-
-      const touchEnd = e.changedTouches[0].clientY;
-      const touchDiff = touchStartRef.current - touchEnd;
-
-      const minSwipeDistance = 50;
-
-      if (Math.abs(touchDiff) > minSwipeDistance) {
-        if (touchDiff > 0) {
-          setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
-        } else {
-          setCurrentIndex((prev) => Math.max(0, prev - 1));
-        }
-      }
-
-      touchStartRef.current = null;
-    };
-
-    container.addEventListener("touchstart", handleTouchStart, {
-      passive: true,
-    });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-    return () => {
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [isFullyVisible, maxIndex]);
-
-  const handleWheel = (event: React.WheelEvent) => {
-    if (!isFullyVisible) return;
-
-    if (event.deltaY > 0) {
-      setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
-    } else {
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    }
-  };
+    const unsubscribe = scrollYProgress.on("change", updateIndex);
+    return () => unsubscribe();
+  }, [scrollYProgress, maxIndex]);
 
   const numbers = [
     {
@@ -205,15 +146,23 @@ const TimetablePage: React.FC = () => {
   const isDarkTheme = currentIndex >= 2;
 
   return (
-    <Container
-      ref={containerRef}
-      onWheel={handleWheel}
-      style={{ backgroundColor: isDarkTheme ? colorToken.nightGray : "white" }}
+    <section
+      ref={sectionRef}
+      style={{
+        height: "400vh",
+      }}
     >
-      <StickyContainer
-        ref={stickyRef}
+      <div
         style={{
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           backgroundColor: isDarkTheme ? colorToken.nightGray : "white",
+          transition: "background-color 0.5s ease",
         }}
       >
         <StarWrapper
@@ -221,7 +170,6 @@ const TimetablePage: React.FC = () => {
             top: "15%",
             left: "15%",
             color: isDarkTheme ? "white" : colorToken.black,
-            opacity: isDarkTheme ? 1 : 1,
           }}
           animate={{
             rotate: 360,
@@ -241,7 +189,6 @@ const TimetablePage: React.FC = () => {
             top: "25%",
             right: "20%",
             color: isDarkTheme ? "white" : colorToken.black,
-            opacity: isDarkTheme ? 1 : 1,
           }}
           animate={{
             rotate: 360,
@@ -251,7 +198,6 @@ const TimetablePage: React.FC = () => {
             duration: 3,
             repeat: Infinity,
             ease: "linear",
-            delay: 0.5,
           }}
         >
           <StarSvg width="100%" height="100%" />
@@ -262,7 +208,6 @@ const TimetablePage: React.FC = () => {
             bottom: "25%",
             left: "25%",
             color: isDarkTheme ? "white" : colorToken.black,
-            opacity: isDarkTheme ? 1 : 1,
           }}
           animate={{
             rotate: 360,
@@ -272,7 +217,6 @@ const TimetablePage: React.FC = () => {
             duration: 3,
             repeat: Infinity,
             ease: "linear",
-            delay: 1,
           }}
         >
           <StarSvg width="100%" height="100%" />
@@ -341,8 +285,8 @@ const TimetablePage: React.FC = () => {
         <Description style={{ color: isDarkTheme ? "white" : "black" }}>
           {numbers[currentIndex].description}
         </Description>
-      </StickyContainer>
-    </Container>
+      </div>
+    </section>
   );
 };
 
