@@ -30,9 +30,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
   useEffect(() => {
     const script = document.createElement("script");
     script.async = true;
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
-      import.meta.env.VITE_KAKAO_API_KEY
-    }&libraries=services&autoload=false`;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=868b62f7d24f1f22c84046bab4ae7c62&libraries=services&autoload=false`;
 
     script.onload = () => {
       window.kakao.maps.load(() => {
