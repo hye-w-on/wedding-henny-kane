@@ -119,7 +119,7 @@ const TimetablePage: React.FC = () => {
   const numbers = [
     {
       time: "5PM",
-      title: "WELCOME",
+      title: "OPENING",
       angle: 0,
       description:
         "환영합니다. 웰컴푸드와 칵테일이 준비되어있으니 식전에 즐겨주세요",
@@ -138,14 +138,13 @@ const TimetablePage: React.FC = () => {
     },
     {
       time: "8PM",
-      title: "TALK AND DRINK",
+      title: "RECEPTION",
       angle: 135,
-      description:
-        "이어서 애프터 파티를 진행합니다. 거창한 이벤트가 아닌 함께 먹고 마시고 얘기해요",
+      description: "이어서 애프터 파티를 진행합니다. 함께 먹고 마시고 얘기해요",
     },
     {
       time: "9PM",
-      title: "LAST CALL",
+      title: "CLOSING",
       angle: 180,
       description: "저희의 결혼을 축하해주고, 함께 즐겨주셔서 감사합니다",
     },
