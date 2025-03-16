@@ -75,8 +75,8 @@ const TimetablePage: React.FC = () => {
   const stickyRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const maxIndex = 4;
-  const lastScrollY = useRef(0);
   const [isFullyVisible, setIsFullyVisible] = useState(false);
+  const isFirstVisit = useRef(true); // 최초 방문 여부를 체크하는 ref
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -84,13 +84,13 @@ const TimetablePage: React.FC = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsFullyVisible(true);
-            const currentScrollY = window.scrollY;
-            if (currentScrollY > lastScrollY.current) {
-              setCurrentIndex(maxIndex);
-            } else {
+
+            // 최초 진입시에만 인덱스를 0으로 설정
+            if (isFirstVisit.current) {
               setCurrentIndex(0);
+              isFirstVisit.current = false;
             }
-            lastScrollY.current = currentScrollY;
+            // 스크롤 방향에 따른 인덱스 설정은 제거
           } else {
             setIsFullyVisible(false);
           }
@@ -104,7 +104,7 @@ const TimetablePage: React.FC = () => {
     }
 
     return () => observer.disconnect();
-  }, [maxIndex]);
+  }, []); // maxIndex 의존성 제거
 
   const handleWheel = (event: React.WheelEvent) => {
     if (!isFullyVisible) return; // 완전히 보일 때만 휠 이벤트 처리
