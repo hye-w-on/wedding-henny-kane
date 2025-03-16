@@ -13,12 +13,14 @@ const Container = styled("div")({
 
 const StickyContainer = styled("div")({
   height: "100vh",
+  width: "100%",
   position: "sticky",
   top: 0,
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   transition: "background-color 0.5s ease",
+  zIndex: 10,
 });
 
 const CircleWrapper = styled("div")({
@@ -90,6 +92,7 @@ const TimetablePage: React.FC = () => {
   const maxIndex = 4;
   const [isFullyVisible, setIsFullyVisible] = useState(false);
   const isFirstVisit = useRef(true);
+  const touchStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -107,7 +110,7 @@ const TimetablePage: React.FC = () => {
           }
         });
       },
-      { threshold: 1.0 }
+      { threshold: 0.9 }
     );
 
     if (stickyRef.current) {
@@ -116,6 +119,44 @@ const TimetablePage: React.FC = () => {
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartRef.current = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!isFullyVisible || touchStartRef.current === null) return;
+
+      const touchEnd = e.changedTouches[0].clientY;
+      const touchDiff = touchStartRef.current - touchEnd;
+
+      const minSwipeDistance = 50;
+
+      if (Math.abs(touchDiff) > minSwipeDistance) {
+        if (touchDiff > 0) {
+          setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
+        } else {
+          setCurrentIndex((prev) => Math.max(0, prev - 1));
+        }
+      }
+
+      touchStartRef.current = null;
+    };
+
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+    container.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isFullyVisible, maxIndex]);
 
   const handleWheel = (event: React.WheelEvent) => {
     if (!isFullyVisible) return;
