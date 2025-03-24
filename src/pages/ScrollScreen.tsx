@@ -14,6 +14,7 @@ import colorToken from "../utils/colorToken";
 import MainFrame from "../pages/common/MainFrame";
 import temp3d from "@/assets/images/temp3d.png";
 import TimetablePage from "./TimetablePage";
+import ContactPage from "./ContactPage";
 
 const Container = styled("div")({
   display: "flex",
@@ -84,6 +85,9 @@ const ScrollScreen: React.FC = () => {
         </div>
         <div ref={envelopeRef}>
           <EnvelopePage />
+        </div>
+        <div>
+          <ContactPage />
         </div>
       </Container>
     </>
