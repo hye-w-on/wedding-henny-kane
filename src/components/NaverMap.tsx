@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import styled from "@emotion/styled";
 import flagIcon from "@/assets/icons/flag.svg";
 
@@ -32,69 +32,87 @@ const loadScript = (src: string, callback: () => void) => {
   document.head.appendChild(script);
 };
 
-const NaverMap = ({
-  latitude = 37.604132,
-  longitude = 126.9985232,
-  clientId = "y1urqp9vxv",
-}: NaverMapProps) => {
-  const [isMapLoaded, setMapLoaded] = useState(false);
+export interface NaverMapRef {
+  centerMap: () => void;
+}
 
-  const initMap = () => {
-    if (!document.getElementById("map")) return;
+const NaverMap = forwardRef<NaverMapRef, NaverMapProps>(
+  (
+    { latitude = 37.604132, longitude = 126.9985232, clientId = "y1urqp9vxv" },
+    ref
+  ) => {
+    const [isMapLoaded, setMapLoaded] = useState(false);
+    const [target, setTarget] = useState<any>(null);
 
-    const mapOptions = {
-      zoomControl: true,
-      zoomControlOptions: {
-        style: window.naver.maps.ZoomControlStyle.SMALL,
-        position: window.naver.maps.Position.TOP_RIGHT,
+    useImperativeHandle(ref, () => ({
+      centerMap: () => {
+        if (mapInstance && target) {
+          mapInstance.setCenter(target);
+          mapInstance.setZoom(16);
+        }
       },
-      center: new window.naver.maps.LatLng(latitude, longitude),
-      zoom: 16,
+    }));
+
+    const initMap = () => {
+      if (!document.getElementById("map")) return;
+
+      const newTarget = new window.naver.maps.LatLng(latitude, longitude);
+      setTarget(newTarget);
+
+      const mapOptions = {
+        zoomControl: true,
+        zoomControlOptions: {
+          style: window.naver.maps.ZoomControlStyle.SMALL,
+          position: window.naver.maps.Position.TOP_RIGHT,
+        },
+        center: newTarget,
+        zoom: 16,
+      };
+      mapInstance = new window.naver.maps.Map("map", mapOptions);
+
+      // 마커
+      const marker = new window.naver.maps.Marker({
+        position: newTarget,
+        map: mapInstance,
+        icon: {
+          url: flagIcon,
+          size: new window.naver.maps.Size(35, 35),
+          scaledSize: new window.naver.maps.Size(35, 35),
+          origin: new window.naver.maps.Point(0, 0),
+          anchor: new window.naver.maps.Point(13, 39),
+        },
+      });
+
+      // 마커 클릭 이벤트
+      window.naver.maps.Event.addListener(marker, "click", () => {
+        mapInstance?.setCenter(newTarget);
+        mapInstance?.setZoom(16);
+      });
+
+      setMapLoaded(true);
     };
-    mapInstance = new window.naver.maps.Map("map", mapOptions);
 
-    // 마커
-    const marker = new window.naver.maps.Marker({
-      position: new window.naver.maps.LatLng(latitude, longitude),
-      map: mapInstance,
-      icon: {
-        url: flagIcon,
-        size: new window.naver.maps.Size(35, 35),
-        scaledSize: new window.naver.maps.Size(35, 35),
-        origin: new window.naver.maps.Point(0, 0),
-        anchor: new window.naver.maps.Point(13, 39),
-      },
-    });
+    useEffect(() => {
+      if (typeof window.naver === "undefined") {
+        loadScript(
+          `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`,
+          initMap
+        );
+      } else {
+        initMap();
+      }
 
-    // 마커 클릭 이벤트
-    window.naver.maps.Event.addListener(marker, "click", () => {
-      mapInstance?.setCenter(new window.naver.maps.LatLng(latitude, longitude));
-      mapInstance?.setZoom(16);
-    });
+      return () => {
+        mapInstance = null;
+      };
+    }, [latitude, longitude, clientId]);
 
-    setMapLoaded(true);
-  };
-
-  useEffect(() => {
-    if (typeof window.naver === "undefined") {
-      loadScript(
-        `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`,
-        initMap
-      );
-    } else {
-      initMap();
-    }
-
-    return () => {
-      mapInstance = null;
-    };
-  }, [latitude, longitude, clientId]);
-
-  return (
-    <MapContainer>
-      <div id="map" style={{ width: "100%", height: "100%" }} />
-    </MapContainer>
-  );
-};
+    return (
+      <MapContainer>
+        <div id="map" style={{ width: "100%", height: "100%" }} />
+      </MapContainer>
+    );
+  }
+);
 
 export default NaverMap;

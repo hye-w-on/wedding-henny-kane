@@ -7,10 +7,14 @@ import VenueMap from "../components/VenueMap";
 import VenueDetailInfo from "../components/VenueDetailInfo";
 import venue from "@/assets/images/venue.jpg";
 import Toast from "../components/Toast";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import KakaoMap from "../components/KakaoMap";
-import NaverMap from "../components/NaverMap";
+import NaverMap, { NaverMapRef } from "../components/NaverMap";
+import CopyIcon from "../assets/icons/copy.svg";
+import DestinationIcon from "@/assets/icons/destination.svg";
+import KakaoMapIcon from "@/assets/icons/kakaomap.png";
+import NaverMapIcon from "@/assets/icons/navermap.png";
 
 dayjs.extend(duration);
 
@@ -106,6 +110,29 @@ const BorderCircle = styled(motion.div)({
   pointerEvents: "none",
 });
 
+const IconButton = styled("button")({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "70px",
+  height: "20px",
+  fontFamily: "SUITRegular",
+  fontSize: "0.7rem",
+  padding: "4px 4px 4px 3px",
+  borderRadius: "5px",
+  background: colorToken.gray800,
+  border: `1px solid ${colorToken.gray600}`,
+  cursor: "pointer",
+  color: "white",
+  gap: "3px",
+  "& img": {
+    width: "12px",
+    height: "12px",
+    filter: "brightness(0) invert(1)",
+    opacity: 0.6,
+  },
+});
+
 function LocationPage() {
   const [showToast, setShowToast] = useState(false);
   const [showDetails, setShowDetails] = useState(false); // 상세 정보 표시 여부 상태
@@ -132,10 +159,25 @@ function LocationPage() {
   const allTimes = [...shuttleTimes.before, ...shuttleTimes.after];
   const closestTime = getClosestTime(allTimes);
 
+  const mapRef = useRef<NaverMapRef>(null);
+
+  const handleButtonClick = () => {
+    console.log("button clicked");
+    mapRef.current?.centerMap();
+  };
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText("서울 성북구 정릉로10길 127");
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const handleKakaoMapClick = () => {
+    window.open("https://kko.kakao.com/bjlJf3oWOO", "_blank");
+  };
+
+  const handleNaverMapClick = () => {
+    window.open("https://naver.me/59555555555555555555555555555555", "_blank");
   };
 
   return (
@@ -148,7 +190,14 @@ function LocationPage() {
       }}
     >
       <Card>
-        <div style={{ zIndex: 3 }}>
+        <div
+          style={{
+            zIndex: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <RotatedBox>
             <img src={venue} alt="venue" />
           </RotatedBox>
@@ -176,26 +225,13 @@ function LocationPage() {
           <div
             style={{
               width: "100%",
-              marginTop: "5px",
-              fontFamily: "SUITRegular",
-              fontSize: "12px",
-              color: "#fff",
-              display: "flex",
-              justifyContent: "center",
-              lineHeight: "0.6em",
-            }}
-          >
-            ------------ Lehans -----------
-          </div>
-          <div
-            style={{
-              width: "100%",
               marginTop: "10px",
               marginBottom: "10px",
               fontFamily: "SUITRegular",
               fontSize: "12px",
               color: "#fff",
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
               gap: "8px",
@@ -203,20 +239,16 @@ function LocationPage() {
             }}
           >
             서울 성북구 정릉로10길 127 르한스(한스갤러리)
-            <button
-              onClick={handleCopy}
-              style={{
-                background: "transparent",
-                border: "1px solid #fff",
-                color: "#fff",
-                padding: "4px 8px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "10px",
-              }}
-            >
-              복사
-            </button>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <IconButton onClick={handleCopy}>
+                <img src={CopyIcon} alt="copy" />
+                주소복사
+              </IconButton>
+              <IconButton onClick={handleButtonClick}>
+                <img src={DestinationIcon} alt="copy" />
+                지도이동
+              </IconButton>
+            </div>
           </div>
           <div style={{ position: "relative", zIndex: 2 }}>
             <BorderCircle
@@ -230,8 +262,58 @@ function LocationPage() {
               }}
             />
             <MapWrapper>
-              <NaverMap />
+              <NaverMap ref={mapRef} />
             </MapWrapper>
+          </div>
+          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                fontFamily: "SUITRegular",
+                fontSize: "0.8rem",
+                color: "white",
+                gap: "10px",
+              }}
+            >
+              <button
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                }}
+                onClick={handleKakaoMapClick}
+              >
+                <img src={KakaoMapIcon} />
+              </button>
+              카카오맵으로 열기
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                fontFamily: "SUITRegular",
+                fontSize: "0.8rem",
+                color: "white",
+                gap: "10px",
+              }}
+            >
+              <button
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                }}
+                onClick={handleNaverMapClick}
+              >
+                <img src={NaverMapIcon} />
+              </button>
+              네이버맵으로 열기
+            </div>
           </div>
         </div>
         <CardBackground />
