@@ -15,6 +15,7 @@ import MainFrame from "../pages/common/MainFrame";
 import temp3d from "@/assets/images/temp3d.png";
 import TimetablePage from "./TimetablePage";
 import ContactPage from "./ContactPage";
+import PhotoPage from "./PhotoPage";
 
 const Container = styled("div")({
   display: "flex",
@@ -68,14 +69,14 @@ const ScrollScreen: React.FC = () => {
         <div ref={nameCardRef}>
           <NamePage />
         </div>
+        <div>
+          <PhotoPage />
+        </div>
         <div ref={weddingDayRef}>
           <WeddingDayCard />
         </div>
         <div>
           <TimetablePage />
-        </div>
-        <div ref={photoSlideRef}>
-          <PhotoSlide />
         </div>
         <div ref={locationRef}>
           <LocationPage />

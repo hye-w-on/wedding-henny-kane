@@ -3,28 +3,39 @@ import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
 import { motion } from "framer-motion";
 import { colorToken } from "../utils/colorToken";
+import PhoneIcon from "../assets/icons/phone.svg";
+import MessageIcon from "../assets/icons/message.svg";
+import CopyIcon from "../assets/icons/copy.svg";
 
 interface ContactInfo {
   role: string;
   name: string;
+  bank: string;
   account: string;
+  phone: string;
 }
 
 const groomContacts: ContactInfo[] = [
   {
     role: "신랑",
     name: "이명진",
+    bank: "우리은행",
     account: "12232131231223",
+    phone: "010-1234-5678",
   },
   {
     role: "신랑 어버지",
     name: "이영길",
+    bank: "국민은행",
     account: "12232131231223",
+    phone: "010-1234-5678",
   },
   {
     role: "신랑 어머니",
     name: "김영숙",
+    bank: "신한은행",
     account: "12232131231223",
+    phone: "010-1234-5678",
   },
 ];
 
@@ -32,17 +43,23 @@ const brideContacts: ContactInfo[] = [
   {
     role: "신부",
     name: "윤혜원",
+    bank: "우리은행",
     account: "12232131231223",
+    phone: "010-1234-5678",
   },
   {
     role: "신부 어버지",
-    name: "이영길",
+    name: "윤창기",
+    bank: "국민은행",
     account: "12232131231223",
+    phone: "010-1234-5678",
   },
   {
     role: "신부 어머니",
-    name: "김영숙",
+    name: "송영희",
+    bank: "신한은행",
     account: "12232131231223",
+    phone: "010-1234-5678",
   },
 ];
 
@@ -78,26 +95,6 @@ const Background = styled("div")({
   zIndex: -1,
 });
 
-const Star = styled("div")<{
-  top: string;
-  left: string;
-  scale: number;
-  rotation: number;
-}>((props) => ({
-  position: "absolute",
-  top: props.top,
-  left: props.left,
-  width: "16px",
-  height: "16px",
-  color: "rgba(255, 255, 255, 0.1)",
-  transform: `scale(${props.scale}) rotate(${props.rotation}deg)`,
-  animation: `${rotate} 20s linear infinite`,
-  "& svg": {
-    width: "100%",
-    height: "100%",
-  },
-}));
-
 const GradientContainer = styled("div")({
   position: "absolute",
   top: 0,
@@ -119,7 +116,7 @@ const Title = styled("h1")({
 const SubTitle = styled("p")({
   color: "rgba(255, 255, 255, 0.467)",
   lineHeight: 1.2,
-  fontSize: "0.8rem",
+  fontSize: "0.7rem",
   marginBottom: "10px",
   position: "relative",
   zIndex: 1,
@@ -139,7 +136,7 @@ const TabContainer = styled("div")({
     bottom: 0,
     left: 0,
     width: "100%",
-    height: "25px",
+    height: "22px",
     background: colorToken.white,
     zIndex: -1,
   },
@@ -147,11 +144,12 @@ const TabContainer = styled("div")({
 
 const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
   flex: 1,
-  height: props.active ? "35px" : "30px",
+  height: props.active ? "35px" : "28px",
   border: "none",
   background: colorToken.gray100,
-  color: colorToken.black,
-  fontWeight: props.active ? "bold" : "normal",
+  color: props.active ? colorToken.purple : colorToken.gray200,
+  fontFamily: "KoPubDotum",
+  fontWeight: props.active ? 700 : 500,
   cursor: "pointer",
   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
   position: "relative",
@@ -183,27 +181,33 @@ const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
 const ContactList = styled("div")({
   display: "flex",
   flexDirection: "column",
-  border: `5px solid ${colorToken.white}`,
   borderRadius: "0 0 8px 8px",
+  backgroundColor: "rgba(0, 0, 0, 0.1)",
+  backdropFilter: "blur(80px)",
+  border: `1px solid rgba(255, 255, 255, 0.1)`,
+  padding: "30px 0px",
+  gap: "15px",
 });
 
 const ContactCard = styled("div")({
-  background: "rgba(255, 255, 255, 0.1)",
-  backdropFilter: "blur(10px)",
-  padding: "15px",
-  //border: "1px solid rgba(255, 255, 255, 0.1)",
+  padding: "0px 15px 0px 20px",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "10px",
 });
 
 const ContactRole = styled("div")({
-  color: colorToken.pink200,
+  color: colorToken.purple,
   fontSize: "0.7rem",
   marginBottom: "5px",
 });
 
 const ContactName = styled("div")({
-  fontSize: "1.2rem",
+  fontSize: "0.9rem",
   fontWeight: "bold",
-  color: "white",
+  color: colorToken.white,
   marginBottom: "15px",
 });
 
@@ -217,20 +221,21 @@ const ButtonGroup = styled("div")({
 const IconButton = styled("button")({
   display: "flex",
   alignItems: "center",
+  justifyContent: "center",
   gap: "5px",
-  padding: "8px 16px",
-  border: "1px solid rgba(255, 255, 255, 0.2)",
-  borderRadius: "8px",
+  width: "80px",
+  padding: "8px 10px",
+  borderRadius: "6px",
   background: "rgba(255, 255, 255, 0.1)",
   color: "white",
   cursor: "pointer",
   transition: "all 0.2s ease",
-  fontSize: "0.8rem",
+  fontSize: "0.7rem",
   backdropFilter: "blur(10px)",
-  "& svg": {
-    width: "20px",
-    height: "20px",
-    fill: "currentColor",
+  "& img": {
+    width: "15px",
+    height: "15px",
+    filter: "brightness(0) invert(1)",
   },
   "&:hover": {
     background: "rgba(255, 255, 255, 0.2)",
@@ -257,12 +262,12 @@ const AccountInfo = styled("div")({
 const BankLabel = styled("div")({
   fontSize: "0.7rem",
   fontWeight: 400,
-  color: "var(--color-gray-800)",
+  color: colorToken.purple,
 });
 
 const AccountNumber = styled("div")({
   fontSize: "0.8rem",
-  color: "var(--color-black)",
+  color: colorToken.white,
 });
 
 const CopyButton = styled("div")({
@@ -311,14 +316,12 @@ const ContactPage = () => {
     );
   };
 
-  const handleCall = (name: string) => {
-    // 실제 전화번호로 교체 필요
-    window.location.href = `tel:010-0000-0000`;
+  const handleCall = (phone: string) => {
+    window.location.href = `tel:${phone}`;
   };
 
-  const handleMessage = (name: string) => {
-    // 실제 전화번호로 교체 필요
-    window.location.href = `sms:010-0000-0000`;
+  const handleMessage = (phone: string) => {
+    window.location.href = `sms:${phone}`;
   };
 
   return (
@@ -435,38 +438,48 @@ const ContactPage = () => {
       <ContactList>
         {(activeTab === "groom" ? groomContacts : brideContacts).map(
           (contact, index) => (
-            <ContactCard key={index}>
-              <ContactRole>{contact.role}</ContactRole>
-              <ContactName>{contact.name}</ContactName>
-
-              <ButtonGroup>
-                <IconButton onClick={() => handleCopyAccount(contact.account)}>
-                  번호복사
-                </IconButton>
-                <IconButton onClick={() => handleCall(contact.name)}>
-                  전화
-                </IconButton>
-                <IconButton onClick={() => handleMessage(contact.name)}>
-                  문자
-                </IconButton>
-              </ButtonGroup>
-
-              <AccountButton onClick={() => toggleAccountModal(contact.name)}>
-                계좌번호 확인하기
-              </AccountButton>
-
+            <div>
+              <ContactCard key={index}>
+                <div style={{ width: "100%" }}>
+                  <ContactRole>{contact.role}</ContactRole>
+                  <ContactName>{contact.name}</ContactName>
+                </div>
+                <div>
+                  <ButtonGroup>
+                    <IconButton
+                      onClick={() => handleCopyAccount(contact.account)}
+                    >
+                      <img src={CopyIcon} alt="copy" />
+                      번호복사
+                    </IconButton>
+                    <IconButton onClick={() => handleCall(contact.phone)}>
+                      <img src={PhoneIcon} alt="phone" />
+                      전화
+                    </IconButton>
+                    <IconButton onClick={() => handleMessage(contact.phone)}>
+                      <img src={MessageIcon} alt="message" />
+                      문자
+                    </IconButton>
+                  </ButtonGroup>
+                  <AccountButton
+                    onClick={() => toggleAccountModal(contact.name)}
+                  >
+                    계좌번호 확인하기
+                  </AccountButton>
+                </div>
+              </ContactCard>
               {showAccountModals.includes(contact.name) && (
                 <AccountInfo>
-                  <BankLabel>우리은행</BankLabel>
+                  <BankLabel>{contact.bank}</BankLabel>
                   <AccountNumber>{contact.account}</AccountNumber>
                   <CopyButton
                     onClick={() => handleCopyAccount(contact.account)}
                   >
-                    복사하기
+                    복사
                   </CopyButton>
                 </AccountInfo>
               )}
-            </ContactCard>
+            </div>
           )
         )}
       </ContactList>

@@ -9,12 +9,17 @@ import ScrollScreen from "./pages/ScrollScreen";
 import "./App.css";
 import { colorTokensCSS } from "./utils/colorToken";
 import { Global, css } from "@emotion/react";
+import LocationPage from "./pages/LocationPage";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/wedding-henny-kane",
       element: <ScrollScreen />,
+    },
+    {
+      path: "/wedding-henny-kane/location",
+      element: <LocationPage />,
     },
   ]);
   return (

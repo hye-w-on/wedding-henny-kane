@@ -10,6 +10,7 @@ import Toast from "../components/Toast";
 import { useEffect, useState } from "react";
 import React from "react";
 import KakaoMap from "../components/KakaoMap";
+import NaverMap from "../components/NaverMap";
 
 dayjs.extend(duration);
 
@@ -29,16 +30,16 @@ const RotatedBox = styled(motion.div)({
 
 const Card = styled(motion.div)({
   width: "100%",
-  //backgroundColor: colorToken.black,
   display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
   flexDirection: "column",
   padding: "140px 10px",
-  //margin: "10px",
-  //borderRadius: "13px",
   position: "relative",
   overflow: "visible",
   zIndex: 1,
 });
+
 const CardBackground = styled(motion.div)({
   width: "100%",
   height: "100%",
@@ -46,7 +47,7 @@ const CardBackground = styled(motion.div)({
   position: "absolute",
   top: 0,
   right: 0,
-  zIndex: 2,
+  zIndex: 0,
 });
 
 // 새로운 버튼 스타일 컴포넌트
@@ -71,6 +72,38 @@ const DetailButton = styled(motion.button)({
 const DetailContainer = styled(motion.div)({
   width: "100%",
   overflow: "hidden",
+});
+
+const MapWrapper = styled(motion.div)({
+  touchAction: "none",
+  overflow: "hidden",
+  position: "relative",
+  zIndex: 2,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: "50%",
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    inset: 0,
+    borderRadius: "50%",
+    boxShadow: "inset 0 0 20px 20px #121212",
+    pointerEvents: "none",
+    zIndex: 1,
+  },
+});
+
+const BorderCircle = styled(motion.div)({
+  margin: "-5px",
+  position: "absolute",
+  inset: 0,
+  borderRadius: "50%",
+  border: "10px solid",
+  borderColor: colorToken.black,
+  boxShadow: "inset 0 0 10px 10px #121212",
+  zIndex: 3,
+  pointerEvents: "none",
 });
 
 function LocationPage() {
@@ -111,10 +144,10 @@ function LocationPage() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Card>
-        <CardBackground />
         <div style={{ zIndex: 3 }}>
           <RotatedBox>
             <img src={venue} alt="venue" />
@@ -158,6 +191,7 @@ function LocationPage() {
             style={{
               width: "100%",
               marginTop: "10px",
+              marginBottom: "10px",
               fontFamily: "SUITRegular",
               fontSize: "12px",
               color: "#fff",
@@ -184,23 +218,23 @@ function LocationPage() {
               복사
             </button>
           </div>
-          <div
-            style={{
-              margin: "20px",
-              touchAction: "none",
-              overflow: "hidden",
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
-            <KakaoMap
-              address="서울 성북구 정릉로10길 127"
-              markerTitle="르한스"
-              width="100%"
-              height="300px"
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <BorderCircle
+              animate={{
+                borderWidth: ["10px", "20px", "10px"],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             />
+            <MapWrapper>
+              <NaverMap />
+            </MapWrapper>
           </div>
         </div>
+        <CardBackground />
       </Card>
 
       {/* 상세 정보 버튼 */}
