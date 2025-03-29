@@ -7,7 +7,7 @@ import {
   cubicBezier,
 } from "motion/react";
 import colorToken from "../utils/colorToken";
-import mainPhoto from "@/assets/images/elevn_01.png";
+import mainPhoto from "@/assets/images/main.webp";
 import StarSvg from "@/assets/icons/star.svg?react";
 import { useRef } from "react";
 
@@ -16,9 +16,8 @@ const OvalContainer = styled.div({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  margin: "0.1rem",
-  width: "6.2rem",
-  height: "1.5rem",
+  marginBottom: "0.24rem",
+  padding: "0.3rem 0.7rem 0.2rem 0.7rem",
   fontSize: "0.8rem",
   fontFamily: "helvetica",
   fontWeight: "bold",
@@ -58,6 +57,8 @@ const ProfileContainer = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "flex-end",
+  boxShadow: `0 0 10px 0 rgba(0, 0, 0, 0.1)`,
+  paddingBottom: "12px",
 });
 
 const ProfileTitle = styled.div({
@@ -111,7 +112,7 @@ function NamePage() {
       style={{
         width: "100%",
         height: "100vh",
-        background: "#fff",
+        background: "white",
         overflowY: "visible",
         paddingTop: "45px",
         position: "relative",
@@ -210,7 +211,7 @@ function NamePage() {
             <OvalContainer>INVITATION</OvalContainer>
           </motion.div>
           <motion.div
-            style={{ fontSize: "0.5rem", fontFamily: "satoshi" }}
+            style={{ fontSize: "0.6rem", fontFamily: "satoshi" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: staggerDelay }}
@@ -323,24 +324,35 @@ function NamePage() {
       >
         <div
           style={{
-            width: "60vh",
-            height: "60vh",
-            maxWidth: "1800px",
-            borderRadius: "50% 50% 0 0",
-            overflow: "hidden",
             position: "relative",
+            width: "100%",
+            padding: "0 20px",
           }}
         >
-          <motion.img
-            src={mainPhoto}
+          <div
             style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              scale: imageScale,
-              transformOrigin: "center center",
+              height: "60vh",
+              maxHeight: "500px",
+              maxWidth: "1800px",
+              borderRadius: "50%",
+              overflow: "hidden",
+              position: "relative",
+              margin: "0 auto",
             }}
-          />
+          >
+            <motion.img
+              src={mainPhoto}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                scale: imageScale,
+                transformOrigin: "center center",
+                position: "relative",
+                zIndex: 2,
+              }}
+            />
+          </div>
         </div>
         <div
           style={{
@@ -360,16 +372,18 @@ function NamePage() {
               width: "100%",
               display: "flex",
               flexDirection: "row",
-              gap: "3px",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
               padding: "0 10px",
             }}
           >
-            <ProfileContainer style={{ borderRadius: "100% 200% 0 0" }}>
+            <ProfileContainer style={{ borderRadius: "100% 200% 100% 150%" }}>
               <ProfileTitle>bride</ProfileTitle>
               <ProfileName>윤혜원</ProfileName>
               <ProfileParents>윤창기와 송영희의 딸</ProfileParents>
             </ProfileContainer>
-            <ProfileContainer style={{ borderRadius: "200% 100% 0 0" }}>
+            <ProfileContainer style={{ borderRadius: "200% 100% 150% 100%" }}>
               <ProfileTitle>groom</ProfileTitle>
               <ProfileName>이명진</ProfileName>
               <ProfileParents>이영길과 김영숙의 아들</ProfileParents>

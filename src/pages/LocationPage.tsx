@@ -8,8 +8,6 @@ import VenueDetailInfo from "../components/VenueDetailInfo";
 import venue from "@/assets/images/venue.jpg";
 import Toast from "../components/Toast";
 import { useEffect, useRef, useState } from "react";
-import React from "react";
-import KakaoMap from "../components/KakaoMap";
 import NaverMap, { NaverMapRef } from "../components/NaverMap";
 import CopyIcon from "../assets/icons/copy.svg";
 import DestinationIcon from "@/assets/icons/destination.svg";

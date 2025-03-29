@@ -7,7 +7,7 @@ import "@/assets/styles/fonts.css";
 import ProfileScrollPage from "./ProfileScrollPage";
 import NamePage from "./NamePage";
 import EnvelopePage from "./EnvelopePage";
-import WeddingDayCard from "../components/WeddingDayCard";
+import WeddingDayPage from "./WeddingDayPage";
 import LocationPage from "./LocationPage";
 import PhotoSlide from "../components/PhotoSlide";
 import colorToken from "../utils/colorToken";
@@ -16,6 +16,7 @@ import temp3d from "@/assets/images/temp3d.png";
 import TimetablePage from "./TimetablePage";
 import ContactPage from "./ContactPage";
 import PhotoPage from "./PhotoPage";
+import PhotoSlideCard from "../components/PhotoSlideCard";
 
 const Container = styled("div")({
   display: "flex",
@@ -69,11 +70,14 @@ const ScrollScreen: React.FC = () => {
         <div ref={nameCardRef}>
           <NamePage />
         </div>
+        <div ref={weddingDayRef}>
+          <WeddingDayPage />
+        </div>
+        <div>
+          <PhotoSlideCard />
+        </div>
         <div>
           <PhotoPage />
-        </div>
-        <div ref={weddingDayRef}>
-          <WeddingDayCard />
         </div>
         <div>
           <TimetablePage />
