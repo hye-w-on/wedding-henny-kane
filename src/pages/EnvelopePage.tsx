@@ -24,25 +24,41 @@ const EnvelopePage = () => {
   // 편지지 애니메이션: rotateX와 y 값 변환
   const paperRotateX = useTransform(scrollYProgress, [0.5, 0], [30, 0]);
   const paperY = useTransform(scrollYProgress, [0.5, 0], [0, -200]);
+  
+  // 저장 시 편지지 애니메이션
+  const savedPaperRotateX = useTransform(scrollYProgress, [0, 1], [0, 30]);
+  const savedPaperY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  
   // 부드러운 애니메이션 적용
   const smoothPaperRotateX = useSpring(paperRotateX, {
     stiffness: 200,
     damping: 20,
   });
   const smoothPaperY = useSpring(paperY, { stiffness: 200, damping: 20 });
+  const smoothSavedPaperRotateX = useSpring(savedPaperRotateX, { 
+    stiffness: 100, 
+    damping: 15,
+    mass: 0.5
+  });
+  const smoothSavedPaperY = useSpring(savedPaperY, { 
+    stiffness: 100, 
+    damping: 15,
+    mass: 0.5
+  });
 
   return (
     <div
       ref={containerRef}
+      className="envelope-container"
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh", // 특정 컨테이너 높이
+        height: "100vh",
         paddingTop: "150px",
-        perspective: 1000, // 3D 깊이 설정
-        //background: "#000",
+        perspective: 1000,
+        scrollMargin: "20vh",
       }}
     >
       <div
@@ -132,8 +148,8 @@ const EnvelopePage = () => {
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // 그림자 효과 추가
           transformStyle: "preserve-3d", // 3D 유지
           originY: 0, // 상단 축 기준으로 회전
-          rotateX: smoothPaperRotateX, // 스크롤에 따른 회전
-          y: smoothPaperY, // 스크롤에 따른 이동
+          rotateX:  smoothPaperRotateX,
+          y: smoothPaperY,
           zIndex: 3,
         }}
       >
