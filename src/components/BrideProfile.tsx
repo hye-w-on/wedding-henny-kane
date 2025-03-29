@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Balloon from "./Balloon";
 import colorToken from "../utils/colorToken";
-import avatarTemp from "@/assets/images/avatarTemp.png";
+import IdBride from "@/assets/images/id_bride.webp";
 
 // Chart.js에서 사용하는 요소 등록
 Chart.register(BarElement, CategoryScale, LinearScale);
@@ -119,13 +119,13 @@ function BrideProfile({ isVisible }: BrideProfileProps) {
           borderRadius: "5px",
           marginTop: "5px",
           border: "1px solid #12121299",
-          width: "210px",
-          height: "600px",
+          width: "200px",
+          height: "250px",
           overflow: "hidden",
         }}
       >
         <motion.img
-          src={avatarTemp}
+          src={IdBride}
           initial={{ scale: 1.2 }}
           animate={{ scale: isVisible ? 1 : 1.2 }}
           transition={{

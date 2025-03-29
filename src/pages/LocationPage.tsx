@@ -113,8 +113,8 @@ const IconButton = styled("button")({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: "70px",
-  height: "20px",
+  width: "80px",
+  height: "30px",
   fontFamily: "SUITRegular",
   fontSize: "0.7rem",
   padding: "4px 4px 4px 3px",
@@ -224,8 +224,8 @@ function LocationPage() {
           <div
             style={{
               width: "100%",
-              marginTop: "10px",
-              marginBottom: "10px",
+              marginTop: "5px",
+              marginBottom: "5px",
               fontFamily: "SUITRegular",
               fontSize: "12px",
               color: "#fff",
@@ -237,7 +237,9 @@ function LocationPage() {
               lineHeight: "0.6em",
             }}
           >
-            서울 성북구 정릉로10길 127 르한스(한스갤러리)
+            <div style={{ margin: "2px" }}>
+              서울 성북구 정릉로10길 127 르한스(한스갤러리)
+            </div>
             <div style={{ display: "flex", gap: "8px" }}>
               <IconButton onClick={handleCopy}>
                 <img src={CopyIcon} alt="copy" />

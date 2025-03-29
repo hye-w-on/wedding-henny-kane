@@ -13,7 +13,7 @@ import { Radar } from "react-chartjs-2";
 import Balloon from "./Balloon";
 import colorToken from "../utils/colorToken";
 import image from "@/assets/images/p01.png";
-import avatarTemp from "@/assets/images/avatarTemp.png";
+import IdGroom from "@/assets/images/id_groom.webp";
 import { motion } from "motion/react";
 
 Chart.register(
@@ -154,13 +154,13 @@ function GroomProfile({ isVisible }: GroomProfileProps) {
           borderRadius: "5px",
           marginTop: "5px",
           border: "1px solid #12121299",
-          width: "210px",
-          height: "600px",
+          width: "200px",
+          height: "250px",
           overflow: "hidden",
         }}
       >
         <motion.img
-          src={avatarTemp}
+          src={IdGroom}
           initial={{ scale: 1.2 }}
           animate={{ scale: isVisible ? 1 : 1.2 }}
           transition={{

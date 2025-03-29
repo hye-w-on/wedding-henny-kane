@@ -73,7 +73,15 @@ const ScrollScreen: React.FC = () => {
         <div ref={weddingDayRef}>
           <WeddingDayPage />
         </div>
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            background: colorToken.white,
+          }}
+        >
           <PhotoSlideCard />
         </div>
         <div>

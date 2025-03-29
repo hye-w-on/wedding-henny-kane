@@ -199,7 +199,7 @@ const ContactCard = styled("div")({
 });
 
 const ContactRole = styled("div")({
-  color: colorToken.purple,
+  color: colorToken.beige,
   fontSize: "0.7rem",
   marginBottom: "5px",
 });
@@ -262,7 +262,7 @@ const AccountInfo = styled("div")({
 const BankLabel = styled("div")({
   fontSize: "0.7rem",
   fontWeight: 400,
-  color: colorToken.purple,
+  color: colorToken.beige,
 });
 
 const AccountNumber = styled("div")({
@@ -344,8 +344,8 @@ const ContactPage = () => {
                   values="0%;3%;0%"
                   repeatCount="indefinite"
                 />
-                <stop offset="0%" stopColor="#9055A2" />
-                <stop offset="100%" stopColor="#9055A200" />
+                <stop offset="0%" stopColor="#D9D4CF" />
+                <stop offset="100%" stopColor="#D9D4CF00" />
               </radialGradient>
               <radialGradient
                 id="Gradient2"
@@ -361,8 +361,8 @@ const ContactPage = () => {
                   values="0%;3%;0%"
                   repeatCount="indefinite"
                 />
-                <stop offset="0%" stopColor="#9055A2" />
-                <stop offset="100%" stopColor="#9055A200" />
+                <stop offset="0%" stopColor="#D9D4CF" />
+                <stop offset="100%" stopColor="#D9D4CF00" />
               </radialGradient>
             </defs>
             <rect x="0" y="0" width="100%" height="100%" fill="url(#Gradient1)">

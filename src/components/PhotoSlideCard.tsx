@@ -8,6 +8,7 @@ import photo04 from "@/assets/photos/photo04.webp";
 import photo05 from "@/assets/photos/photo05.webp";
 import photo06 from "@/assets/photos/photo06.webp";
 import logo from "@/assets/images/logo.webp";
+import colorToken from "../utils/colorToken";
 
 const ImageWrapper = styled.div({
   position: "relative",
@@ -76,10 +77,13 @@ const Card = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  width: "100%",
-  height: "400px",
-  background:
-    "linear-gradient(to bottom, #ffffff 0%, #000 10%, #000 90%, #ffffff 100%)",
+  width: "calc(100% - 20px)",
+  maxWidth: "600px",
+  height: "300px",
+  background: colorToken.realBlack,
+  borderRadius: "30%",
+  overflow: "hidden",
+  margin: "10px",
 });
 
 function PhotoSlideCard() {
@@ -87,7 +91,13 @@ function PhotoSlideCard() {
 
   return (
     <Card>
-      <div style={{ width: "160px", marginTop: "30px", marginBottom: "10px" }}>
+      <div
+        style={{
+          width: "160px",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
         <img src={logo} alt="logo" style={{ width: "100%" }} />
       </div>
       <ImageWrapper>

@@ -15,7 +15,7 @@ const ProfileScrollPage: React.FC = () => {
     offset: ["start start", "end end"],
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-80%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-55%"]);
 
   return (
     <>
@@ -47,7 +47,7 @@ const ProfileScrollPage: React.FC = () => {
           >
             <ProfileCard
               animate={{
-                y: [-10, 10],
+                y: [-10, 20],
               }}
               transition={{
                 y: {

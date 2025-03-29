@@ -49,7 +49,7 @@ const NameText = styled(motion.div)({
 const ProfileContainer = styled(motion.div)({
   width: "100%",
   maxWidth: "200px",
-  height: "65px",
+  height: "80px",
   background: "#fff",
   position: "relative",
   zIndex: 2,
@@ -57,8 +57,9 @@ const ProfileContainer = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "flex-end",
-  boxShadow: `0 0 10px 0 rgba(0, 0, 0, 0.1)`,
-  paddingBottom: "12px",
+  paddingBottom: "22px",
+  border: `1px solid rgba(0, 0, 0, 0.7)`,
+  marginBottom: "-20px",
 });
 
 const ProfileTitle = styled.div({
@@ -378,12 +379,12 @@ function NamePage() {
               padding: "0 10px",
             }}
           >
-            <ProfileContainer style={{ borderRadius: "100% 200% 100% 150%" }}>
+            <ProfileContainer style={{ borderRadius: "100% 200% 100% 200%" }}>
               <ProfileTitle>bride</ProfileTitle>
               <ProfileName>윤혜원</ProfileName>
               <ProfileParents>윤창기와 송영희의 딸</ProfileParents>
             </ProfileContainer>
-            <ProfileContainer style={{ borderRadius: "200% 100% 150% 100%" }}>
+            <ProfileContainer style={{ borderRadius: "200% 100% 200% 100%" }}>
               <ProfileTitle>groom</ProfileTitle>
               <ProfileName>이명진</ProfileName>
               <ProfileParents>이영길과 김영숙의 아들</ProfileParents>

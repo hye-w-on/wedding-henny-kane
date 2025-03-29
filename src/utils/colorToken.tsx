@@ -4,6 +4,7 @@ export const colorToken = {
   black: "var(--color-black)",
   black100: "var(--color-black-100)",
   babyPink: "var(--color-baby-pink)",
+  red: "var(--color-red)",
   pink: "var(--color-pink)",
   beige: "var(--color-beige)",
   gray900: "var(--color-gray-900)",
@@ -31,8 +32,9 @@ export const colorTokensCSS = `
     --color-black: #121212;
     --color-black-100: #110B0D;
     --color-baby-pink: #F2CECE;
+    --color-red: #bd1550;
     --color-pink: #FF8CB5;
-    --color-beige: #FCF7F2;
+    --color-beige: #D9D4CF;
     --color-gray-900: #1D2022;
     --color-gray-800: #26282b;
     --color-gray-700: #333639;

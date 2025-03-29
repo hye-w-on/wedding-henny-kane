@@ -11,7 +11,6 @@ dayjs.extend(duration);
 const targetDate = dayjs("2025-06-21 18:00:00");
 
 const Card = styled(motion.div)({
-  height: "100vh",
   backgroundColor: "#ffffff",
   display: "flex",
   flexDirection: "column",
@@ -232,10 +231,10 @@ function WeddingDayPage() {
               letterSpacing: "-0.09em",
             }}
           >
-            SAVE{" "}
+            SAVE
           </span>
           <span style={{ fontFamily: "PPPlayground", fontSize: "2rem" }}>
-            The{" "}
+            The
           </span>
           <span
             style={{
@@ -244,6 +243,7 @@ function WeddingDayPage() {
               letterSpacing: "-0.09em",
             }}
           >
+            {" "}
             DATE
           </span>
         </div>
@@ -292,6 +292,7 @@ function WeddingDayPage() {
             fontSize: "0.6rem",
             fontFamily: "satoshi",
             marginTop: "10px",
+            marginBottom: "10px",
           }}
         >
           ✶ COMING SOON ✶
@@ -330,12 +331,55 @@ function WeddingDayPage() {
         }}
         sx={{
           "& .MuiPickersDay-root.Mui-selected": {
-            backgroundColor: colorToken.black,
-            color: colorToken.babyPink,
-            borderRadius: "15px",
+            backgroundColor: colorToken.beige,
+            color: colorToken.black,
+          },
+          "& .MuiDayCalendar-header": {
+            paddingTop: "0px",
+            paddingLeft: "4px",
+            paddingRight: "4px",
+            "& .MuiTypography-root": {
+              fontSize: "0.6rem",
+              fontFamily: "PPEditorialNew",
+              fontWeight: "800",
+              color: colorToken.black,
+              width: "30px",
+              height: "35px",
+              margin: "0px",
+              lineHeight: "1em",
+            },
+          },
+          "& .MuiPickersCalendar-root": {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+          "& .MuiPickersDay-root": {
             width: "30px",
             height: "30px",
+            fontSize: "0.7rem",
+            fontFamily: "PPEditorialNew",
+            fontWeight: "800",
+            margin: "0px",
+            lineHeight: "1em",
           },
+          "& .MuiPickersCalendarHeader-root": {
+            marginBottom: "0px",
+            minHeight: "20px",
+            "& .MuiPickersCalendarHeader-label": {
+              fontSize: "1rem",
+              fontWeight: "400",
+              fontFamily: "PPEditorialNew",
+              paddingBottom: "0px",
+            },
+          },
+          "& .MuiDayCalendar-monthContainer": {
+            margin: "0px",
+          },
+          width: "250px",
+          height: "220px",
+          marginTop: "20px",
+          marginBottom: "20px",
         }}
       />
     </Card>
