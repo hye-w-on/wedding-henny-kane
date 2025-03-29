@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [viteReact(), svgr()],
-  base: "/wedding-henny-kane/",
+  base: "/",
   resolve: {
     alias: {
       three: "three",

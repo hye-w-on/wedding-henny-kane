@@ -38,7 +38,7 @@ const Card = styled(motion.div)({
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "column",
-  padding: "140px 10px",
+  padding: "140px 10px 80px 10px",
   position: "relative",
   overflow: "visible",
   zIndex: 1,
@@ -70,6 +70,7 @@ const DetailButton = styled(motion.button)({
   alignItems: "center",
   justifyContent: "center",
   gap: "8px",
+  zIndex: 1,
 });
 
 // 상세 정보 컨테이너 스타일
@@ -316,23 +317,21 @@ function LocationPage() {
             </div>
           </div>
         </div>
+        <DetailButton
+          onClick={() => setShowDetails(!showDetails)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          주차와 셔틀버스 상세정보
+          <motion.span
+            animate={{ rotate: showDetails ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            ▼
+          </motion.span>
+        </DetailButton>
         <CardBackground />
       </Card>
-
-      {/* 상세 정보 버튼 */}
-      <DetailButton
-        onClick={() => setShowDetails(!showDetails)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        주차와 셔틀버스 상세정보
-        <motion.span
-          animate={{ rotate: showDetails ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          ▼
-        </motion.span>
-      </DetailButton>
 
       {/* 애니메이션 컨테이너 */}
       <AnimatePresence>
