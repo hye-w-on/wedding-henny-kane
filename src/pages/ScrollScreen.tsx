@@ -87,6 +87,9 @@ const ScrollScreen: React.FC = () => {
         <div>
           <PhotoPage />
         </div>
+        <div ref={envelopeRef}>
+          <EnvelopePage />
+        </div>
         <div>
           <TimetablePage />
         </div>
@@ -96,9 +99,7 @@ const ScrollScreen: React.FC = () => {
         <div ref={profileRef}>
           <ProfileScrollPage />
         </div>
-        <div ref={envelopeRef}>
-          <EnvelopePage />
-        </div>
+        
         <div>
           <ContactPage />
         </div>
