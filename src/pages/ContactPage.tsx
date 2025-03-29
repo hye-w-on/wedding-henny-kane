@@ -192,16 +192,18 @@ const ContactList = styled("div")({
 const ContactCard = styled("div")({
   padding: "0px 15px 0px 20px",
   display: "flex",
-  flexDirection: "row",
+  flexDirection: "column",
   alignItems: "center",
-  justifyContent: "space-between",
+  justifyContent: "center",
   gap: "10px",
+  textAlign: "center",
 });
 
 const ContactRole = styled("div")({
   color: colorToken.purple,
   fontSize: "0.7rem",
   marginBottom: "5px",
+  textAlign: "center",
 });
 
 const ContactName = styled("div")({
@@ -209,6 +211,7 @@ const ContactName = styled("div")({
   fontWeight: "bold",
   color: colorToken.white,
   marginBottom: "15px",
+  textAlign: "center",
 });
 
 const ButtonGroup = styled("div")({
@@ -216,6 +219,7 @@ const ButtonGroup = styled("div")({
   gap: "5px",
   justifyContent: "center",
   marginBottom: "5px",
+  width: "100%",
 });
 
 const IconButton = styled("button")({
