@@ -53,7 +53,7 @@ function Letter() {
     }
 
     try {
-      const response = await fetch("https://5qaikiqqnb.execute-api.ap-northeast-2.amazonaws.com/default/saveWeddingGuest", {
+      const response = await fetch("https://uhpvd8860b.execute-api.ap-northeast-2.amazonaws.com/default/saveWeddingGuest", {
         method: "POST",
         body: JSON.stringify({ name, phone, guestCount }),
       });
