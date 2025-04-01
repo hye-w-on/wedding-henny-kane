@@ -24,26 +24,26 @@ const EnvelopePage = () => {
   // 편지지 애니메이션: rotateX와 y 값 변환
   const paperRotateX = useTransform(scrollYProgress, [0.5, 0], [30, 0]);
   const paperY = useTransform(scrollYProgress, [0.5, 0], [0, -200]);
-  
+
   // 저장 시 편지지 애니메이션
   const savedPaperRotateX = useTransform(scrollYProgress, [0, 1], [0, 30]);
   const savedPaperY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  
+
   // 부드러운 애니메이션 적용
   const smoothPaperRotateX = useSpring(paperRotateX, {
     stiffness: 200,
     damping: 20,
   });
   const smoothPaperY = useSpring(paperY, { stiffness: 200, damping: 20 });
-  const smoothSavedPaperRotateX = useSpring(savedPaperRotateX, { 
-    stiffness: 100, 
+  const smoothSavedPaperRotateX = useSpring(savedPaperRotateX, {
+    stiffness: 100,
     damping: 15,
-    mass: 0.5
+    mass: 0.5,
   });
-  const smoothSavedPaperY = useSpring(savedPaperY, { 
-    stiffness: 100, 
+  const smoothSavedPaperY = useSpring(savedPaperY, {
+    stiffness: 100,
     damping: 15,
-    mass: 0.5
+    mass: 0.5,
   });
 
   return (
@@ -55,10 +55,10 @@ const EnvelopePage = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh",
-        paddingTop: "150px",
+        height: "600px",
         perspective: 1000,
         scrollMargin: "20vh",
+        backgroundColor: colorToken.white,
       }}
     >
       <div
@@ -67,7 +67,7 @@ const EnvelopePage = () => {
           fontSize: "3rem",
           color: colorToken.black,
           position: "absolute",
-          top: "90px",
+          top: "60px",
           letterSpacing: "-0.05em",
           lineHeight: "0.6em",
         }}
@@ -95,7 +95,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "440px",
+          top: "410px",
           width: "350px",
           height: "200px",
           backgroundColor: "#F2F1F0",
@@ -117,7 +117,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "440px",
+          top: "410px",
           width: "350px",
           height: "200px",
           backgroundColor: "#dad9d9",
@@ -140,7 +140,7 @@ const EnvelopePage = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          top: "440px",
+          top: "410px",
           width: "330px",
           height: "200px",
           backgroundColor: "#121212", // 편지지 색상
@@ -148,7 +148,7 @@ const EnvelopePage = () => {
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // 그림자 효과 추가
           transformStyle: "preserve-3d", // 3D 유지
           originY: 0, // 상단 축 기준으로 회전
-          rotateX:  smoothPaperRotateX,
+          rotateX: smoothPaperRotateX,
           y: smoothPaperY,
           zIndex: 3,
         }}
@@ -159,7 +159,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "440px",
+          top: "410px",
           width: "350px",
           height: "200px",
           display: "flex",
@@ -213,25 +213,13 @@ const EnvelopePage = () => {
           position: "absolute",
           bottom: "0",
           width: "100%",
-          height: 400,
-          backgroundColor: colorToken.black100,
+          height: "280px",
+          backgroundColor: colorToken.black,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
         }}
-      >
-        <motion.div
-          style={{
-            color: "transparent", // 투명색
-            WebkitTextStroke: "0.5px #fff", // 흰색 테두리
-            fontFamily: "PPPlayground",
-            fontSize: "9rem",
-            letterSpacing: "-0.05em",
-          }}
-        >
-          Contact
-        </motion.div>
-      </motion.div>
+      ></motion.div>
     </div>
   );
 };

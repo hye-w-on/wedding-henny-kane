@@ -1,0 +1,7 @@
+---
+description: CSS, 모션 작성
+globs: 
+alwaysApply: false
+---
+FE CSS 스타일은 Emotion Styled을 사용하여 객체 format으로 답변
+framer-motion는 쓰지말 것, motion/react로 라이브러리 명이 변경되었음

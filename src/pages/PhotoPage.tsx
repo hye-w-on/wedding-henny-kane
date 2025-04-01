@@ -1,4 +1,9 @@
+import photo01 from "@/assets/photos/photo01.webp";
+import photo02 from "@/assets/photos/photo02.webp";
 import photo03 from "@/assets/photos/photo03.webp";
+import photo04 from "@/assets/photos/photo04.webp";
+import photo05 from "@/assets/photos/photo05.webp";
+import photo06 from "@/assets/photos/photo06.webp";
 import eleven01 from "@/assets/photos/eleven01.webp";
 import yd01 from "@/assets/photos/yd01.webp";
 import back01 from "@/assets/photos/background/back01.png";
@@ -7,17 +12,15 @@ import back03 from "@/assets/photos/background/back03.png";
 import forwardIcon from "@/assets/icons/forward.svg";
 import backwardIcon from "@/assets/icons/backward.svg";
 import styled from "@emotion/styled";
-import { motion, AnimatePresence, useDragControls } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
 const Container = styled.div({
   height: "100vh",
   width: "100%",
   overflow: "hidden",
-  padding: "50px 0",
   position: "relative",
   backgroundColor: "white",
-  touchAction: "none",
 });
 
 const BackgroundImage = styled(motion.div)({
@@ -39,73 +42,40 @@ const BackgroundImage = styled(motion.div)({
   },
 });
 
-interface PhotoInfo {
-  image: string;
-  background: string;
-  title: string;
-  description: string;
-  comment: string;
-}
-
-const CenterBox = styled.div({
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "300px",
-  height: "500px",
-  borderRadius: "10px",
-  overflow: "visible",
-  zIndex: 3,
+const SliderContainer = styled.div({
+  position: "relative",
+  width: "100%",
+  height: "100%",
   display: "flex",
-  flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: "20px",
+  zIndex: 2,
 });
 
-const ImageContainer = styled.div({
-  width: "100%",
-  height: "300px",
+const SliderTrack = styled(motion.div)({
+  display: "flex",
+  alignItems: "center",
+  gap: "20px",
   position: "relative",
-  borderRadius: "10px",
+  width: "100%",
+  height: "80%",
   overflow: "hidden",
 });
 
-const InfoContainer = styled(motion.div)({
-  width: "100%",
-  textAlign: "center",
-  color: "white",
+const Slide = styled(motion.div)({
+  flex: "0 0 60%",
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });
 
-const Title = styled.h2({
-  fontSize: "1.5rem",
-  fontFamily: "PPEditorialOld",
-  marginBottom: "8px",
-});
-
-const Description = styled.p({
-  fontSize: "1rem",
-  fontFamily: "KoPubDotum",
-  marginBottom: "4px",
-});
-
-const Comment = styled.p({
-  fontSize: "0.8rem",
-  fontFamily: "KoPubDotum",
-  fontStyle: "italic",
-  opacity: 0.8,
-});
-
-const CenterImage = styled(motion.img)({
-  position: "absolute",
-  top: 0,
-  left: 0,
+const Image = styled(motion.img)({
   width: "100%",
   height: "100%",
   objectFit: "cover",
-  display: "block",
   borderRadius: "10px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
 });
 
 const ArrowButton = styled.button({
@@ -131,72 +101,64 @@ const RightArrow = styled(ArrowButton)({
   right: "10px",
 });
 
-const DragArea = styled(motion.div)({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  zIndex: 4,
-  cursor: "grab",
-  "&:active": {
-    cursor: "grabbing",
-  },
-});
-
 const ArrowIcon = styled.img({
   width: "40px",
   height: "40px",
   filter: "brightness(0) invert(1)",
 });
 
+interface PhotoInfo {
+  image: string;
+  background: string;
+}
+
 const PhotoPage = () => {
   const photoInfos: PhotoInfo[] = [
     {
-      image: eleven01,
+      image: photo01,
       background: back01,
-      title: "Eleven Lounge",
-      description: "우리의 첫 데이트",
-      comment: "2023년 4월의 어느 봄날, 처음 만난 곳",
+    },
+    {
+      image: photo02,
+      background: back02,
     },
     {
       image: photo03,
-      background: back02,
-      title: "한강 피크닉",
-      description: "여름날의 데이트",
-      comment: "시원한 강바람과 함께했던 특별한 하루",
+      background: back03,
     },
     {
-      image: yd01,
+      image: photo04,
       background: back03,
-      title: "연희동 골목길",
-      description: "일상의 행복",
-      comment: "평범한 날들이 특별해지는 순간",
+    },
+    {
+      image: photo05,
+      background: back03,
+    },
+    {
+      image: photo06,
+      background: back03,
     },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const dragControls = useDragControls();
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const handlePrevious = (e: React.MouseEvent) => {
+  const handlePrevious = async (e: React.MouseEvent) => {
+    if (isAnimating || currentIndex === 0) return;
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev === 0 ? photoInfos.length - 1 : prev - 1));
+    setIsAnimating(true);
+    setCurrentIndex((prev) => prev - 1);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setIsAnimating(false);
   };
 
-  const handleNext = (e: React.MouseEvent) => {
+  const handleNext = async (e: React.MouseEvent) => {
+    if (isAnimating || currentIndex === photoInfos.length - 1) return;
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev === photoInfos.length - 1 ? 0 : prev + 1));
-  };
-
-  const handleDragEnd = (_: any, info: { offset: { x: number } }) => {
-    const threshold = 50;
-    if (Math.abs(info.offset.x) > threshold) {
-      if (info.offset.x > 0) {
-        handlePrevious(new MouseEvent("click") as any);
-      } else {
-        handleNext(new MouseEvent("click") as any);
-      }
-    }
+    setIsAnimating(true);
+    setCurrentIndex((prev) => prev + 1);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setIsAnimating(false);
   };
 
   return (
@@ -211,67 +173,41 @@ const PhotoPage = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 20,
-            mass: 0.5,
+            duration: 0.5,
+            ease: "easeInOut",
           }}
         />
       </AnimatePresence>
 
-      <CenterBox>
-        <InfoContainer
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
+      <SliderContainer>
+        <SliderTrack
+          animate={{
+            x: `calc(-${currentIndex * 60}% - ${currentIndex * 20}px)`,
+          }}
+          transition={{
+            duration: 0.5,
+            ease: "easeInOut",
+          }}
         >
-          <Title>{photoInfos[currentIndex].title}</Title>
-          <Description>{photoInfos[currentIndex].description}</Description>
-        </InfoContainer>
+          {photoInfos.map((photo, index) => (
+            <Slide key={index}>
+              <Image
+                src={photo.image}
+                alt={`Photo ${index + 1}`}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              />
+            </Slide>
+          ))}
+        </SliderTrack>
 
-        <ImageContainer>
-          <AnimatePresence mode="wait">
-            <CenterImage
-              key={currentIndex}
-              src={photoInfos[currentIndex].image}
-              alt={`Photo ${currentIndex + 1}`}
-              initial={{ x: "100vw" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100vw" }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-                mass: 0.5,
-              }}
-            />
-          </AnimatePresence>
-        </ImageContainer>
-
-        <InfoContainer
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Comment>{photoInfos[currentIndex].comment}</Comment>
-        </InfoContainer>
-      </CenterBox>
-
-      <DragArea
-        drag="x"
-        dragControls={dragControls}
-        dragElastic={0.2}
-        onDragEnd={handleDragEnd}
-        dragConstraints={{ left: 0, right: 0 }}
-      />
-      <LeftArrow onClick={handlePrevious}>
-        <ArrowIcon src={backwardIcon} alt="Previous" />
-      </LeftArrow>
-      <RightArrow onClick={handleNext}>
-        <ArrowIcon src={forwardIcon} alt="Next" />
-      </RightArrow>
+        <LeftArrow onClick={handlePrevious}>
+          <ArrowIcon src={backwardIcon} alt="Previous" />
+        </LeftArrow>
+        <RightArrow onClick={handleNext}>
+          <ArrowIcon src={forwardIcon} alt="Next" />
+        </RightArrow>
+      </SliderContainer>
     </Container>
   );
 };

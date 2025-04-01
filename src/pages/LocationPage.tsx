@@ -75,6 +75,7 @@ const DetailButton = styled(motion.button)({
 const DetailContainer = styled(motion.div)({
   width: "100%",
   overflow: "hidden",
+  zIndex: 1,
 });
 
 const MapWrapper = styled(motion.div)({
@@ -330,25 +331,24 @@ function LocationPage() {
             ▼
           </motion.span>
         </DetailButton>
+        {/* 애니메이션 컨테이너 */}
+        <AnimatePresence>
+          {showDetails && (
+            <DetailContainer
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <VenueDetailInfo
+                shuttleTimes={shuttleTimes}
+                closestTime={closestTime}
+              />
+            </DetailContainer>
+          )}
+        </AnimatePresence>
         <CardBackground />
       </Card>
-
-      {/* 애니메이션 컨테이너 */}
-      <AnimatePresence>
-        {showDetails && (
-          <DetailContainer
-            initial={{ height: 0 }}
-            animate={{ height: "auto" }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-          >
-            <VenueDetailInfo
-              shuttleTimes={shuttleTimes}
-              closestTime={closestTime}
-            />
-          </DetailContainer>
-        )}
-      </AnimatePresence>
 
       <Toast message="주소가 복사되었습니다" isVisible={showToast} />
     </div>

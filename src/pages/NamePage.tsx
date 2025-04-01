@@ -7,9 +7,10 @@ import {
   cubicBezier,
 } from "motion/react";
 import colorToken from "../utils/colorToken";
-import mainPhoto from "@/assets/images/main.webp";
 import StarSvg from "@/assets/icons/star.svg?react";
 import { useRef } from "react";
+import { useLoading } from "../App";
+const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
 
 const OvalContainer = styled.div({
   position: "relative",
@@ -91,6 +92,8 @@ const StarWrapper = styled(motion.div)({
 });
 
 function NamePage() {
+  const { setLoaded } = useLoading();
+
   const ref = useRef(null);
   const containerRef = useRef(null);
   const isInView = useInView(ref, { once: false });
@@ -342,7 +345,7 @@ function NamePage() {
             }}
           >
             <motion.img
-              src={mainPhoto}
+              src={`${CLOUDFRONT_URL}/main.webp`}
               style={{
                 width: "100%",
                 height: "100%",
@@ -352,6 +355,7 @@ function NamePage() {
                 position: "relative",
                 zIndex: 2,
               }}
+              onLoad={() => setLoaded(true)}
             />
           </div>
         </div>
