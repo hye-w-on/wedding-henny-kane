@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import { useEffect, useState, useRef, createContext, useContext } from "react";
 import HeartPage from "../HeartPage";
 
-import "@/assets/styles/fonts.css";
 import ProfileScrollPage from "../ProfileScrollPage";
 import NamePage from "../NamePage";
 import EnvelopePage from "../EnvelopePage";

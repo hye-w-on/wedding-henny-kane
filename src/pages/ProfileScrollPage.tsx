@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import "@/assets/styles/fonts.css";
 import BrideProfile from "../components/BrideProfile";
 import GroomProfile from "../components/GroomProfile";
 import ProfileCard, { CardHole } from "../components/ProfileCard";

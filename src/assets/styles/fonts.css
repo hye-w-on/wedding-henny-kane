@@ -1,8 +1,8 @@
 /*Bold*/
 @font-face {
   font-family: "helvetica";
-  src: url("/src/assets/fonts/helveticanowtext-bold.ttf") format("truetype");
-  font-weight: normal;
+  src: url("/fonts/helveticanowtext-bold.ttf") format("truetype");
+  font-weight: 400;
   font-style: normal;
 }
 @font-face {
@@ -37,7 +37,9 @@
 /*필기체*/
 @font-face {
   font-family: "PPPlayground";
-  src: url("/src/assets/fonts/PPPlayground-Medium.otf") format("opentype");
+  src: url("/fonts/PPPlayground-Medium.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
 }
 
 @font-face {
@@ -48,6 +50,8 @@
 @font-face {
   font-family: "PPEditorialOld";
   src: url("/src/assets/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
 }
 
 @font-face {
@@ -79,19 +83,19 @@
 }
 @font-face {
   font-family: "KoPubDotum";
-  src: url("/src/assets/fonts/KoPub Dotum Light.ttf") format("truetype");
+  src: url("/fonts/KoPubDotum-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
 }
 @font-face {
   font-family: "KoPubDotum";
-  src: url("/src/assets/fonts/KoPub Dotum Medium.ttf") format("truetype");
+  src: url("/fonts/KoPubDotum-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
 }
 @font-face {
   font-family: "KoPubDotum";
-  src: url("/src/assets/fonts/KoPub Dotum Bold.ttf") format("truetype");
+  src: url("//fonts/KoPubDotum-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }

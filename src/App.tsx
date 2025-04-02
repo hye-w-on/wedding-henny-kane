@@ -7,6 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "./App.css";
 import { colorTokensCSS } from "./utils/colorToken";
+import fontCSS from "./assets/styles/fonts.css?inline";
 import { Global, css } from "@emotion/react";
 import {
   createContext,
@@ -26,8 +27,6 @@ const LoadingContext = createContext<{
   setLoaded: () => {},
 });
 
-export const useLoading = () => useContext(LoadingContext);
-
 function App() {
   const ScrollScreen = lazy(() => import("./pages/common/ScrollScreen"));
   const router = createBrowserRouter([
@@ -36,8 +35,6 @@ function App() {
       element: <ScrollScreen />,
     },
   ]);
-
-  const [loaded, setLoaded] = useState(false);
 
   //Preload images
   useEffect(() => {
@@ -62,39 +59,74 @@ function App() {
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-    const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
-    const preloadList = [
-      `${CLOUDFRONT_URL}/main.webp`,
-      // 다른 preload 이미지들 추가 가능
-    ];
+    const preload = async () => {
+      const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
 
-    let loadedCount = 0;
-    preloadList.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === preloadList.length) {
-          setAppReady(true);
-        }
-      };
-    });
+      // 이미지 preload
+      const preloadImage = new Promise((res) => {
+        const img = new Image();
+        img.src = `${CLOUDFRONT_URL}/main.webp`;
+        img.onload = res;
+      });
+
+      // 폰트 preload
+      const fonts = [
+        new FontFace("PPPlayground", "url(/fonts/PPPlayground-Medium.otf)", {
+          style: "normal",
+          weight: "400",
+        }),
+        new FontFace("helvetica", "url(/fonts/helveticanowtext-bold.ttf)", {
+          style: "normal",
+          weight: "400",
+        }),
+        new FontFace(
+          "PPEditorialOld",
+          "url(/fonts/PPEditorialOld-Ultralight.otf)",
+          { style: "normal", weight: "400" }
+        ),
+        new FontFace("KoPubDotum", "url(/fonts/KoPubDotum-Light.ttf)", {
+          style: "normal",
+          weight: "300",
+        }),
+        new FontFace("KoPubDotum", "url(/fonts/KoPubDotum-Medium.ttf)", {
+          style: "normal",
+          weight: "500",
+        }),
+        new FontFace("KoPubDotum", "url(/fonts/KoPubDotum-Bold.ttf)", {
+          style: "normal",
+          weight: "700",
+        }),
+      ];
+
+      const fontLoads = fonts.map((font) =>
+        font.load().then((loadedFont) => {
+          document.fonts.add(loadedFont);
+        })
+      );
+
+      await Promise.all([preloadImage, ...fontLoads]);
+      console.log("콘솔을 왜 열어보십니까?");
+      setAppReady(true);
+    };
+
+    preload();
   }, []);
+
+  if (!appReady) return <Splash isLoading={true} />;
 
   return (
     <>
-      <LoadingContext.Provider value={{ loaded, setLoaded }}>
-        <Global
-          styles={css`
-            ${colorTokensCSS}
-          `}
-        />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Suspense fallback={<Splash isLoading={true} />}>
-            <RouterProvider router={router} />
-          </Suspense>
-        </LocalizationProvider>
-      </LoadingContext.Provider>
+      <Global
+        styles={css`
+          ${fontCSS}
+          ${colorTokensCSS}
+        `}
+      />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Suspense fallback={<Splash isLoading={true} />}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </LocalizationProvider>
     </>
   );
 }

@@ -9,7 +9,6 @@ import {
 import colorToken from "../utils/colorToken";
 import StarSvg from "@/assets/icons/star.svg?react";
 import { useRef } from "react";
-import { useLoading } from "../App";
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
 
 const OvalContainer = styled.div({
@@ -74,7 +73,7 @@ const ProfileTitle = styled.div({
 const ProfileName = styled.div({
   fontSize: "0.8rem",
   fontFamily: "KoPubDotum",
-  fontWeight: "600",
+  fontWeight: "700",
 });
 
 const ProfileParents = styled.div({
@@ -92,8 +91,6 @@ const StarWrapper = styled(motion.div)({
 });
 
 function NamePage() {
-  const { setLoaded } = useLoading();
-
   const ref = useRef(null);
   const containerRef = useRef(null);
   const isInView = useInView(ref, { once: false });
@@ -215,7 +212,7 @@ function NamePage() {
             <OvalContainer>INVITATION</OvalContainer>
           </motion.div>
           <motion.div
-            style={{ fontSize: "0.6rem", fontFamily: "satoshi" }}
+            style={{ fontSize: "0.6rem", fontFamily: "KoPubDotum" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: staggerDelay }}
@@ -355,7 +352,6 @@ function NamePage() {
                 position: "relative",
                 zIndex: 2,
               }}
-              onLoad={() => setLoaded(true)}
             />
           </div>
         </div>

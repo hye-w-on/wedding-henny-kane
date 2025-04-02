@@ -442,8 +442,8 @@ const ContactPage = () => {
       <ContactList>
         {(activeTab === "groom" ? groomContacts : brideContacts).map(
           (contact, index) => (
-            <div>
-              <ContactCard key={index}>
+            <div key={index}>
+              <ContactCard>
                 <div style={{ width: "100%" }}>
                   <ContactRole>{contact.role}</ContactRole>
                   <ContactName>{contact.name}</ContactName>
