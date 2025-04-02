@@ -63,19 +63,10 @@ const brideContacts: ContactInfo[] = [
   },
 ];
 
-const rotate = keyframes({
-  from: {
-    transform: "rotate(0deg)",
-  },
-  to: {
-    transform: "rotate(360deg)",
-  },
-});
-
 const Container = styled("div")({
   position: "relative",
-  padding: "20px",
-  maxWidth: "600px",
+  padding: "80px 0",
+  width: "100%",
   margin: "0 auto",
   textAlign: "center",
   minHeight: "100vh",
@@ -83,7 +74,7 @@ const Container = styled("div")({
   background: "#121212",
   overflow: "hidden",
   zIndex: 0,
-  fontFamily: '"KoPubDotum", sans-serif',
+  fontFamily: "KoPubDotum",
 });
 
 const Background = styled("div")({
@@ -117,13 +108,17 @@ const SubTitle = styled("p")({
   color: "rgba(255, 255, 255, 0.467)",
   lineHeight: 1.2,
   fontSize: "0.7rem",
-  marginBottom: "10px",
+  marginBottom: "20px",
   position: "relative",
   zIndex: 1,
 });
 
 const TabContainer = styled("div")({
   display: "flex",
+  justifyContent: "center",
+  margin: "0 auto",
+  width: "80%",
+  maxWidth: "800px",
   height: "35px",
   overflow: "hidden",
   backdropFilter: "blur(10px)",
@@ -147,7 +142,7 @@ const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
   height: props.active ? "35px" : "28px",
   border: "none",
   background: colorToken.gray100,
-  color: props.active ? colorToken.purple : colorToken.gray200,
+  color: props.active ? colorToken.gray600 : colorToken.gray200,
   fontFamily: "KoPubDotum",
   fontWeight: props.active ? 700 : 500,
   cursor: "pointer",
@@ -180,13 +175,16 @@ const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
 
 const ContactList = styled("div")({
   display: "flex",
+  width: "80%",
+  maxWidth: "800px",
   flexDirection: "column",
   borderRadius: "0 0 8px 8px",
   backgroundColor: "rgba(0, 0, 0, 0.1)",
   backdropFilter: "blur(80px)",
   border: `1px solid rgba(255, 255, 255, 0.1)`,
-  padding: "30px 0px",
+  padding: "10px 0px",
   gap: "15px",
+  margin: "0 auto",
 });
 
 const ContactCard = styled("div")({
@@ -210,7 +208,6 @@ const ContactName = styled("div")({
   fontSize: "0.9rem",
   fontWeight: "bold",
   color: colorToken.white,
-  marginBottom: "15px",
   textAlign: "center",
 });
 
@@ -246,42 +243,51 @@ const IconButton = styled("button")({
   },
 });
 
-const AccountButton = styled(IconButton)({
+const AccountButton = styled("button")({
   width: "100%",
+  padding: "10px 10px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
   justifyContent: "center",
-  height: "1rem",
-  padding: "15px",
-  margin: "5px 0",
+  transition: "all 0.3s ease",
+  height: "auto",
+  overflow: "hidden",
 });
 
 const AccountInfo = styled("div")({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  gap: "3px",
   width: "100%",
-  padding: "10px",
+  marginTop: "10px",
+  opacity: 1,
+  transition: "all 0.3s ease",
+  transform: "translateY(0)",
 });
 
 const BankLabel = styled("div")({
+  fontFamily: "KoPubDotum",
   fontSize: "0.7rem",
-  fontWeight: 400,
+  fontWeight: 700,
   color: colorToken.beige,
 });
 
 const AccountNumber = styled("div")({
-  fontSize: "0.8rem",
+  fontFamily: "KoPubDotum",
+  fontSize: "0.7rem",
+  fontWeight: 500,
   color: colorToken.white,
 });
 
 const CopyButton = styled("div")({
-  fontSize: "0.7rem",
+  fontSize: "0.6rem",
   fontWeight: 400,
   color: "var(--color-gray-800)",
   cursor: "pointer",
   border: "1px solid var(--color-gray-100)",
   borderRadius: "5px",
-  padding: "5px 10px",
+  padding: "4px 8px",
   marginLeft: "5px",
   backgroundColor: "var(--color-gray-100)",
 });
@@ -468,21 +474,24 @@ const ContactPage = () => {
                   <AccountButton
                     onClick={() => toggleAccountModal(contact.name)}
                   >
-                    계좌번호 확인하기
+                    <div>
+                      계좌번호 확인하기
+                      {showAccountModals.includes(contact.name) ? "-" : "+"}
+                    </div>
+                    {showAccountModals.includes(contact.name) && (
+                      <AccountInfo>
+                        <BankLabel>{contact.bank}</BankLabel>
+                        <AccountNumber>{contact.account}</AccountNumber>
+                        <CopyButton
+                          onClick={() => handleCopyAccount(contact.account)}
+                        >
+                          복사
+                        </CopyButton>
+                      </AccountInfo>
+                    )}
                   </AccountButton>
                 </div>
               </ContactCard>
-              {showAccountModals.includes(contact.name) && (
-                <AccountInfo>
-                  <BankLabel>{contact.bank}</BankLabel>
-                  <AccountNumber>{contact.account}</AccountNumber>
-                  <CopyButton
-                    onClick={() => handleCopyAccount(contact.account)}
-                  >
-                    복사
-                  </CopyButton>
-                </AccountInfo>
-              )}
             </div>
           )
         )}

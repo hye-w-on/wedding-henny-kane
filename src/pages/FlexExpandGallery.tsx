@@ -35,6 +35,7 @@ const Slider = styled.div`
 
 const Slide = styled(motion.div)<{ isSelected: boolean }>`
   flex: ${(props) => (props.isSelected ? 15 : 1)};
+  min-width: 0;
   position: relative;
   border-radius: 10px;
   overflow: hidden;
@@ -46,7 +47,10 @@ const SlideImage = styled(motion.img)`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block; /* inline-image 깨짐 방지 */
   object-position: center;
+  backface-visibility: hidden;
+  will-change: transform;
 `;
 
 const FlexExpandingSlider = () => {

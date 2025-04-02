@@ -1,32 +1,38 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import BrideProfile from "../components/BrideProfile";
 import GroomProfile from "../components/GroomProfile";
 import ProfileCard, { CardHole } from "../components/ProfileCard";
-import styled from "@emotion/styled";
-import { motion, useScroll, useTransform } from "motion/react";
-import photo03 from "@/assets/photos/photo03.png";
+import { motion, useScroll, useTransform, useSpring } from "motion/react";
 
-/* scroll 값이 아닌 IntersectionObserver를 사용하여 특정 오브젝트의 가시성으로 처리 */
 const ProfileScrollPage: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const { scrollYProgress } = useScroll({
     target: galleryRef,
     offset: ["start start", "end end"],
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-55%"]);
+  const x = useSpring(
+    useTransform(scrollYProgress, [0, 1], [0, -window.innerWidth * 0.85]),
+    {
+      stiffness: 100,
+      damping: 30,
+    }
+  );
 
   return (
     <>
       <section
         ref={galleryRef}
         style={{
-          height: "400vh",
+          height: "100vh",
           position: "relative",
           overflow: "clip",
         }}
       >
         <div
+          ref={containerRef}
           style={{
             position: "sticky",
             top: 0,
@@ -36,13 +42,15 @@ const ProfileScrollPage: React.FC = () => {
             width: "30px",
             padding: "100px 50px",
             transform: "translateZ(0)",
+            touchAction: "pan-y",
           }}
         >
           <motion.div
-            style={{
-              display: "flex",
-              x,
-            }}
+            style={{ display: "flex", x }}
+            drag="x"
+            dragConstraints={{ left: -window.innerWidth * 0.85, right: 0 }}
+            dragElastic={0.2}
+            dragMomentum={false}
           >
             <ProfileCard
               animate={{
