@@ -7,7 +7,7 @@ import styled from "@emotion/styled";
 
 const DraggableContainer = styled(motion.div)<{ $isDraggable: boolean }>`
   display: flex;
-  gap: 20px;
+  gap: 30px;
   justify-content: ${(props) => (props.$isDraggable ? "flex-start" : "center")};
   width: ${(props) => (props.$isDraggable ? "auto" : "100vw")};
   pointer-events: ${(props) => (props.$isDraggable ? "auto" : "none")};
@@ -18,10 +18,10 @@ const CardContent = styled.div`
   flex-direction: column;
   align-items: center;
   width: 280px;
-  height: 450px;
+  height: 100%;
   border-radius: 15px;
   background-color: #fffe;
-  padding: 10px;
+  padding: 20px;
 `;
 
 const ProfileScrollPage: React.FC = () => {

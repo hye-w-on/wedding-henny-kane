@@ -14,7 +14,7 @@ const ProfileCard = styled(motion.div)({
   alignItems: "center",
   borderRadius: "15px",
   boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
-  paddingTop: "30px",
+  padding: "40px 10px 10px 10px",
   margin: "1rem",
   background: "rgba(255, 255, 255, 0.5)", // 반투명 배경
   backdropFilter: "blur(5px)", // 블러 효과
