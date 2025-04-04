@@ -4,13 +4,25 @@ import GroomProfile from "../components/GroomProfile";
 import ProfileCard, { CardHole } from "../components/ProfileCard";
 import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import styled from "@emotion/styled";
+import Profile from "../components/Profile";
 
 const DraggableContainer = styled(motion.div)<{ $isDraggable: boolean }>`
   display: flex;
-  gap: 30px;
+  gap: 20px;
   justify-content: ${(props) => (props.$isDraggable ? "flex-start" : "center")};
   width: ${(props) => (props.$isDraggable ? "auto" : "100vw")};
-  pointer-events: ${(props) => (props.$isDraggable ? "auto" : "none")};
+`;
+
+const CardWrapper = styled(motion.div)`
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  position: relative;
+  width: 300px;
+  height: 500px;
+  margin: 1rem;
+  transform-origin: center;
+  will-change: transform;
 `;
 
 const CardContent = styled.div`
@@ -20,13 +32,17 @@ const CardContent = styled.div`
   width: 280px;
   height: 100%;
   border-radius: 15px;
-  background-color: #fffe;
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
+  backface-visibility: hidden;
 `;
 
 const ProfileScrollPage: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [isDraggable, setIsDraggable] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   useEffect(() => {
     const checkWidth = () => {
@@ -54,6 +70,13 @@ const ProfileScrollPage: React.FC = () => {
       damping: 30,
     }
   );
+
+  const handleCardClick = (id: string) => {
+    setFlippedCards((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   return (
     <section
@@ -89,9 +112,19 @@ const ProfileScrollPage: React.FC = () => {
           dragElastic={0.2}
           dragMomentum={false}
         >
-          <ProfileCard
-            animate={{ y: [-10, 20] }}
+          <CardWrapper
+            onClick={() => handleCardClick("groom")}
+            initial={{ y: 0 }}
+            animate={{
+              rotateY: flippedCards["groom"] ? 180 : 0,
+              y: [-10, 20],
+            }}
             transition={{
+              rotateY: {
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+              },
               y: {
                 duration: 2,
                 repeat: Infinity,
@@ -99,19 +132,35 @@ const ProfileScrollPage: React.FC = () => {
                 ease: "easeInOut",
               },
             }}
-            style={{
-              zIndex: 100,
-              filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.15))",
-            }}
           >
-            <CardHole />
-            <CardContent>
-              <GroomProfile isVisible={true} />
-            </CardContent>
-          </ProfileCard>
-          <ProfileCard
-            animate={{ y: [-10, 10] }}
+            <ProfileCard>
+              <CardHole />
+              <CardContent>
+                <Profile isVisible={true} type="groom" />
+              </CardContent>
+            </ProfileCard>
+            <ProfileCard
+              style={{
+                transform: "rotateY(180deg)",
+              }}
+            >
+              <CardHole />
+              <CardContent></CardContent>
+            </ProfileCard>
+          </CardWrapper>
+          <CardWrapper
+            onClick={() => handleCardClick("bride")}
+            initial={{ y: 0 }}
+            animate={{
+              rotateY: flippedCards["bride"] ? 180 : 0,
+              y: [-10, 10],
+            }}
             transition={{
+              rotateY: {
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+              },
               y: {
                 duration: 2,
                 repeat: Infinity,
@@ -120,16 +169,22 @@ const ProfileScrollPage: React.FC = () => {
                 delay: 0.2,
               },
             }}
-            style={{
-              zIndex: 101,
-              filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.15))",
-            }}
           >
-            <CardHole />
-            <CardContent>
-              <BrideProfile isVisible={true} />
-            </CardContent>
-          </ProfileCard>
+            <ProfileCard>
+              <CardHole />
+              <CardContent>
+                <Profile isVisible={true} type="bride" />
+              </CardContent>
+            </ProfileCard>
+            <ProfileCard
+              style={{
+                transform: "rotateY(180deg)",
+              }}
+            >
+              <CardHole />
+              <CardContent></CardContent>
+            </ProfileCard>
+          </CardWrapper>
         </DraggableContainer>
       </div>
     </section>

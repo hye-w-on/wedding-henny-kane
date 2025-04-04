@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
+
 const ProfileCard = styled(motion.div)({
-  position: "relative",
+  position: "absolute",
   width: "300px",
   height: "500px",
   backgroundColor: "#fff",
-  color: "white",
   fontSize: "1.5rem",
   fontWeight: "bold",
   display: "flex",
@@ -15,11 +15,15 @@ const ProfileCard = styled(motion.div)({
   borderRadius: "15px",
   boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
   padding: "40px 10px 10px 10px",
-  margin: "1rem",
   background: "rgba(255, 255, 255, 0.5)", // 반투명 배경
   backdropFilter: "blur(5px)", // 블러 효과
   WebkitBackdropFilter: "blur(10px)", // Safari 지원
+  backfaceVisibility: "hidden",
+  transformOrigin: "center",
+  top: 0,
+  left: 0,
 });
+
 export default ProfileCard;
 
 export const CardHole = () => {

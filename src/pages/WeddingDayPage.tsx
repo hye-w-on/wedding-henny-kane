@@ -11,6 +11,8 @@ dayjs.extend(duration);
 const targetDate = dayjs("2025-06-21 18:00:00");
 
 const Card = styled(motion.div)({
+  width: "100%",
+  height: "100%",
   backgroundColor: "#ffffff",
   display: "flex",
   flexDirection: "column",

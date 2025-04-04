@@ -35,7 +35,7 @@ const NameContainer = styled(motion.div)({
 
 const NameText = styled(motion.div)({
   fontFamily: "PPEditorialOld",
-  fontSize: "1.6rem",
+  fontSize: "2.3rem",
   lineHeight: "1em",
   color: colorToken.black,
   textShadow: `
@@ -47,27 +47,24 @@ const NameText = styled(motion.div)({
 });
 
 const ProfileContainer = styled(motion.div)({
-  width: "100%",
-  maxWidth: "200px",
+  width: "160px",
   height: "80px",
-  background: "#fff",
+  background: "#ffffff",
   position: "relative",
   zIndex: 2,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "flex-end",
-  paddingBottom: "22px",
-  border: `1px solid rgba(0, 0, 0, 0.7)`,
+  //border: `0.5px solid rgba(0, 0, 0, 0.1)`,
   marginBottom: "-20px",
+  paddingBottom: "5px",
 });
 
 const ProfileTitle = styled.div({
-  fontSize: "1.2rem",
+  fontSize: "2rem",
   lineHeight: "0.7em",
   fontFamily: "PPPlayground",
-  color: colorToken.black,
-  //marginTop: "-1rem",
 });
 
 const ProfileName = styled.div({
@@ -115,13 +112,16 @@ function NamePage() {
         height: "100vh",
         background: "white",
         overflowY: "visible",
-        paddingTop: "45px",
+        paddingTop: "50px",
         position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       <StarWrapper
         style={{
-          top: "15%",
+          top: "10%",
           left: "18%",
         }}
         animate={{
@@ -156,7 +156,7 @@ function NamePage() {
       <StarWrapper
         style={{
           top: "30%",
-          left: "50%",
+          left: "48%",
         }}
         animate={{
           rotate: 360,
@@ -224,20 +224,20 @@ function NamePage() {
       <div
         ref={ref}
         style={{
-          height: "95px",
+          height: "120px",
           width: "22rem",
           position: "relative",
           overflow: "hidden",
-          margin: "10px auto 10px",
+          margin: "10px auto 0px",
         }}
       >
         <NameContainer
           style={{
             justifyContent: "flex-start",
-            top: "20px",
+            top: "23px",
           }}
           initial={{ x: "-100%" }}
-          animate={isInView ? { x: "26%" } : { x: "-100%" }}
+          animate={isInView ? { x: "5%" } : { x: "-100%" }}
           transition={{
             type: "spring",
             stiffness: 50,
@@ -247,7 +247,7 @@ function NamePage() {
           <NameText>
             <span
               style={{
-                fontSize: "4rem",
+                fontSize: "5rem",
                 fontFamily: "PPPlayground",
               }}
             >
@@ -259,12 +259,12 @@ function NamePage() {
         <NameContainer
           style={{
             justifyContent: "flex-end",
-            top: "50px",
+            top: "62px",
           }}
         >
           <NameText
             initial={{ x: "100%" }}
-            animate={isInView ? { x: "-45%" } : { x: "100%" }}
+            animate={isInView ? { x: "-5%" } : { x: "100%" }}
             transition={{
               type: "spring",
               stiffness: 50,
@@ -273,7 +273,7 @@ function NamePage() {
           >
             <span
               style={{
-                fontSize: "3.4rem",
+                fontSize: "4.1rem",
                 fontFamily: "PPPlayground",
               }}
             >
@@ -285,7 +285,7 @@ function NamePage() {
         <NameContainer
           style={{
             justifyContent: "center",
-            top: "75px",
+            top: "83px",
             transform: "translateY(-50%)",
           }}
         >
@@ -317,6 +317,7 @@ function NamePage() {
       <div
         style={{
           width: "100%",
+          maxWidth: "1000px",
           position: "relative",
           display: "flex",
           flexDirection: "column",
@@ -371,20 +372,31 @@ function NamePage() {
           <div
             style={{
               width: "100%",
+              maxWidth: "700px",
               display: "flex",
               flexDirection: "row",
-              justifyContent: "center",
+              justifyContent: "space-between",
               alignItems: "center",
-              gap: "20px",
-              padding: "0 10px",
             }}
           >
-            <ProfileContainer style={{ borderRadius: "100% 200% 100% 200%" }}>
+            <ProfileContainer
+              style={{
+                borderRadius: "200% 1000% 200% 200%",
+                marginLeft: "20px",
+                paddingRight: "15px",
+              }}
+            >
               <ProfileTitle>bride</ProfileTitle>
               <ProfileName>윤혜원</ProfileName>
               <ProfileParents>윤창기와 송영희의 딸</ProfileParents>
             </ProfileContainer>
-            <ProfileContainer style={{ borderRadius: "200% 100% 200% 100%" }}>
+            <ProfileContainer
+              style={{
+                borderRadius: "1000% 200%  200%  200%",
+                marginRight: "20px",
+                paddingLeft: "15px",
+              }}
+            >
               <ProfileTitle>groom</ProfileTitle>
               <ProfileName>이명진</ProfileName>
               <ProfileParents>이영길과 김영숙의 아들</ProfileParents>
