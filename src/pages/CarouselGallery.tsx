@@ -10,7 +10,8 @@ interface ImageData {
   id: string;
   url: string;
 }
-const images: ImageData[] = Array.from({ length: 6 }, (_, i) => ({
+
+const originalImages: ImageData[] = Array.from({ length: 6 }, (_, i) => ({
   id: `image-${i}`,
   url: `${CLOUDFRONT_URL}/photo0${1 + i}.webp`,
 }));
@@ -82,7 +83,7 @@ const SlideButton = styled.button`
 `;
 
 const Dots = styled.div`
-  margin-top: 10px;
+  margin-top: 30px;
   display: flex;
   gap: 10px;
   z-index: 10;
@@ -98,16 +99,37 @@ const Dot = styled.button<{ isActive: boolean }>`
 `;
 
 const CarouselGallery = () => {
+  const [displayedImages, setDisplayedImages] = useState(originalImages);
   const [index, setIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
-  const length = images.length;
+  const [cycleCount, setCycleCount] = useState(0);
 
   const handleNext = () => {
-    setIndex((prev) => (prev + 1) % length);
+    setIndex((prev) => {
+      const nextIndex = prev + 1;
+      // 마지막 이미지에 도달했을 때
+      if (nextIndex >= displayedImages.length - 1) {
+        // 다음 사이클의 이미지들을 추가
+        setDisplayedImages((current) => [
+          ...current,
+          ...originalImages.map((img) => ({
+            ...img,
+            id: `image-${img.id}-cycle-${cycleCount}`,
+          })),
+        ]);
+        setCycleCount((prev) => prev + 1);
+      }
+      return nextIndex;
+    });
   };
 
   const handlePrev = () => {
-    setIndex((prev) => (prev - 1 + length) % length);
+    setIndex((prev) => {
+      if (prev === 0) {
+        return 0;
+      }
+      return prev - 1;
+    });
   };
 
   useEffect(() => {
@@ -120,6 +142,9 @@ const CarouselGallery = () => {
     return () => clearInterval(timer);
   }, [index, autoPlay]);
 
+  // 실제 표시되는 인덱스 계산 (닷 네비게이션용)
+  const displayIndex = index % originalImages.length;
+
   return (
     <Container
       onMouseEnter={() => setAutoPlay(false)}
@@ -129,7 +154,7 @@ const CarouselGallery = () => {
         animate={{ x: `-${index * 100}%` }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        {images.map((img, i) => (
+        {displayedImages.map((img, i) => (
           <Slide key={img.id} isActive={i === index}>
             <Image
               src={img.url}
@@ -154,8 +179,12 @@ const CarouselGallery = () => {
       </SlideButton>
 
       <Dots>
-        {images.map((_, i) => (
-          <Dot key={i} isActive={i === index} onClick={() => setIndex(i)} />
+        {originalImages.map((_, i) => (
+          <Dot
+            key={i}
+            isActive={i === displayIndex}
+            onClick={() => setIndex(i)}
+          />
         ))}
       </Dots>
     </Container>

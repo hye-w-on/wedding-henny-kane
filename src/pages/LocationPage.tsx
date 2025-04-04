@@ -87,6 +87,15 @@ const MapWrapper = styled(motion.div)({
   justifyContent: "center",
   alignItems: "center",
   borderRadius: "50%",
+  width: "300px",
+  height: "300px",
+  pointerEvents: "none",
+  "& > *": {
+    width: "100%",
+    height: "100%",
+    borderRadius: "50%",
+    pointerEvents: "auto",
+  },
   "&::after": {
     content: '""',
     position: "absolute",

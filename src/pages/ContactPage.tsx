@@ -6,6 +6,8 @@ import { colorToken } from "../utils/colorToken";
 import PhoneIcon from "../assets/icons/phone.svg";
 import MessageIcon from "../assets/icons/message.svg";
 import CopyIcon from "../assets/icons/copy.svg";
+import DownSvg from "../assets/icons/down.svg?react";
+import UpSvg from "../assets/icons/up.svg?react";
 
 interface ContactInfo {
   role: string;
@@ -19,22 +21,22 @@ const groomContacts: ContactInfo[] = [
   {
     role: "신랑",
     name: "이명진",
-    bank: "우리은행",
-    account: "12232131231223",
-    phone: "010-1234-5678",
+    bank: "국민은행",
+    account: "20150204232424",
+    phone: "010-4202-3203",
   },
   {
     role: "신랑 어버지",
     name: "이영길",
     bank: "국민은행",
-    account: "12232131231223",
+    account: "20150204232424",
     phone: "010-1234-5678",
   },
   {
     role: "신랑 어머니",
     name: "김영숙",
-    bank: "신한은행",
-    account: "12232131231223",
+    bank: "국민은행",
+    account: "20150204232424",
     phone: "010-1234-5678",
   },
 ];
@@ -44,22 +46,22 @@ const brideContacts: ContactInfo[] = [
     role: "신부",
     name: "윤혜원",
     bank: "우리은행",
-    account: "12232131231223",
-    phone: "010-1234-5678",
+    account: "1002945421947",
+    phone: "010-9041-3048",
   },
   {
     role: "신부 어버지",
     name: "윤창기",
-    bank: "국민은행",
-    account: "12232131231223",
-    phone: "010-1234-5678",
+    bank: "우리은행",
+    account: "1002945421947",
+    phone: "010-9027-0559",
   },
   {
     role: "신부 어머니",
     name: "송영희",
-    bank: "신한은행",
-    account: "12232131231223",
-    phone: "010-1234-5678",
+    bank: "우리은행",
+    account: "1002945421947",
+    phone: "010-6486-3048",
   },
 ];
 
@@ -228,7 +230,7 @@ const IconButton = styled("button")({
   padding: "8px 10px",
   borderRadius: "6px",
   background: "rgba(255, 255, 255, 0.1)",
-  color: "white",
+  color: colorToken.white,
   cursor: "pointer",
   transition: "all 0.2s ease",
   fontSize: "0.7rem",
@@ -243,27 +245,38 @@ const IconButton = styled("button")({
   },
 });
 
-const AccountButton = styled("button")({
+const AccountButton = styled("button")<{ isOpen?: boolean }>(({ isOpen }) => ({
   width: "100%",
   padding: "10px 10px",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  transition: "all 0.3s ease",
-  height: "auto",
   overflow: "hidden",
-});
+  color: colorToken.white,
+  borderRadius: "6px",
+  background: "rgba(255, 255, 255, 0.1)",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+  height: isOpen ? "70px" : "30px",
+  "&:hover": {
+    background: "rgba(255, 255, 255, 0.2)",
+  },
+  "& svg": {
+    width: "15px",
+    height: "15px",
+    filter: "brightness(0) invert(1)",
+  },
+}));
 
-const AccountInfo = styled("div")({
+const AccountInfo = styled(motion.div)({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
   width: "100%",
   marginTop: "10px",
   opacity: 1,
-  transition: "all 0.3s ease",
-  transform: "translateY(0)",
+  transition: "all 0.2s ease",
 });
 
 const BankLabel = styled("div")({
@@ -271,6 +284,7 @@ const BankLabel = styled("div")({
   fontSize: "0.7rem",
   fontWeight: 700,
   color: colorToken.beige,
+  marginRight: "5px",
 });
 
 const AccountNumber = styled("div")({
@@ -338,7 +352,12 @@ const ContactPage = () => {
     <Container>
       <Background>
         <GradientContainer>
-          <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid slice"
+            width="100%"
+            height="100%"
+          >
             <defs>
               <radialGradient
                 id="Gradient1"
@@ -473,17 +492,36 @@ const ContactPage = () => {
                   </ButtonGroup>
                   <AccountButton
                     onClick={() => toggleAccountModal(contact.name)}
+                    isOpen={showAccountModals.includes(contact.name)}
                   >
-                    <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1px",
+                      }}
+                    >
                       계좌번호 확인하기
-                      {showAccountModals.includes(contact.name) ? "-" : "+"}
+                      {showAccountModals.includes(contact.name) ? (
+                        <UpSvg />
+                      ) : (
+                        <DownSvg />
+                      )}
                     </div>
                     {showAccountModals.includes(contact.name) && (
-                      <AccountInfo>
+                      <AccountInfo
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
                         <BankLabel>{contact.bank}</BankLabel>
                         <AccountNumber>{contact.account}</AccountNumber>
                         <CopyButton
-                          onClick={() => handleCopyAccount(contact.account)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCopyAccount(contact.account);
+                          }}
                         >
                           복사
                         </CopyButton>

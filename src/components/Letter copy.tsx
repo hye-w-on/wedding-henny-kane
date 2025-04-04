@@ -10,7 +10,10 @@ import MinusIcon from "../assets/icons/minus.svg";
 function Letter() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [selectedType, setSelectedType] = useState("A");
+  const [attendance, setAttendance] = useState<"Y" | "N">("Y");
   const [guestCount, setGuestCount] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
   const [alert, setAlert] = useState<{
     message: string;
     type: "success" | "error";
@@ -71,7 +74,7 @@ function Letter() {
         setAlert({ message: SUCCESS_MESSAGE, type: "success" });
         setTimeout(() => {
           setIsSaved(true);
-        }, 2000);
+        }, 1600);
         setIsLoading(false);
       } else {
         setAlert({ message: data.error || ERROR_MESSAGE, type: "error" });
@@ -84,18 +87,25 @@ function Letter() {
   };
 
   return (
-    <>
-      <CustomAlert
-        message={alert?.message}
-        type={alert?.type}
-        isOpen={!!alert}
-        onClose={() => setAlert(null)}
-      />
-
+    <div
+      style={{
+        width: 330,
+        height: 200,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {alert && (
+        <CustomAlert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert(null)}
+        />
+      )}
       <div
         style={{
-          width: 330,
-          height: 200,
+          width: "100%",
+          height: "100%",
           borderRadius: "5px",
           border: "outset 5px #12121222",
           backgroundColor: "#fff",
@@ -204,7 +214,7 @@ function Letter() {
           </InputGroup>
         </FormContainer>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -308,26 +318,26 @@ const StampContainer = styled(motion.div)({
   transform: "rotate(-15deg)",
   width: "80px",
   height: "80px",
-  border: "4px solid #ff4444",
+  border: "3px solid #ff4444",
   borderRadius: "50%",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  opacity: 0.95,
   zIndex: 1,
-  backgroundColor: "rgba(255, 255, 255, 0.3)",
+  boxShadow: "0 0 15px rgba(255, 68, 68, 0.4)",
+  backgroundColor: "rgba(255, 255, 255, 0.15)",
   backdropFilter: "blur(2px)",
   transformOrigin: "center center",
-  boxShadow: "-1px 1px 1px rgba(255, 0, 0, 1)",
 });
 
 const StampText = styled.div({
   color: "#ff4444",
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontSize: "0.9rem",
   fontWeight: "bold",
   transform: "rotate(15deg)",
-  textShadow:
-    "1px 1px 1px rgba(255, 255, 255, 0.5), -1px 1px 1px rgba(255, 255, 255, 0.5)",
+  textShadow: "0 0 8px rgba(255, 68, 68, 0.6)",
   letterSpacing: "-0.5px",
 });
 
