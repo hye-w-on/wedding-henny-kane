@@ -194,7 +194,9 @@ function Letter() {
                 <img src={PlusIcon} alt="Increase" />
               </CountButton>
             </GuestCountContainer>
-            <Label style={{ fontSize: "0.7rem" }}>참석 인원</Label>
+            <Label style={{ fontSize: "0.7rem", fontFamily: "SUITRegular" }}>
+              참석 인원
+            </Label>
           </InputGroup>
 
           <InputGroup>
@@ -233,7 +235,7 @@ const Label = styled.label({
   width: "140px",
   borderTop: "0.5px solid #121212",
   paddingTop: "3px",
-  fontFamily: "SUITRegular",
+  fontFamily: "satoshi",
   fontSize: "0.6rem",
   color: "#121212",
   textAlign: "center",
@@ -292,7 +294,7 @@ const SaveButton = styled.button({
   height: "28px",
   backgroundColor: colorToken.black,
   color: "#fff",
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontWeight: "700",
   fontSize: "0.8rem",
   textTransform: "none",
@@ -322,7 +324,7 @@ const StampContainer = styled(motion.div)({
 
 const StampText = styled.div({
   color: "#ff4444",
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontSize: "0.9rem",
   fontWeight: "bold",
   transform: "rotate(15deg)",

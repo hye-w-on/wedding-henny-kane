@@ -84,17 +84,8 @@ function App() {
           "url(/fonts/PPEditorialOld-Ultralight.otf)",
           { style: "normal", weight: "400" }
         ),
-        new FontFace("KoPubDotum", "url(/fonts/KoPubDotum-Light.ttf)", {
+        new FontFace("SUITRegular", "url(/fonts/SUIT-Regular.woff2)", {
           style: "normal",
-          weight: "300",
-        }),
-        new FontFace("KoPubDotum", "url(/fonts/KoPubDotum-Medium.ttf)", {
-          style: "normal",
-          weight: "500",
-        }),
-        new FontFace("KoPubDotum", "url(/fonts/KoPubDotum-Bold.ttf)", {
-          style: "normal",
-          weight: "700",
         }),
       ];
 

@@ -1,8 +1,5 @@
 import styled from "@emotion/styled";
-import { motion } from "motion/react";
 import { useEffect, useState, useRef, createContext, useContext } from "react";
-import HeartPage from "../HeartPage";
-
 import ProfileScrollPage from "../ProfileScrollPage";
 import NamePage from "../NamePage";
 import EnvelopePage from "../EnvelopePage";
@@ -10,16 +7,12 @@ import WeddingDayPage from "../WeddingDayPage";
 import LocationPage from "../LocationPage";
 import colorToken from "../../utils/colorToken";
 import MainFrame from "./MainFrame";
-import temp3d from "@/assets/images/temp3d.png";
 import TimetablePage from "../TimetablePage";
 import ContactPage from "../ContactPage";
-import PhotoPage from "../PhotoPage";
 import PhotoSlideCard from "../../components/PhotoSlideCard";
-import ElevenPhoto from "../ElevenPhoto";
 import OverlayExpandGallery from "../OverlayExpandGallery";
 import FlexExpandGallery from "../FlexExpandGallery";
 import CarouselGallery from "../CarouselGallery";
-import Splash from "../../components/Splash";
 
 const Container = styled("div")({
   display: "flex",
@@ -76,15 +69,7 @@ const ScrollScreen: React.FC = () => {
         <div ref={weddingDayRef}>
           <WeddingDayPage />
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            background: colorToken.white,
-          }}
-        >
+        <div>
           <PhotoSlideCard />
         </div>
         <div ref={envelopeRef}>
@@ -152,35 +137,44 @@ const Background = styled.div({
   backgroundRepeat: "no-repeat",
 });
 
-const MovingBackground = styled("div")({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100vh",
-  //backgroundColor: colorToken.babyPink,
-  overflow: "hidden",
-  zIndex: -1,
+const MovingBackground = styled("div")`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: ${colorToken.gray100};
+  overflow: hidden;
+  z-index: -1;
 
-  "&::before": {
-    content: '"We’re getting married"',
-    position: "absolute",
-    whiteSpace: "nowrap",
-    fontSize: "10rem",
-    fontFamily: "helvetica",
-    letterSpacing: "-0.08em",
-    color: "rgba(0, 0, 0, 1)",
-    animation: "slideText 10s linear infinite",
-    top: "50%",
-    transform: "translateY(-50%)",
-  },
+  &::before {
+    content: "We're getting married";
+    position: absolute;
+    white-space: nowrap;
+    font-size: 10rem;
+    font-family: helvetica;
+    letter-spacing: -0.08em;
+    color: rgba(0, 0, 0, 1);
+    animation: moveText 20s linear infinite;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
-  "@keyframes slideText": {
-    from: {
-      transform: "translateX(0)",
-    },
-    to: {
-      transform: "translateX(-50%)",
-    },
-  },
-});
+  @keyframes moveText {
+    0% {
+      transform: translate(0, -50%);
+    }
+    25% {
+      transform: translate(-25%, -50%);
+    }
+    50% {
+      transform: translate(-50%, -50%);
+    }
+    75% {
+      transform: translate(-25%, -50%);
+    }
+    100% {
+      transform: translate(0, -50%);
+    }
+  }
+`;

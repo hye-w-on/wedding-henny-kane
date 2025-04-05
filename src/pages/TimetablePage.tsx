@@ -218,8 +218,7 @@ const TimetablePage: React.FC = () => {
       time: "5PM",
       title: "OPENING",
       angle: 0,
-      description:
-        "환영합니다. 웰컴푸드와 칵테일이 준비되어있으니 식전에 즐겨주세요",
+      description: `환영합니다! \n 웰컴푸드와 샴페인이 준비되어있으니 식전에 즐겨주세요`,
       component: <></>,
     },
     {

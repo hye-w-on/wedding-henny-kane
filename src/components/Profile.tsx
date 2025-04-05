@@ -235,7 +235,7 @@ function Profile({ isVisible, type }: ProfileProps) {
                 width: "30px",
                 height: "30px",
                 position: "absolute",
-                fontFamily: "SUITRegular",
+                fontFamily: "",
                 color: "#121212",
                 fontSize: "0.6rem",
                 fontWeight: "100",

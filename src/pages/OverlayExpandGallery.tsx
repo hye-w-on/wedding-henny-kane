@@ -17,13 +17,13 @@ interface ImageData {
 
 // 100번대 이미지
 const group100Images: ImageData[] = Array.from({ length: 5 }, (_, i) => ({
-  id: `image-${i}`,
+  id: `image1-${i}`,
   url: `${CLOUDFRONT_URL}/eleven${101 + i}.webp`,
 }));
 
 // 200번대 이미지
 const group200Images: ImageData[] = Array.from({ length: 13 }, (_, i) => ({
-  id: `image-${i + 5}`,
+  id: `image2-${i + 5}`,
   url: `${CLOUDFRONT_URL}/eleven${201 + i}.webp`,
 }));
 
@@ -32,25 +32,21 @@ const images: ImageData[] = [...group100Images, ...group200Images];
 
 const Container = styled.div`
   background: ${colorToken.black};
-  padding: 2rem;
-  /* mobile */
-  @media (max-width: 480px) {
-    padding: 1rem;
-  }
+  padding: 0px 15px 40px 15px;
 `;
 
 const GalleryGrid = styled.ul`
   display: grid;
-  /* basic */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
   list-style: none;
   max-width: 1000px;
   margin: 0 auto;
+  /* basic */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
   /* tablet */
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
   }
   /* mobile */
   @media (max-width: 480px) {
@@ -156,6 +152,30 @@ const OverlayExpandGallery = () => {
 
   return (
     <Container>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          color: colorToken.white,
+          gap: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <div style={{ fontFamily: "PPEditorialOldItalic", fontSize: "4rem" }}>
+          Gallery
+        </div>
+        <div
+          style={{
+            fontFamily: "SUITRegular",
+            fontSize: "0.8rem",
+            color: "#ffffffaa",
+          }}
+        >
+          클릭하면 확대가 가능합니다
+        </div>
+      </div>
       <LayoutGroup>
         <Gallery images={images} setSelectedId={setSelectedId} />
         <AnimatePresence>

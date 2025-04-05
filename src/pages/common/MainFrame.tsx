@@ -75,7 +75,7 @@ const MenuItem = styled(motion.div)({
   fontSize: "4rem",
   lineHeight: "0.7em",
   letterSpacing: "-0.06em",
-  color: "black",
+  color: colorToken.white,
   cursor: "pointer",
   textTransform: "uppercase",
 });
@@ -91,6 +91,7 @@ const MenuDescription = styled(motion.div)({
   letterSpacing: "-0.1em",
   lineHeight: 1,
   paddingBottom: "5px",
+  margin: "auto 5px",
 });
 
 const menuVariants = {
@@ -143,44 +144,44 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 
       <MenuList isOpen={isOpen}>
         <MenuItem
-          onClick={() => handleMenuClick(refs.profileRef)}
+          onClick={() => handleMenuClick(refs.locationRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
         >
-          <SlideUpText>About</SlideUpText>
-          <MenuDescription>------------------ 소개</MenuDescription>
+          <SlideUpText>Location</SlideUpText>
+          <MenuDescription>오시는 길</MenuDescription>
         </MenuItem>
         <MenuItem
           onClick={() => handleMenuClick(refs.photoSlideRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
         >
-          <MenuDescription>사진 ----------</MenuDescription>
+          <MenuDescription>사진</MenuDescription>
           <SlideUpText>Gallery</SlideUpText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.locationRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <SlideUpText>Location</SlideUpText>
-          <MenuDescription>-- 오시는 길</MenuDescription>
         </MenuItem>
         <MenuItem
           onClick={() => handleMenuClick(refs.weddingDayRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
         >
-          <MenuDescription>식순 및 식사--------------</MenuDescription>
-          <SlideUpText>Detail</SlideUpText>
+          <MenuDescription>식순</MenuDescription>
+          <SlideUpText>TIMETABLE</SlideUpText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.profileRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <SlideUpText>About</SlideUpText>
+          <MenuDescription>소개</MenuDescription>
         </MenuItem>
         <MenuItem
           onClick={() => handleMenuClick(refs.envelopeRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
         >
-          <SlideUpText>BBS</SlideUpText>
-          <MenuDescription>------------------- 축하말</MenuDescription>
+          <SlideUpText>CONTACT</SlideUpText>
+          <MenuDescription>연락</MenuDescription>
         </MenuItem>
       </MenuList>
       {/*

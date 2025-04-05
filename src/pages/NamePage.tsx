@@ -4,6 +4,7 @@ import {
   useInView,
   useScroll,
   useTransform,
+  useSpring,
   cubicBezier,
 } from "motion/react";
 import colorToken from "../utils/colorToken";
@@ -69,14 +70,15 @@ const ProfileTitle = styled.div({
 
 const ProfileName = styled.div({
   fontSize: "0.8rem",
-  fontFamily: "KoPubDotum",
-  fontWeight: "700",
+  fontFamily: "SUITRegular",
+  fontWeight: "500",
 });
 
 const ProfileParents = styled.div({
   fontSize: "0.7rem",
-  fontFamily: "KoPubDotum",
-  fontWeight: "300",
+  fontFamily: "SUITRegular",
+  color: "#121212cc",
+  fontWeight: "400",
 });
 
 const StarWrapper = styled(motion.div)({
@@ -87,6 +89,35 @@ const StarWrapper = styled(motion.div)({
   color: colorToken.black,
 });
 
+const GradientContainer = styled.div`
+  position: relative;
+  height: 120px;
+  width: 22rem;
+  overflow: hidden;
+  margin: 10px auto 0px;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, #fff 0%, rgba(255, 255, 255, 0) 20%);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, #fff 0%, rgba(255, 255, 255, 0) 20%);
+  }
+`;
+
 function NamePage() {
   const ref = useRef(null);
   const containerRef = useRef(null);
@@ -96,9 +127,12 @@ function NamePage() {
     offset: ["start start", "end start"],
   });
 
-  const imageScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.2], {
-    clamp: true,
-    ease: cubicBezier(0.6, -0.05, 0.01, 0.99),
+  const baseScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.3]);
+  const imageScale = useSpring(baseScale, {
+    stiffness: 100,
+    damping: 15,
+    mass: 0.5,
+    restSpeed: 0.001,
   });
 
   // 애니메이션 지연 시간
@@ -212,7 +246,7 @@ function NamePage() {
             <OvalContainer>INVITATION</OvalContainer>
           </motion.div>
           <motion.div
-            style={{ fontSize: "0.6rem", fontFamily: "KoPubDotum" }}
+            style={{ fontSize: "0.6rem", fontFamily: "SUITRegular" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: staggerDelay }}
@@ -221,16 +255,7 @@ function NamePage() {
           </motion.div>
         </div>
       </div>
-      <div
-        ref={ref}
-        style={{
-          height: "120px",
-          width: "22rem",
-          position: "relative",
-          overflow: "hidden",
-          margin: "10px auto 0px",
-        }}
-      >
+      <GradientContainer ref={ref}>
         <NameContainer
           style={{
             justifyContent: "flex-start",
@@ -313,7 +338,7 @@ function NamePage() {
             And
           </NameText>
         </NameContainer>
-      </div>
+      </GradientContainer>
       <div
         style={{
           width: "100%",

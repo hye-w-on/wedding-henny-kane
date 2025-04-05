@@ -77,7 +77,7 @@ const AlertContent = styled.div<{ type: "success" | "error" }>(({ type }) => ({
   borderRadius: "4px",
   backgroundColor: type === "success" ? "#121212" : "#ff4444",
   color: "#fff",
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontSize: "0.8rem",
   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
   minWidth: "200px",

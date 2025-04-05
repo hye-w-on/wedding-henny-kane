@@ -31,7 +31,7 @@
 /*thin*/
 @font-face {
   font-family: "satoshi";
-  src: url("/src/assets/fonts/Satoshi-Variable.ttf") format("truetype");
+  src: url("/fonts/Satoshi.ttf") format("truetype");
 }
 
 /*필기체*/
@@ -44,12 +44,12 @@
 
 @font-face {
   font-family: "PPEditorialNew";
-  src: url("/src/assets/fonts/PPEditorialNew-Ultralight.otf") format("opentype");
+  src: url("/fonts/PPEditorialNew-Ultralight.otf") format("opentype");
 }
 
 @font-face {
   font-family: "PPEditorialOld";
-  src: url("/src/assets/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
+  src: url("/fonts/PPEditorialOld-Ultralight.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
 }
@@ -60,42 +60,8 @@
     format("opentype");
 }
 
-/*컴퓨터*/
-@font-face {
-  font-family: "JetBrainsMono";
-  src: url("/src/assets/fonts/JetBrainsMono.ttf") format("truetype");
-}
-
 /*한글*/
 @font-face {
   font-family: "SUITRegular";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
-    format("woff2");
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: "ChosunGu";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: "KoPubDotum";
-  src: url("/fonts/KoPubDotum-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-}
-@font-face {
-  font-family: "KoPubDotum";
-  src: url("/fonts/KoPubDotum-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-@font-face {
-  font-family: "KoPubDotum";
-  src: url("//fonts/KoPubDotum-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
+  src: url("/fonts/SUIT-Regular.woff2") format("woff2");
 }

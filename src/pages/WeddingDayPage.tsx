@@ -335,6 +335,7 @@ function WeddingDayPage() {
           "& .MuiPickersDay-root.Mui-selected": {
             backgroundColor: colorToken.beige,
             color: colorToken.black,
+            fontWeight: "800",
           },
           "& .MuiDayCalendar-header": {
             paddingTop: "0px",
@@ -346,7 +347,7 @@ function WeddingDayPage() {
               fontWeight: "800",
               color: colorToken.black,
               width: "30px",
-              height: "35px",
+              height: "20px",
               margin: "0px",
               lineHeight: "1em",
             },
@@ -359,15 +360,17 @@ function WeddingDayPage() {
           "& .MuiPickersDay-root": {
             width: "30px",
             height: "30px",
-            fontSize: "0.7rem",
+            fontSize: "0.8rem",
             fontFamily: "PPEditorialNew",
             fontWeight: "800",
+            letterSpacing: "0.1em",
             margin: "0px",
-            lineHeight: "1em",
+            lineHeight: "1",
+            padding: "4px 0 0 0",
           },
           "& .MuiPickersCalendarHeader-root": {
-            marginBottom: "0px",
-            minHeight: "20px",
+            marginBottom: "10px",
+            minHeight: "10px",
             "& .MuiPickersCalendarHeader-label": {
               fontSize: "1rem",
               fontWeight: "400",
@@ -378,8 +381,8 @@ function WeddingDayPage() {
           "& .MuiDayCalendar-monthContainer": {
             margin: "0px",
           },
-          width: "250px",
-          height: "220px",
+          width: "300px",
+          height: "210px",
           marginTop: "20px",
           marginBottom: "20px",
         }}

@@ -1,12 +1,6 @@
 import styled from "@emotion/styled";
 import { motion } from "motion/react";
 
-import photo01 from "@/assets/photos/photo01.webp";
-import photo02 from "@/assets/photos/photo02.webp";
-import photo03 from "@/assets/photos/photo03.webp";
-import photo04 from "@/assets/photos/photo04.webp";
-import photo05 from "@/assets/photos/photo05.webp";
-import photo06 from "@/assets/photos/photo06.webp";
 import logo from "@/assets/images/logo.webp";
 import colorToken from "../utils/colorToken";
 
@@ -38,7 +32,7 @@ const ImageWrapper = styled.div({
 
 const SlidingContainer = styled.div({
   display: "flex",
-  animation: "slide 10s linear infinite",
+  animation: "slide 40s linear infinite",
   "@keyframes slide": {
     "0%": {
       transform: "translateX(0)",
@@ -77,44 +71,82 @@ const Card = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  width: "calc(100% - 20px)",
+  width: "100%",
   maxWidth: "600px",
-  height: "300px",
+  height: "280px",
   background: colorToken.realBlack,
-  borderRadius: "30%",
+  borderRadius: "40%",
   overflow: "hidden",
-  margin: "10px",
+  boxShadow: "0 0 5px 3px rgba(0, 0, 0)",
 });
 
 function PhotoSlideCard() {
-  const photos = [photo01, photo02, photo03, photo04, photo05, photo06];
+  const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
+
+  interface ImageData {
+    id: string;
+    url: string;
+  }
+
+  const group100Images: ImageData[] = Array.from({ length: 5 }, (_, i) => ({
+    id: `image1-${i}`,
+    url: `${CLOUDFRONT_URL}/eleven/eleven${101 + i}.webp`,
+  }));
+
+  // 200번대 이미지
+  const group200Images: ImageData[] = Array.from({ length: 13 }, (_, i) => ({
+    id: `image2-${i + 5}`,
+    url: `${CLOUDFRONT_URL}/eleven/eleven${201 + i}.webp`,
+  }));
+  const group300Images: ImageData[] = Array.from({ length: 4 }, (_, i) => ({
+    id: `image3-${i + 5}`,
+    url: `${CLOUDFRONT_URL}/yds/yds${1 + i}.webp`,
+  }));
+
+  // 모든 이미지 합치기
+  const images: ImageData[] = [
+    ...group100Images,
+    ...group200Images,
+    ...group300Images,
+  ];
 
   return (
-    <Card>
-      <div
-        style={{
-          width: "160px",
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
-        <img src={logo} alt="logo" style={{ width: "100%" }} />
-      </div>
-      <ImageWrapper>
-        <SlidingContainer>
-          {photos.map((photo, index) => (
-            <ImageContainer key={`first-${index}`}>
-              <Image src={photo} alt={`Photo ${index + 1}`} />
-            </ImageContainer>
-          ))}
-          {photos.map((photo, index) => (
-            <ImageContainer key={`second-${index}`}>
-              <Image src={photo} alt={`Photo ${index + 1}`} />
-            </ImageContainer>
-          ))}
-        </SlidingContainer>
-      </ImageWrapper>
-    </Card>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        background: colorToken.white,
+        padding: "20px",
+      }}
+    >
+      <Card>
+        <div
+          style={{
+            width: "160px",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          <img src={logo} alt="logo" style={{ width: "100%" }} />
+        </div>
+        <ImageWrapper>
+          <SlidingContainer>
+            {images.map((photo) => (
+              <ImageContainer key={`first-${photo.id}`}>
+                <Image src={photo.url} />
+              </ImageContainer>
+            ))}
+            {images.map((photo, index) => (
+              <ImageContainer key={`second-${photo.id}`}>
+                <Image src={photo.url} />
+              </ImageContainer>
+            ))}
+          </SlidingContainer>
+        </ImageWrapper>
+      </Card>
+    </div>
   );
 }
 

@@ -76,7 +76,7 @@ const Container = styled("div")({
   background: "#121212",
   overflow: "hidden",
   zIndex: 0,
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
 });
 
 const Background = styled("div")({
@@ -145,7 +145,7 @@ const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
   border: "none",
   background: colorToken.gray100,
   color: props.active ? colorToken.gray600 : colorToken.gray200,
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontWeight: props.active ? 700 : 500,
   cursor: "pointer",
   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -280,7 +280,7 @@ const AccountInfo = styled(motion.div)({
 });
 
 const BankLabel = styled("div")({
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontSize: "0.7rem",
   fontWeight: 700,
   color: colorToken.beige,
@@ -288,7 +288,7 @@ const BankLabel = styled("div")({
 });
 
 const AccountNumber = styled("div")({
-  fontFamily: "KoPubDotum",
+  fontFamily: "SUITRegular",
   fontSize: "0.7rem",
   fontWeight: 500,
   color: colorToken.white,
