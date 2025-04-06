@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import BrideProfile from "../components/BrideProfile";
-import GroomProfile from "../components/GroomProfile";
 import ProfileCard, { CardHole } from "../components/ProfileCard";
 import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import styled from "@emotion/styled";
-import Profile from "../components/Profile";
+import Profile from "@/components/Profile";
 
 const DraggableContainer = styled(motion.div)<{ $isDraggable: boolean }>`
   display: flex;
