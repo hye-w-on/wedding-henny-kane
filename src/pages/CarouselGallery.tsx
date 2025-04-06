@@ -55,7 +55,7 @@ const Image = styled(motion.img)`
 
 const SlideButton = styled.button`
   position: absolute;
-  top: 50%;
+  top: 90%;
   transform: translateY(-50%);
   color: white;
   border: none;
@@ -242,19 +242,19 @@ const CarouselGallery = () => {
                 ease: "easeInOut",
               }}
               onClick={() => i === index && handleImageClick(img)}
+              whileTap={{ scale: 1.1 }}
               style={{ cursor: i === index ? "pointer" : "default" }}
             />
           </Slide>
         ))}
       </Track>
-
       <SlideButton onClick={handlePrev}>
-        <img src={BackwardIcon} alt="Previous" />
+        <motion.img
+          src={BackwardIcon}
+          alt="Previous"
+          whileTap={{ scale: 1.2 }}
+        />
       </SlideButton>
-      <SlideButton onClick={handleNext}>
-        <img src={ForwardIcon} alt="Next" />
-      </SlideButton>
-
       <Dots>
         {originalImages.map((_, i) => (
           <Dot
@@ -264,7 +264,9 @@ const CarouselGallery = () => {
           />
         ))}
       </Dots>
-
+      <SlideButton onClick={handleNext}>
+        <motion.img src={ForwardIcon} alt="Next" whileTap={{ scale: 1.2 }} />
+      </SlideButton>
       <AnimatePresence>
         {selectedImage && (
           <>

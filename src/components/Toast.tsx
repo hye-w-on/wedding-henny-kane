@@ -8,19 +8,15 @@ interface ToastProps {
 
 const ToastContainer = styled(motion.div)({
   position: "fixed",
-  bottom: "40px",
-  left: "50%",
-  transform: "translateX(-50%)",
-  width: "fit-content",
+  bottom: "30px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "100%",
   textAlign: "center",
   margin: "0 auto",
   zIndex: 9999,
-  background: "rgba(0, 0, 0, 0.7)",
-  color: "white",
-  padding: "10px 20px",
-  borderRadius: "8px",
-  fontSize: "14px",
-  fontFamily: "SUITRegular",
+  whiteSpace: "nowrap",
 });
 
 export default function Toast({ message, isVisible }: ToastProps) {
@@ -28,12 +24,24 @@ export default function Toast({ message, isVisible }: ToastProps) {
     <AnimatePresence>
       {isVisible && (
         <ToastContainer
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
+          exit={{ opacity: 0, y: 10 }}
           transition={{ duration: 0.2 }}
         >
-          {message}
+          <div
+            style={{
+              minWidth: "300px",
+              background: "rgba(0, 0, 0, 0.8)",
+              color: "white",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontFamily: "SUITRegular",
+            }}
+          >
+            {message}
+          </div>
         </ToastContainer>
       )}
     </AnimatePresence>

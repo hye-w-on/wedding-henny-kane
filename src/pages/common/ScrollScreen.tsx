@@ -151,7 +151,8 @@ const MovingBackground = styled("div")`
   z-index: -1;
 
   &::before {
-    content: "We're getting married";
+    width: 100%;
+    content: "We're getting married We're getting married We're getting married";
     position: absolute;
     white-space: nowrap;
     font-size: 10rem;

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { colorToken } from "@/utils/colorToken";
 import PhoneIcon from "@/assets/icons/phone.svg";
 import MessageIcon from "@/assets/icons/message.svg";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownSvg from "@/assets/icons/down.svg?react";
+import Toast from "@/components/Toast";
 
 interface ContactInfo {
   role: string;
@@ -28,14 +29,14 @@ const groomContacts: ContactInfo[] = [
     name: "이영길",
     bank: "국민은행",
     account: "20150204232424",
-    phone: "010-1234-5678",
+    phone: "010-5202-3203",
   },
   {
     role: "신랑 어머니",
     name: "김영숙",
     bank: "국민은행",
     account: "20150204232424",
-    phone: "010-1234-5678",
+    phone: "010-3956-4050",
   },
 ];
 
@@ -173,7 +174,7 @@ const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
   },
 }));
 
-const ContactList = styled("div")({
+const ContactList = styled(motion.div)({
   display: "flex",
   width: "80%",
   maxWidth: "400px",
@@ -187,7 +188,7 @@ const ContactList = styled("div")({
   margin: "0 auto",
 });
 
-const ContactCard = styled("div")({
+const ContactCard = styled(motion.div)({
   padding: "0px 15px 0px 20px",
   display: "flex",
   flexDirection: "column",
@@ -219,7 +220,7 @@ const ButtonGroup = styled("div")({
   width: "100%",
 });
 
-const IconButton = styled("button")({
+const IconButton = styled(motion.button)({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -227,7 +228,7 @@ const IconButton = styled("button")({
   width: "80px",
   padding: "8px 10px",
   borderRadius: "6px",
-  background: "rgba(255, 255, 255, 0.1)",
+  background: "rgba(255, 255, 255, 0.2)",
   color: colorToken.white,
   cursor: "pointer",
   transition: "all 0.2s ease",
@@ -243,29 +244,28 @@ const IconButton = styled("button")({
   },
 });
 
-const AccountButton = styled("button")<{ isOpen?: boolean }>(({ isOpen }) => ({
-  width: "100%",
-  padding: "10px 10px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  overflow: "hidden",
-  color: colorToken.white,
-  borderRadius: "6px",
-  background: "rgba(255, 255, 255, 0.1)",
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-  height: isOpen ? "70px" : "30px",
-  "&:hover": {
-    background: "rgba(255, 255, 255, 0.2)",
-  },
-  "& svg": {
-    width: "15px",
-    height: "15px",
-    filter: "brightness(0) invert(1)",
-  },
-}));
+const AccountButton = styled(motion.button)<{ isOpen?: boolean }>(
+  ({ isOpen }) => ({
+    width: "100%",
+    padding: "10px 10px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    color: colorToken.white,
+    borderRadius: "6px",
+    background: "rgba(255, 255, 255, 0.1)",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    height: isOpen ? "70px" : "30px",
+    "& svg": {
+      width: "15px",
+      height: "15px",
+      filter: "brightness(0) invert(1)",
+    },
+  })
+);
 
 const AccountInfo = styled(motion.div)({
   display: "flex",
@@ -302,19 +302,6 @@ const CopyButton = styled("div")({
   padding: "4px 8px",
   marginLeft: "5px",
   backgroundColor: "var(--color-gray-100)",
-});
-
-const Toast = styled("div")({
-  position: "fixed",
-  bottom: "20px",
-  left: "50%",
-  transform: "translateX(-50%)",
-  padding: "12px 24px",
-  background: "rgba(0, 0, 0, 0.8)",
-  color: "white",
-  borderRadius: "8px",
-  zIndex: 1000,
-  fontSize: "0.8rem",
 });
 
 const ContactPage = () => {
@@ -450,101 +437,131 @@ const ContactPage = () => {
       <TabContainer>
         <Tab
           active={activeTab === "groom"}
-          onClick={() => setActiveTab("groom")}
+          onClick={() => {
+            setShowAccountModals([]);
+            setActiveTab("groom");
+          }}
         >
           신랑측
         </Tab>
         <Tab
           active={activeTab === "bride"}
-          onClick={() => setActiveTab("bride")}
+          onClick={() => {
+            setShowAccountModals([]);
+            setActiveTab("bride");
+          }}
         >
           신부측
         </Tab>
       </TabContainer>
 
-      <ContactList>
-        {(activeTab === "groom" ? groomContacts : brideContacts).map(
-          (contact, index) => (
-            <div key={index}>
-              <ContactCard>
-                <div style={{ width: "100%" }}>
-                  <ContactRole>{contact.role}</ContactRole>
-                  <ContactName>{contact.name}</ContactName>
-                </div>
-                <div>
-                  <ButtonGroup>
-                    <IconButton
-                      onClick={() => handleCopyAccount(contact.account)}
+      <ContactList
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <AnimatePresence mode="wait">
+          {(activeTab === "groom" ? groomContacts : brideContacts).map(
+            (contact, index) => (
+              <motion.div
+                key={contact.role}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <ContactCard>
+                  <div style={{ width: "100%" }}>
+                    <ContactRole>{contact.role}</ContactRole>
+                    <ContactName>{contact.name}</ContactName>
+                  </div>
+                  <div>
+                    <ButtonGroup>
+                      <IconButton
+                        onClick={() => handleCopyAccount(contact.account)}
+                        whileTap={{ scale: 1.2 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <img src={CopyIcon} alt="copy" />
+                        번호복사
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleCall(contact.phone)}
+                        whileTap={{ scale: 1.2 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <img src={PhoneIcon} alt="phone" />
+                        전화
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleMessage(contact.phone)}
+                        whileTap={{ scale: 1.2 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <img src={MessageIcon} alt="message" />
+                        문자
+                      </IconButton>
+                    </ButtonGroup>
+                    <AccountButton
+                      onClick={() => toggleAccountModal(contact.name)}
+                      isOpen={showAccountModals.includes(contact.name)}
+                      whileTap={{ scale: 1.2 }}
+                      whileHover={{ scale: 1.05 }}
                     >
-                      <img src={CopyIcon} alt="copy" />
-                      번호복사
-                    </IconButton>
-                    <IconButton onClick={() => handleCall(contact.phone)}>
-                      <img src={PhoneIcon} alt="phone" />
-                      전화
-                    </IconButton>
-                    <IconButton onClick={() => handleMessage(contact.phone)}>
-                      <img src={MessageIcon} alt="message" />
-                      문자
-                    </IconButton>
-                  </ButtonGroup>
-                  <AccountButton
-                    onClick={() => toggleAccountModal(contact.name)}
-                    isOpen={showAccountModals.includes(contact.name)}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "3px",
-                      }}
-                    >
-                      계좌번호 확인하기
-                      <motion.span
-                        animate={{
-                          rotate: showAccountModals.includes(contact.name)
-                            ? -180
-                            : 0,
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "3px",
                         }}
-                        transition={{ duration: 0.3 }}
                       >
-                        <DownSvg
-                          style={{
-                            paddingTop: "2px",
-                            width: "14px",
-                            height: "14px",
+                        계좌번호 확인하기
+                        <motion.span
+                          animate={{
+                            rotate: showAccountModals.includes(contact.name)
+                              ? -180
+                              : 0,
                           }}
-                        />
-                      </motion.span>
-                    </div>
-                    {showAccountModals.includes(contact.name) && (
-                      <AccountInfo
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <BankLabel>{contact.bank}</BankLabel>
-                        <AccountNumber>{contact.account}</AccountNumber>
-                        <CopyButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopyAccount(contact.account);
-                          }}
+                          transition={{ duration: 0.3 }}
                         >
-                          복사
-                        </CopyButton>
-                      </AccountInfo>
-                    )}
-                  </AccountButton>
-                </div>
-              </ContactCard>
-            </div>
-          )
-        )}
+                          <DownSvg
+                            style={{
+                              paddingTop: "2px",
+                              width: "14px",
+                              height: "14px",
+                            }}
+                          />
+                        </motion.span>
+                      </div>
+                      {showAccountModals.includes(contact.name) && (
+                        <AccountInfo
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <BankLabel>{contact.bank}</BankLabel>
+                          <AccountNumber>{contact.account}</AccountNumber>
+                          <CopyButton
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCopyAccount(contact.account);
+                            }}
+                          >
+                            복사
+                          </CopyButton>
+                        </AccountInfo>
+                      )}
+                    </AccountButton>
+                  </div>
+                </ContactCard>
+              </motion.div>
+            )
+          )}
+        </AnimatePresence>
       </ContactList>
 
-      {showToast && <Toast>복사되었습니다</Toast>}
+      <Toast message={"복사되었습니다"} isVisible={showToast} />
     </Container>
   );
 };

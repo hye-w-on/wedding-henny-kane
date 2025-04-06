@@ -13,6 +13,7 @@ import DestinationIcon from "@/assets/icons/destination.svg";
 import KakaoMapIcon from "@/assets/icons/kakaomap.png";
 import NaverMapIcon from "@/assets/icons/navermap.png";
 import DownSvg from "@/assets/icons/down.svg?react";
+import { padding } from "@mui/system";
 
 dayjs.extend(duration);
 
@@ -120,7 +121,7 @@ const BorderCircle = styled(motion.div)({
   pointerEvents: "none",
 });
 
-const IconButton = styled("button")({
+const IconButton = styled(motion.button)({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -187,7 +188,10 @@ function LocationPage() {
   };
 
   const handleNaverMapClick = () => {
-    window.open("https://naver.me/59555555555555555555555555555555", "_blank");
+    window.open(
+      "https://map.naver.com/p/entry/place/20517806?lng=126.9983456&lat=37.6041052&placePath=%2Fhome&searchType=place&c=15.00,0,0,0,dh",
+      "_blank"
+    );
   };
 
   return (
@@ -252,11 +256,11 @@ function LocationPage() {
               서울 성북구 정릉로10길 127 르한스(한스갤러리)
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
-              <IconButton onClick={handleCopy}>
+              <IconButton onClick={handleCopy} whileTap={{ scale: 1.1 }}>
                 <img src={CopyIcon} alt="copy" />
                 주소복사
               </IconButton>
-              <IconButton onClick={handleButtonClick}>
+              <IconButton onClick={handleButtonClick} whileTap={{ scale: 1.1 }}>
                 <img src={DestinationIcon} alt="copy" />
                 지도이동
               </IconButton>
@@ -289,7 +293,7 @@ function LocationPage() {
                 gap: "10px",
               }}
             >
-              <button
+              <motion.button
                 style={{
                   width: "70px",
                   height: "70px",
@@ -297,9 +301,11 @@ function LocationPage() {
                   overflow: "hidden",
                 }}
                 onClick={handleKakaoMapClick}
+                whileTap={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1 }}
               >
                 <img src={KakaoMapIcon} />
-              </button>
+              </motion.button>
               카카오맵으로 열기
             </div>
             <div
@@ -313,7 +319,7 @@ function LocationPage() {
                 gap: "10px",
               }}
             >
-              <button
+              <motion.button
                 style={{
                   width: "70px",
                   height: "70px",
@@ -321,9 +327,11 @@ function LocationPage() {
                   overflow: "hidden",
                 }}
                 onClick={handleNaverMapClick}
+                whileTap={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1 }}
               >
                 <img src={NaverMapIcon} />
-              </button>
+              </motion.button>
               네이버맵으로 열기
             </div>
           </div>

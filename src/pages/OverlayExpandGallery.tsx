@@ -129,6 +129,8 @@ function Gallery({ images, setSelectedId }: GalleryProps) {
           key={image.id}
           layoutId={image.id}
           onClick={() => setSelectedId(image.id)}
+          whileTap={{ scale: 1.1 }}
+          whileHover={{ scale: 1.05 }}
         >
           <GalleryImageComponent src={image.url} />
         </GalleryItem>

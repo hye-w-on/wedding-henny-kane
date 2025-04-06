@@ -113,6 +113,7 @@ const ProfileScrollPage: React.FC = () => {
           <CardWrapper
             onClick={() => handleCardClick("groom")}
             initial={{ y: 0 }}
+            whileHover={{ scale: 1.05 }}
             animate={{
               rotateY: flippedCards["groom"] ? 180 : 0,
               y: [-10, 20],
@@ -149,6 +150,7 @@ const ProfileScrollPage: React.FC = () => {
           <CardWrapper
             onClick={() => handleCardClick("bride")}
             initial={{ y: 0 }}
+            whileHover={{ scale: 1.05 }}
             animate={{
               rotateY: flippedCards["bride"] ? 180 : 0,
               y: [-10, 10],

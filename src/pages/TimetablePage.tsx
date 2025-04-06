@@ -1,15 +1,16 @@
 import { useRef, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll } from "motion/react";
 import React from "react";
 import StarSvg from "@/assets/icons/star.svg?react";
 import WineSvg from "@/assets/icons/wine.svg?react";
 import CocktailSvg from "@/assets/icons/cocktail.svg?react";
 import BeerSvg from "@/assets/icons/beer.svg?react";
-import CakeSvg from "@/assets/icons/cake.svg?react";
+import ToastSvg from "@/assets/icons/toast.svg?react";
 import ForkandknifeSvg from "@/assets/icons/forkandknife.svg?react";
+import HeartSvg from "@/assets/icons/heart.svg?react";
 
-import colorToken from "../utils/colorToken";
+import colorToken from "@/utils/colorToken";
 
 const Container = styled("div")({
   height: "400vh",
@@ -137,9 +138,9 @@ const StyledBeer = styled(BeerSvg)({
   },
 });
 
-const StyledCake = styled(CakeSvg)({
-  width: "30px",
-  height: "30px",
+const StyledToast = styled(ToastSvg)({
+  width: "20px",
+  height: "20px",
   "& path:nth-of-type(2)": {
     fill: "currentColor",
   },
@@ -161,7 +162,7 @@ const DrinkCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
   );
 };
 
-const CeremonyCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
+const ToastCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
   return (
     <div
       style={{
@@ -170,7 +171,31 @@ const CeremonyCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
         color: isDarkTheme ? "white" : "black",
       }}
     >
-      <StyledCake />
+      <ToastSvg
+        style={{
+          width: "20px",
+          height: "20px",
+        }}
+      />
+    </div>
+  );
+};
+
+const HeartCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "10px",
+        color: isDarkTheme ? "white" : "black",
+      }}
+    >
+      <HeartSvg
+        style={{
+          width: "20px",
+          height: "20px",
+        }}
+      />
     </div>
   );
 };
@@ -219,14 +244,14 @@ const TimetablePage: React.FC = () => {
       title: "OPENING",
       angle: 0,
       description: `환영합니다! 웰컴푸드와 샴페인이 준비되어있으니 식전에 즐겨주세요`,
-      component: <></>,
+      component: <ToastCard isDarkTheme={currentIndex >= 2} />,
     },
     {
       time: "6PM",
       title: "CEREMONY",
       angle: 45,
       description: "결혼식이 시작됩니다",
-      component: <CeremonyCard isDarkTheme={currentIndex >= 2} />,
+      component: <HeartCard isDarkTheme={currentIndex >= 2} />,
     },
     {
       time: "7PM",
@@ -247,7 +272,7 @@ const TimetablePage: React.FC = () => {
       title: "CLOSING",
       angle: 180,
       description: "저희의 결혼을 축하해주고, 함께 즐겨주셔서 감사합니다",
-      component: <DrinkCard isDarkTheme={currentIndex >= 2} />,
+      component: <></>,
     },
   ];
 
