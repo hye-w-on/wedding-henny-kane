@@ -29,7 +29,7 @@ function Letter() {
   };
 
   const handleGuestCountChange = (count: number) => {
-    if (count >= 1 && count <= 20) {
+    if (count >= 0 && count <= 20) {
       setGuestCount(count);
     }
   };
@@ -48,11 +48,6 @@ function Letter() {
       (phone.length !== 10 && !phone.startsWith("010"))
     ) {
       setAlert({ message: "전화번호를 올바르게 입력해 주세요", type: "error" });
-      setIsLoading(false);
-      return;
-    }
-    if (guestCount <= 0) {
-      setAlert({ message: "참석 인원을 선택해 주세요", type: "error" });
       setIsLoading(false);
       return;
     }
@@ -182,7 +177,7 @@ function Letter() {
             <GuestCountContainer>
               <CountButton
                 onClick={() => handleGuestCountChange(guestCount - 1)}
-                disabled={guestCount <= 1}
+                disabled={guestCount <= 0}
               >
                 <img src={MinusIcon} alt="Decrease" />
               </CountButton>
@@ -200,8 +195,12 @@ function Letter() {
           </InputGroup>
 
           <InputGroup>
-            <SaveButton onClick={handleSave} disabled={isLoading}>
-              저장하기
+            <SaveButton 
+              onClick={handleSave} 
+              disabled={isLoading}
+              isAbsent={guestCount === 0}
+            >
+              {guestCount === 0 ? "불참" : "저장하기"}
             </SaveButton>
           </InputGroup>
         </FormContainer>
@@ -289,10 +288,10 @@ const CountDisplay = styled.div({
   fontWeight: "500",
 });
 
-const SaveButton = styled.button({
+const SaveButton = styled.button<{ isAbsent?: boolean }>(({ isAbsent }) => ({
   width: "250px",
   height: "28px",
-  backgroundColor: colorToken.black,
+  backgroundColor: isAbsent ? colorToken.gray500 : colorToken.black,
   color: "#fff",
   fontFamily: "SUITRegular",
   fontWeight: "700",
@@ -301,7 +300,12 @@ const SaveButton = styled.button({
   borderRadius: "4px",
   border: "none",
   cursor: "pointer",
-});
+  transition: "all 0.2s ease",
+  "&:disabled": {
+    opacity: 0.6,
+    cursor: "not-allowed",
+  },
+}));
 
 const StampContainer = styled(motion.div)({
   position: "absolute",
