@@ -35,16 +35,6 @@ const EnvelopePage = () => {
     damping: 20,
   });
   const smoothPaperY = useSpring(paperY, { stiffness: 200, damping: 20 });
-  const smoothSavedPaperRotateX = useSpring(savedPaperRotateX, {
-    stiffness: 100,
-    damping: 15,
-    mass: 0.5,
-  });
-  const smoothSavedPaperY = useSpring(savedPaperY, {
-    stiffness: 100,
-    damping: 15,
-    mass: 0.5,
-  });
 
   return (
     <div
@@ -55,7 +45,7 @@ const EnvelopePage = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "600px",
+        height: "650px",
         perspective: 1000,
         scrollMargin: "20vh",
         backgroundColor: colorToken.white,
@@ -68,16 +58,22 @@ const EnvelopePage = () => {
           color: colorToken.black,
           position: "absolute",
           top: "60px",
-          letterSpacing: "-0.05em",
-          lineHeight: "0.6em",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          justifyContent: "center",
         }}
       >
-        Let's
+        <div style={{ letterSpacing: "-0.05em", lineHeight: "0.6em" }}>
+          Let's
+        </div>
         <div
           style={{
             fontFamily: "RoobertTRIAL",
             fontSize: "3rem",
+            fontWeight: "bold",
             lineHeight: "0.5em",
+            letterSpacing: "-0.05em",
           }}
         >
           Party
@@ -86,16 +82,44 @@ const EnvelopePage = () => {
           style={{
             lineHeight: "1.3em",
             fontSize: "4rem",
+            letterSpacing: "-0.05em",
           }}
         >
           Together
         </div>
       </div>
+      <div
+        style={{
+          fontFamily: "SUITRegular",
+          fontSize: "0.8rem",
+          color: "#000000aa",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          top: "195px",
+          zIndex: 2,
+        }}
+      >
+        <div>원활한 식사 제공을 위해 참석 인원 확인이 필요합니다.</div>
+        <div>
+          <b>
+            <u>5월 31일</u>
+          </b>
+          까지{" "}
+          <b>
+            <u>참석여부</u>
+          </b>
+          를 회신해주세요
+        </div>
+      </div>
+
       {/* 상단 박스 */}
       <motion.div
         style={{
           position: "absolute",
-          top: "410px",
+          top: "420px",
           width: "350px",
           height: "200px",
           backgroundColor: "#F2F1F0",
@@ -117,7 +141,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "410px",
+          top: "420px",
           width: "350px",
           height: "200px",
           backgroundColor: "#dad9d9",
@@ -140,7 +164,7 @@ const EnvelopePage = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          top: "410px",
+          top: "430px",
           width: "330px",
           height: "200px",
           backgroundColor: "#121212", // 편지지 색상
@@ -159,7 +183,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "410px",
+          top: "420px",
           width: "350px",
           height: "200px",
           display: "flex",
@@ -213,13 +237,13 @@ const EnvelopePage = () => {
           position: "absolute",
           bottom: "0",
           width: "100%",
-          height: "280px",
+          height: "200px",
           backgroundColor: colorToken.black,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
         }}
-      ></motion.div>
+      />
     </div>
   );
 };

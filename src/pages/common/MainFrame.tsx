@@ -103,7 +103,7 @@ interface MainFrameProps {
   scrollToSection: (ref: React.RefObject<HTMLDivElement>) => void;
   refs: {
     profileRef: React.RefObject<HTMLDivElement>;
-    photoSlideRef: React.RefObject<HTMLDivElement>;
+    galleryRef: React.RefObject<HTMLDivElement>;
     locationRef: React.RefObject<HTMLDivElement>;
     weddingDayRef: React.RefObject<HTMLDivElement>;
     envelopeRef: React.RefObject<HTMLDivElement>;
@@ -152,14 +152,6 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
           <MenuDescription>오시는 길</MenuDescription>
         </MenuItem>
         <MenuItem
-          onClick={() => handleMenuClick(refs.photoSlideRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <MenuDescription>사진</MenuDescription>
-          <SlideUpText>Gallery</SlideUpText>
-        </MenuItem>
-        <MenuItem
           onClick={() => handleMenuClick(refs.weddingDayRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
@@ -174,6 +166,14 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
         >
           <SlideUpText>About</SlideUpText>
           <MenuDescription>소개</MenuDescription>
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleMenuClick(refs.galleryRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <MenuDescription>사진</MenuDescription>
+          <SlideUpText>Gallery</SlideUpText>
         </MenuItem>
         <MenuItem
           onClick={() => handleMenuClick(refs.envelopeRef)}

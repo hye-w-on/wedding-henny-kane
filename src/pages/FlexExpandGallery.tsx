@@ -9,8 +9,6 @@ interface ImageData {
   id: string;
   url: string;
 }
-
-// 100번대 이미지
 const images: ImageData[] = Array.from({ length: 4 }, (_, i) => ({
   id: `image-${i}`,
   url: `${CLOUDFRONT_URL}/yds${1 + i}.webp`,
@@ -18,8 +16,9 @@ const images: ImageData[] = Array.from({ length: 4 }, (_, i) => ({
 
 const Container = styled.div`
   background: ${colorToken.black};
-  padding: 1rem;
+  padding: 0px 15px 15px 15px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
@@ -58,6 +57,31 @@ const FlexExpandingSlider = () => {
 
   return (
     <Container>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          color: colorToken.white,
+          gap: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <div style={{ fontFamily: "PPEditorialOldItalic", fontSize: "2.5rem" }}>
+          Film Photos
+        </div>
+        <div
+          style={{
+            fontFamily: "SUITRegular",
+            fontSize: "0.8rem",
+            color: "#ffffffaa",
+          }}
+        >
+          클릭하면 확대가 가능합니다
+        </div>
+      </div>
+
       <Slider>
         {images.map((image) => {
           const isSelected = selectedId === image.id;

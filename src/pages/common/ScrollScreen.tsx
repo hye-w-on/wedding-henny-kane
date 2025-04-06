@@ -35,7 +35,7 @@ const Container = styled("div")({
 
 const ScrollScreen: React.FC = () => {
   const nameCardRef = useRef<HTMLDivElement>(null);
-  const photoSlideRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
   const weddingDayRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ const ScrollScreen: React.FC = () => {
         scrollToSection={scrollToSection}
         refs={{
           profileRef,
-          photoSlideRef,
+          galleryRef,
           locationRef,
           weddingDayRef,
           envelopeRef,
@@ -79,13 +79,13 @@ const ScrollScreen: React.FC = () => {
           <LocationPage />
         </div>
         <div>
-          <OverlayExpandGallery />
-        </div>
-        <div>
           <TimetablePage />
         </div>
         <div ref={profileRef}>
           <ProfileScrollPage />
+        </div>
+        <div ref={galleryRef}>
+          <OverlayExpandGallery />
         </div>
         <div>
           <FlexExpandGallery />

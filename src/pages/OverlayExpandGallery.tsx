@@ -32,7 +32,7 @@ const images: ImageData[] = [...group100Images, ...group200Images];
 
 const Container = styled.div`
   background: ${colorToken.black};
-  padding: 0px 15px 40px 15px;
+  padding: 30px 15px 40px 15px;
 `;
 
 const GalleryGrid = styled.ul`
@@ -159,7 +159,7 @@ const OverlayExpandGallery = () => {
           justifyContent: "center",
           alignItems: "center",
           color: colorToken.white,
-          gap: "10px",
+          gap: "12px",
           marginBottom: "10px",
         }}
       >
