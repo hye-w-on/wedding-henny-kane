@@ -1,18 +1,18 @@
 import styled from "@emotion/styled";
-import { useEffect, useState, useRef, createContext, useContext } from "react";
-import ProfileScrollPage from "../ProfileScrollPage";
-import NamePage from "../NamePage";
-import EnvelopePage from "../EnvelopePage";
-import WeddingDayPage from "../WeddingDayPage";
-import LocationPage from "../LocationPage";
-import colorToken from "../../utils/colorToken";
-import MainFrame from "./MainFrame";
-import TimetablePage from "../TimetablePage";
-import ContactPage from "../ContactPage";
-import PhotoSlideCard from "../../components/PhotoSlideCard";
-import OverlayExpandGallery from "../OverlayExpandGallery";
-import FlexExpandGallery from "../FlexExpandGallery";
-import CarouselGallery from "../CarouselGallery";
+import { useRef } from "react";
+import ProfileScrollPage from "@/pages/ProfileScrollPage";
+import NamePage from "@/pages/NamePage";
+import EnvelopePage from "@/pages/EnvelopePage";
+import WeddingDayPage from "@/pages/WeddingDayPage";
+import LocationPage from "@/pages/LocationPage";
+import colorToken from "@/utils/colorToken";
+import MainFrame from "@/pages/common/MainFrame";
+import TimetablePage from "@/pages/TimetablePage";
+import ContactPage from "@/pages/ContactPage";
+import PhotoSlideCard from "@/components/PhotoSlideCard";
+import OverlayExpandGallery from "@/pages/OverlayExpandGallery";
+import FlexExpandGallery from "@/pages/FlexExpandGallery";
+import CarouselGallery from "@/pages/CarouselGallery";
 
 const Container = styled("div")({
   display: "flex",

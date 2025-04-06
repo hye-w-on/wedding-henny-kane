@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import ProfileCard, { CardHole } from "../components/ProfileCard";
+import ProfileCard, { CardHole } from "@/components/ProfileCard";
 import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import styled from "@emotion/styled";
 import Profile from "@/components/Profile";
