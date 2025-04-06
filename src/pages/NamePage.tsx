@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styled from "@emotion/styled";
 import {
   motion,
@@ -5,11 +6,9 @@ import {
   useScroll,
   useTransform,
   useSpring,
-  cubicBezier,
 } from "motion/react";
-import colorToken from "../utils/colorToken";
+import colorToken from "@/utils/colorToken";
 import StarSvg from "@/assets/icons/star.svg?react";
-import { useRef } from "react";
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
 
 const OvalContainer = styled.div({
@@ -62,19 +61,20 @@ const ProfileContainer = styled(motion.div)({
   paddingBottom: "5px",
 });
 
-const ProfileTitle = styled.div({
+const ProfileTitle = styled(motion.div)({
   fontSize: "2rem",
   lineHeight: "0.7em",
   fontFamily: "PPPlayground",
 });
 
-const ProfileName = styled.div({
+const ProfileName = styled(motion.div)({
   fontSize: "0.8rem",
   fontFamily: "SUITRegular",
   fontWeight: "500",
+  marginBottom: "2px",
 });
 
-const ProfileParents = styled.div({
+const ProfileParents = styled(motion.div)({
   fontSize: "0.7rem",
   fontFamily: "SUITRegular",
   color: "#121212cc",

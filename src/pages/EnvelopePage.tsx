@@ -51,7 +51,7 @@ const EnvelopePage = () => {
         backgroundColor: colorToken.white,
       }}
     >
-      <div
+      <motion.div
         style={{
           fontFamily: "PPPlayground",
           fontSize: "3rem",
@@ -87,7 +87,7 @@ const EnvelopePage = () => {
         >
           Together
         </div>
-      </div>
+      </motion.div>
       <div
         style={{
           fontFamily: "SUITRegular",
