@@ -195,12 +195,12 @@ function Letter() {
           </InputGroup>
 
           <InputGroup>
-            <SaveButton 
-              onClick={handleSave} 
+            <SaveButton
+              onClick={handleSave}
               disabled={isLoading}
               isAbsent={guestCount === 0}
             >
-              {guestCount === 0 ? "불참" : "저장하기"}
+              {guestCount === 0 ? "불참 회신하기" : "회신하기"}
             </SaveButton>
           </InputGroup>
         </FormContainer>

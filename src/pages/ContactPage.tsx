@@ -1,13 +1,11 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
-import { keyframes } from "@emotion/react";
 import { motion } from "framer-motion";
-import { colorToken } from "../utils/colorToken";
-import PhoneIcon from "../assets/icons/phone.svg";
-import MessageIcon from "../assets/icons/message.svg";
-import CopyIcon from "../assets/icons/copy.svg";
-import DownSvg from "../assets/icons/down.svg?react";
-import UpSvg from "../assets/icons/up.svg?react";
+import { colorToken } from "@/utils/colorToken";
+import PhoneIcon from "@/assets/icons/phone.svg";
+import MessageIcon from "@/assets/icons/message.svg";
+import CopyIcon from "@/assets/icons/copy.svg";
+import DownSvg from "@/assets/icons/down.svg?react";
 
 interface ContactInfo {
   role: string;
@@ -71,7 +69,7 @@ const Container = styled("div")({
   width: "100%",
   margin: "0 auto",
   textAlign: "center",
-  minHeight: "100vh",
+  minHeight: "650px",
   fontSize: "0.8rem",
   background: "#121212",
   overflow: "hidden",
@@ -120,7 +118,7 @@ const TabContainer = styled("div")({
   justifyContent: "center",
   margin: "0 auto",
   width: "80%",
-  maxWidth: "800px",
+  maxWidth: "400px",
   height: "35px",
   overflow: "hidden",
   backdropFilter: "blur(10px)",
@@ -178,7 +176,7 @@ const Tab = styled(motion.button)<{ active: boolean }>((props) => ({
 const ContactList = styled("div")({
   display: "flex",
   width: "80%",
-  maxWidth: "800px",
+  maxWidth: "400px",
   flexDirection: "column",
   borderRadius: "0 0 8px 8px",
   backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -498,15 +496,26 @@ const ContactPage = () => {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "1px",
+                        gap: "3px",
                       }}
                     >
                       계좌번호 확인하기
-                      {showAccountModals.includes(contact.name) ? (
-                        <UpSvg />
-                      ) : (
-                        <DownSvg />
-                      )}
+                      <motion.span
+                        animate={{
+                          rotate: showAccountModals.includes(contact.name)
+                            ? -180
+                            : 0,
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <DownSvg
+                          style={{
+                            paddingTop: "2px",
+                            width: "14px",
+                            height: "14px",
+                          }}
+                        />
+                      </motion.span>
                     </div>
                     {showAccountModals.includes(contact.name) && (
                       <AccountInfo

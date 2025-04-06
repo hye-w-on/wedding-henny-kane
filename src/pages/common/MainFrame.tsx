@@ -102,11 +102,13 @@ const menuVariants = {
 interface MainFrameProps {
   scrollToSection: (ref: React.RefObject<HTMLDivElement>) => void;
   refs: {
+    nameCardRef: React.RefObject<HTMLDivElement>;
+    envelopeRef: React.RefObject<HTMLDivElement>;
+    locationRef: React.RefObject<HTMLDivElement>;
+    timetableRef: React.RefObject<HTMLDivElement>;
     profileRef: React.RefObject<HTMLDivElement>;
     galleryRef: React.RefObject<HTMLDivElement>;
-    locationRef: React.RefObject<HTMLDivElement>;
-    weddingDayRef: React.RefObject<HTMLDivElement>;
-    envelopeRef: React.RefObject<HTMLDivElement>;
+    contactRef: React.RefObject<HTMLDivElement>;
   };
 }
 
@@ -135,6 +137,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
         <HeaderItem>
           <StarSvg
             style={{ width: "20px", height: "20px", color: colorToken.black }}
+            onClick={() => handleMenuClick(refs.nameCardRef)}
           />
         </HeaderItem>
         <HeaderItem onClick={toggleMenu}>MENU</HeaderItem>
@@ -144,6 +147,14 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 
       <MenuList isOpen={isOpen}>
         <MenuItem
+          onClick={() => handleMenuClick(refs.envelopeRef)}
+          variants={menuVariants}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <SlideUpText>RSVP</SlideUpText>
+          <MenuDescription>참석회신</MenuDescription>
+        </MenuItem>
+        <MenuItem
           onClick={() => handleMenuClick(refs.locationRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
@@ -152,7 +163,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
           <MenuDescription>오시는 길</MenuDescription>
         </MenuItem>
         <MenuItem
-          onClick={() => handleMenuClick(refs.weddingDayRef)}
+          onClick={() => handleMenuClick(refs.timetableRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
         >
@@ -176,7 +187,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
           <SlideUpText>Gallery</SlideUpText>
         </MenuItem>
         <MenuItem
-          onClick={() => handleMenuClick(refs.envelopeRef)}
+          onClick={() => handleMenuClick(refs.contactRef)}
           variants={menuVariants}
           transition={{ type: "spring", stiffness: 100 }}
         >
@@ -184,38 +195,6 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
           <MenuDescription>연락</MenuDescription>
         </MenuItem>
       </MenuList>
-      {/*
-      <div style={{ position: "relative" }}>
-        <CrushSvg
-          style={{
-            position: "absolute",
-            top: -2,
-            left: 8,
-            width: "50px",
-            height: "50px",
-            color: "#ffffff",
-            zIndex: 2,
-          }}
-        />
-        <HeartSvg
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "50px",
-            height: "50px",
-            color: colorToken.black,
-            zIndex: 1,
-          }}
-        />
-                  <CrushSvg
-            style={{
-              width: "40px",
-              height: "40px",
-              color: "#000",
-            }}
-          />
-      </div>*/}
     </>
   );
 };

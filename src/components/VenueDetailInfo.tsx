@@ -16,7 +16,9 @@ const VenueDetailInfo: React.FC<VenueDetailInfoProps> = ({
   const formatShuttleTime = (time: string) => {
     if (time === closestTime) {
       return (
-        <span style={{ color: "#e67b8e", fontWeight: "bold" }}>{time}</span>
+        <span style={{ color: colorToken.red, fontWeight: "bold" }}>
+          {time}
+        </span>
       );
     }
     return time;
@@ -69,27 +71,28 @@ const VenueDetailInfo: React.FC<VenueDetailInfoProps> = ({
           <div
             style={{
               fontFamily: "SUITRegular",
-              fontSize: "0.8rem",
+              fontSize: "0.9rem",
               color: colorToken.black,
               padding: "10px",
+              lineHeight: "1.3em",
             }}
           >
             - 예식장 및 제2주차장 발렛서비스
             <br />
             - 르한스 예식장 내 70대 수용
             <br />
-            - 주차 공간 부족 시, 르한스 정문에서 제2주차장(LG 물류센터)으로
+            - 주차 공간 부족 시, 르한스 정문 앞에서 제2주차장(LG 물류센터)으로
             가시는 경로를 안내드립니다.(300m)
             <br /> <br />
             <b>제2주차장 안내사항</b>
             <br />
             - 주차장용 셔틀을 이용하면 1-2분 내 예식장에 도착하실 수 있습니다
             <br />
-            - 일찍 귀가하실 때에는 주차장용 셔틀을 이용하실 수 있습니다. 정문에
-            상주해 있는 주차안내팀에 요청해주세요
+            - 일찍 귀가하실 때에는 정문에 상주한 주차안내팀에 요청해주시면
+            주차장용 셔틀을 이용하실 수 있습니다
             <br />
             - 예식이 끝난 후에는 제2주차장에 주차된 차량을 르한스로
-            옮겨드립니다.(이동 후 안내방송)
+            옮겨드립니다.(차량 이동 후 안내방송)
             <br />
             <br />
           </div>
@@ -123,14 +126,15 @@ const VenueDetailInfo: React.FC<VenueDetailInfoProps> = ({
           <div
             style={{
               fontFamily: "SUITRegular",
-              fontSize: "0.8rem",
+              fontSize: "0.9rem",
               color: colorToken.black,
               padding: "10px",
+              lineHeight: "1.3em",
             }}
           >
-            4호선 한성대입구역 6번출구 {"<->"} 예식장 운행 <br />
+            4호선 <b>한성대입구역 6번출구</b> {"<->"} 예식장 운행 <br />
             배차간격 20분 | 17:00 ~ 18:00, 19:30 ~ 20:30 <br />
-            <div style={{ paddingTop: "5px" }}>
+            <div style={{ paddingTop: "15px" }}>
               <b>예식 전 탑승지</b>
               <br />
               <div style={{ paddingLeft: "10px" }}>
@@ -156,7 +160,7 @@ const VenueDetailInfo: React.FC<VenueDetailInfoProps> = ({
                     {formatShuttleTime(time)}
                     {index < shuttleTimes.after.length - 1 && ", "}
                   </React.Fragment>
-                ))}{" "}
+                ))}
                 <br />
               </div>
             </div>

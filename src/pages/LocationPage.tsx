@@ -1,18 +1,18 @@
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { motion, AnimatePresence } from "motion/react";
-import colorToken from "../utils/colorToken";
+import colorToken from "@/utils/colorToken";
 import duration from "dayjs/plugin/duration";
-import VenueMap from "../components/VenueMap";
-import VenueDetailInfo from "../components/VenueDetailInfo";
+import VenueDetailInfo from "@/components/VenueDetailInfo";
 import venue from "@/assets/images/venue.jpg";
-import Toast from "../components/Toast";
-import { useEffect, useRef, useState } from "react";
+import Toast from "@/components/Toast";
+import { useRef, useState } from "react";
 import NaverMap, { NaverMapRef } from "../components/NaverMap";
-import CopyIcon from "../assets/icons/copy.svg";
+import CopyIcon from "@/assets/icons/copy.svg";
 import DestinationIcon from "@/assets/icons/destination.svg";
 import KakaoMapIcon from "@/assets/icons/kakaomap.png";
 import NaverMapIcon from "@/assets/icons/navermap.png";
+import DownSvg from "@/assets/icons/down.svg?react";
 
 dayjs.extend(duration);
 
@@ -57,18 +57,18 @@ const DetailButton = styled(motion.button)({
   backgroundColor: "white",
   color: colorToken.black,
   border: `1px solid ${colorToken.black}`,
-  padding: "12px 24px",
+  padding: "8px 24px",
   borderRadius: "30px",
   fontSize: "14px",
   fontFamily: "SUITRegular",
   cursor: "pointer",
   marginTop: "20px",
-  marginBottom: "20px",
+  marginBottom: "-20px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "8px",
-  zIndex: 1,
+  gap: "5px",
+  zIndex: 2,
 });
 
 // 상세 정보 컨테이너 스타일
@@ -76,6 +76,7 @@ const DetailContainer = styled(motion.div)({
   width: "100%",
   overflow: "hidden",
   zIndex: 1,
+  borderRadius: "20px",
 });
 
 const MapWrapper = styled(motion.div)({
@@ -124,11 +125,12 @@ const IconButton = styled("button")({
   alignItems: "center",
   justifyContent: "center",
   width: "80px",
-  height: "30px",
+  height: "25px",
   fontFamily: "SUITRegular",
+  fontWeight: "bold",
   fontSize: "0.7rem",
-  padding: "4px 4px 4px 3px",
-  borderRadius: "5px",
+  padding: "5px 4px 3px 3px",
+  borderRadius: "12px",
   background: colorToken.gray800,
   border: `1px solid ${colorToken.gray600}`,
   cursor: "pointer",
@@ -171,7 +173,6 @@ function LocationPage() {
   const mapRef = useRef<NaverMapRef>(null);
 
   const handleButtonClick = () => {
-    console.log("button clicked");
     mapRef.current?.centerMap();
   };
 
@@ -237,7 +238,7 @@ function LocationPage() {
               marginTop: "5px",
               marginBottom: "5px",
               fontFamily: "SUITRegular",
-              fontSize: "12px",
+              fontSize: "0.8rem",
               color: "#fff",
               display: "flex",
               flexDirection: "column",
@@ -247,7 +248,7 @@ function LocationPage() {
               lineHeight: "0.6em",
             }}
           >
-            <div style={{ margin: "2px" }}>
+            <div style={{ marginTop: "5px" }}>
               서울 성북구 정릉로10길 127 르한스(한스갤러리)
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
@@ -334,13 +335,18 @@ function LocationPage() {
         >
           주차와 셔틀버스 상세정보
           <motion.span
-            animate={{ rotate: showDetails ? 180 : 0 }}
+            animate={{ rotate: showDetails ? -180 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            ▼
+            <DownSvg
+              style={{
+                paddingTop: "2px",
+                width: "20px",
+                height: "20px",
+              }}
+            />
           </motion.span>
         </DetailButton>
-        {/* 애니메이션 컨테이너 */}
         <AnimatePresence>
           {showDetails && (
             <DetailContainer

@@ -78,7 +78,7 @@ const FlexExpandingSlider = () => {
             color: "#ffffffaa",
           }}
         >
-          클릭하면 확대가 가능합니다
+          클릭하면 확장이 가능합니다
         </div>
       </div>
 

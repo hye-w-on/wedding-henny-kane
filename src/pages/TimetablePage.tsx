@@ -218,7 +218,7 @@ const TimetablePage: React.FC = () => {
       time: "5PM",
       title: "OPENING",
       angle: 0,
-      description: `환영합니다! \n 웰컴푸드와 샴페인이 준비되어있으니 식전에 즐겨주세요`,
+      description: `환영합니다! 웰컴푸드와 샴페인이 준비되어있으니 식전에 즐겨주세요`,
       component: <></>,
     },
     {
@@ -232,7 +232,7 @@ const TimetablePage: React.FC = () => {
       time: "7PM",
       title: "DINNER",
       angle: 90,
-      description: "예식이 진행된 같은 장소에서 BBQ 뷔페를 제공합니다",
+      description: "예식이 진행된 같은 장소에서 뷔페 식사를 제공합니다",
       component: <DinnerCard isDarkTheme={currentIndex >= 2} />,
     },
     {

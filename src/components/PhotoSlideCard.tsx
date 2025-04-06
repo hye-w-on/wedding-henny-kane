@@ -124,12 +124,11 @@ function PhotoSlideCard() {
       <Card>
         <div
           style={{
-            width: "160px",
             position: "relative",
             zIndex: 2,
           }}
         >
-          <img src={logo} alt="logo" style={{ width: "100%" }} />
+          <img src="/logo.webp" alt="logo" style={{ width: "160px" }} />
         </div>
         <ImageWrapper>
           <SlidingContainer>

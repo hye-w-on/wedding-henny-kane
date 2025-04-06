@@ -36,10 +36,11 @@ const Container = styled("div")({
 const ScrollScreen: React.FC = () => {
   const nameCardRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
-  const weddingDayRef = useRef<HTMLDivElement>(null);
+  const timetableRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const envelopeRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({
@@ -53,11 +54,13 @@ const ScrollScreen: React.FC = () => {
       <MainFrame
         scrollToSection={scrollToSection}
         refs={{
+          nameCardRef,
           profileRef,
           galleryRef,
           locationRef,
-          weddingDayRef,
+          timetableRef,
           envelopeRef,
+          contactRef,
         }}
       />
       <MovingBackground />
@@ -66,7 +69,7 @@ const ScrollScreen: React.FC = () => {
         <div ref={nameCardRef}>
           <NamePage />
         </div>
-        <div ref={weddingDayRef}>
+        <div>
           <WeddingDayPage />
         </div>
         <div>
@@ -78,7 +81,7 @@ const ScrollScreen: React.FC = () => {
         <div ref={locationRef}>
           <LocationPage />
         </div>
-        <div>
+        <div ref={timetableRef}>
           <TimetablePage />
         </div>
         <div ref={profileRef}>
@@ -93,7 +96,7 @@ const ScrollScreen: React.FC = () => {
         <div>
           <CarouselGallery />
         </div>
-        <div>
+        <div ref={contactRef}>
           <ContactPage />
         </div>
       </Container>

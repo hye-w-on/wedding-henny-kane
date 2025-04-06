@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
-import colorToken from "../utils/colorToken";
+import { motion } from "motion/react";
+import colorToken from "@/utils/colorToken";
 
 const Container = styled(motion.div)`
   position: fixed;
@@ -8,8 +8,9 @@ const Container = styled(motion.div)`
   left: 0;
   width: 100%;
   height: 100vh;
-  background: ${colorToken.black};
+  background: ${colorToken.realBlack};
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 9999;
@@ -17,29 +18,19 @@ const Container = styled(motion.div)`
 
 const LoaderWrapper = styled(motion.div)`
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  gap: 6px;
+  margin-top: 11px;
 `;
 
 const Dot = styled(motion.div)`
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   background: ${colorToken.white};
   border-radius: 50%;
 `;
-
-const dotVariants = {
-  initial: {
-    y: 0,
-  },
-  animate: {
-    y: [-10, 0, -10],
-    transition: {
-      duration: 1,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-};
 
 const containerVariants = {
   exit: {
@@ -64,15 +55,20 @@ const Splash = ({ isLoading }: PreloaderProps) => {
       exit="exit"
       variants={containerVariants}
     >
+      <img src="/logo.webp" alt="logo" />
       <LoaderWrapper>
         {[0, 1, 2].map((index) => (
           <Dot
             key={index}
-            variants={dotVariants}
             initial="initial"
-            animate="animate"
-            transition={{
-              delay: index * 0.1,
+            animate={{
+              y: [0, -10, 0],
+              transition: {
+                duration: 0.7,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: index * 0.2,
+              },
             }}
           />
         ))}
