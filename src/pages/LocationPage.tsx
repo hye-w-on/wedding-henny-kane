@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useInView } from "motion/react";
 import colorToken from "@/utils/colorToken";
 import duration from "dayjs/plugin/duration";
 import VenueDetailInfo from "@/components/VenueDetailInfo";
@@ -13,7 +13,7 @@ import DestinationIcon from "@/assets/icons/destination.svg";
 import KakaoMapIcon from "@/assets/icons/kakaomap.png";
 import NaverMapIcon from "@/assets/icons/navermap.png";
 import DownSvg from "@/assets/icons/down.svg?react";
-import { padding } from "@mui/system";
+import ShowText from "@/components/showText";
 
 dayjs.extend(duration);
 
@@ -130,7 +130,7 @@ const IconButton = styled(motion.button)({
   fontFamily: "SUITRegular",
   fontWeight: "bold",
   fontSize: "0.7rem",
-  padding: "5px 4px 3px 3px",
+  padding: "4px 4px 4px 3px",
   borderRadius: "12px",
   background: colorToken.gray800,
   border: `1px solid ${colorToken.gray600}`,
@@ -146,6 +146,11 @@ const IconButton = styled(motion.button)({
 });
 
 function LocationPage() {
+  const addressRef = useRef(null);
+  const mapLinkRef = useRef(null);
+  const isAddressInView = useInView(addressRef, { once: false });
+  const isMapLinkInView = useInView(mapLinkRef, { once: false });
+
   const [showToast, setShowToast] = useState(false);
   const [showDetails, setShowDetails] = useState(false); // 상세 정보 표시 여부 상태
 
@@ -248,13 +253,15 @@ function LocationPage() {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              gap: "8px",
               lineHeight: "0.6em",
             }}
+            ref={addressRef}
           >
-            <div style={{ marginTop: "5px" }}>
-              서울 성북구 정릉로10길 127 르한스(한스갤러리)
-            </div>
+            <ShowText isInView={isAddressInView}>
+              <div style={{ marginTop: "5px" }}>
+                서울 성북구 정릉로10길 127 르한스(한스갤러리)
+              </div>
+            </ShowText>
             <div style={{ display: "flex", gap: "8px" }}>
               <IconButton onClick={handleCopy} whileTap={{ scale: 1.1 }}>
                 <img src={CopyIcon} alt="copy" />
@@ -281,7 +288,10 @@ function LocationPage() {
               <NaverMap ref={mapRef} />
             </MapWrapper>
           </div>
-          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+          <div
+            style={{ display: "flex", gap: "10px", marginTop: "10px" }}
+            ref={mapLinkRef}
+          >
             <div
               style={{
                 display: "flex",
@@ -306,7 +316,7 @@ function LocationPage() {
               >
                 <img src={KakaoMapIcon} />
               </motion.button>
-              카카오맵으로 열기
+              <ShowText isInView={isMapLinkInView}>카카오맵으로 열기</ShowText>
             </div>
             <div
               style={{
@@ -332,7 +342,9 @@ function LocationPage() {
               >
                 <img src={NaverMapIcon} />
               </motion.button>
-              네이버맵으로 열기
+              <ShowText isInView={isMapLinkInView} delay={0.2}>
+                네이버맵으로 열기
+              </ShowText>
             </div>
           </div>
         </div>

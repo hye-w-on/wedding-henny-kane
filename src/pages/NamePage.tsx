@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 import colorToken from "@/utils/colorToken";
 import StarSvg from "@/assets/icons/star.svg?react";
+import ShowText from "@/components/showText";
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net";
 
 const OvalContainer = styled.div({
@@ -119,9 +120,10 @@ const GradientContainer = styled.div`
 `;
 
 function NamePage() {
-  const ref = useRef(null);
   const containerRef = useRef(null);
-  const isInView = useInView(ref, { once: false });
+  const isInView = useInView(containerRef, { once: false });
+  const nameRef = useRef(null);
+  const isNameInView = useInView(nameRef, { once: false });
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
@@ -140,7 +142,6 @@ function NamePage() {
 
   return (
     <div
-      ref={containerRef}
       style={{
         width: "100%",
         height: "100vh",
@@ -251,11 +252,26 @@ function NamePage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: staggerDelay }}
           >
-            YOU'RE INVITED TO THE WEDDING OF
+            <ShowText isInView={isInView}>YOU'RE</ShowText>
+            <ShowText delay={0.2} isInView={isInView}>
+              INVITED
+            </ShowText>
+            <ShowText delay={0.4} isInView={isInView}>
+              TO
+            </ShowText>
+            <ShowText delay={0.6} isInView={isInView}>
+              THE
+            </ShowText>
+            <ShowText delay={0.8} isInView={isInView}>
+              WEDDING
+            </ShowText>
+            <ShowText delay={1} isInView={isInView}>
+              OF
+            </ShowText>
           </motion.div>
         </div>
       </div>
-      <GradientContainer ref={ref}>
+      <GradientContainer ref={containerRef}>
         <NameContainer
           style={{
             justifyContent: "flex-start",
@@ -393,6 +409,7 @@ function NamePage() {
             zIndex: 10,
             pointerEvents: "none",
           }}
+          ref={nameRef}
         >
           <div
             style={{
@@ -412,8 +429,20 @@ function NamePage() {
               }}
             >
               <ProfileTitle>bride</ProfileTitle>
-              <ProfileName>윤혜원</ProfileName>
-              <ProfileParents>윤창기와 송영희의 딸</ProfileParents>
+              <ProfileName>
+                <ShowText delay={0.6} isInView={isNameInView}>
+                  윤혜원
+                </ShowText>
+              </ProfileName>
+              <ProfileParents>
+                <ShowText isInView={isNameInView}>윤창기와</ShowText>
+                <ShowText delay={0.2} isInView={isNameInView}>
+                  송영희의
+                </ShowText>
+                <ShowText delay={0.4} noSpace isInView={isNameInView}>
+                  딸
+                </ShowText>
+              </ProfileParents>
             </ProfileContainer>
             <ProfileContainer
               style={{
@@ -423,8 +452,20 @@ function NamePage() {
               }}
             >
               <ProfileTitle>groom</ProfileTitle>
-              <ProfileName>이명진</ProfileName>
-              <ProfileParents>이영길과 김영숙의 아들</ProfileParents>
+              <ProfileName>
+                <ShowText delay={0.6} isInView={isNameInView}>
+                  이명진
+                </ShowText>
+              </ProfileName>
+              <ProfileParents>
+                <ShowText isInView={isNameInView}>이영길과</ShowText>
+                <ShowText delay={0.2} isInView={isNameInView}>
+                  김영숙의
+                </ShowText>
+                <ShowText delay={0.4} noSpace isInView={isNameInView}>
+                  아들
+                </ShowText>
+              </ProfileParents>
             </ProfileContainer>
           </div>
         </div>

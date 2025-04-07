@@ -1,14 +1,24 @@
 import styled from "@emotion/styled";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { useRef, useState } from "react";
 import colorToken from "../utils/colorToken";
 import Letter from "../components/Letter";
 import envelope from "@/assets/images/envelope.png";
 import envelopeTop from "@/assets/images/envelopeTop.png";
 import envelopeInner from "@/assets/images/envelopeInner.png";
+import ShowText from "@/components/showText";
 
 const EnvelopePage = () => {
-  const containerRef = useRef(null); // 특정 컨테이너 참조
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: false });
+  const textRef = useRef(null);
+  const isTextInView = useInView(textRef, { once: false });
 
   // 컨테이너의 스크롤 진행 추적
   const { scrollYProgress } = useScroll({
@@ -24,10 +34,6 @@ const EnvelopePage = () => {
   // 편지지 애니메이션: rotateX와 y 값 변환
   const paperRotateX = useTransform(scrollYProgress, [0.5, 0], [30, 0]);
   const paperY = useTransform(scrollYProgress, [0.5, 0], [0, -200]);
-
-  // 저장 시 편지지 애니메이션
-  const savedPaperRotateX = useTransform(scrollYProgress, [0, 1], [0, 30]);
-  const savedPaperY = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   // 부드러운 애니메이션 적용
   const smoothPaperRotateX = useSpring(paperRotateX, {
@@ -100,10 +106,14 @@ const EnvelopePage = () => {
           position: "absolute",
           top: "195px",
           zIndex: 2,
+          gap: "2px",
         }}
+        ref={textRef}
       >
-        <div>원활한 식사 제공을 위해 참석 인원 확인이 필요합니다.</div>
-        <div>
+        <ShowText isInView={isTextInView}>
+          원활한 식사 제공을 위해 참석 인원 확인이 필요합니다.
+        </ShowText>
+        <ShowText isInView={isTextInView} delay={0.2}>
           <b>
             <u>5월 31일</u>
           </b>
@@ -112,7 +122,7 @@ const EnvelopePage = () => {
             <u>참석여부</u>
           </b>
           를 회신해주세요
-        </div>
+        </ShowText>
       </div>
 
       {/* 상단 박스 */}

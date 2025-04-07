@@ -1,12 +1,10 @@
 import styled from "@emotion/styled";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { SlideUpText } from "./CommonStyled";
-import { motion, useScroll, useSpring, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import ScrollProgressBar from "../../components/ScrollProgressBar";
 import colorToken from "../../utils/colorToken";
 import StarSvg from "../../assets/icons/star.svg?react";
-import CrushSvg from "@/assets/icons/crush.svg?react";
-import HeartSvg from "@/assets/icons/heart.svg?react";
 
 const Header = styled.header({
   position: "fixed",
@@ -17,7 +15,7 @@ const Header = styled.header({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "0 20px",
+  padding: "0 15px",
   boxSizing: "border-box",
   //backgroundColor: "rgba(255, 255, 255, 0.1)",
   //backdropFilter: "blur(10px)",
@@ -46,7 +44,7 @@ const Overlay = styled.div<{ isOpen: boolean }>(({ isOpen }) => ({
   zIndex: 998,
 }));
 
-const MenuList = styled(motion.div)<{ isOpen: boolean }>(({ isOpen }) => ({
+const MenuList = styled(motion.div)({
   position: "fixed",
   top: "50%",
   left: "50%",
@@ -60,11 +58,8 @@ const MenuList = styled(motion.div)<{ isOpen: boolean }>(({ isOpen }) => ({
   borderRadius: "8px",
   padding: "20px",
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-  opacity: isOpen ? 1 : 0,
-  visibility: isOpen ? "visible" : "hidden",
-  transition: "opacity 0.3s ease, visibility 0.3s ease",
   zIndex: 999,
-}));
+});
 
 const MenuItem = styled(motion.div)({
   display: "flex",
@@ -95,8 +90,40 @@ const MenuDescription = styled(motion.div)({
 });
 
 const menuVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: { opacity: 1, x: 0 },
+  hidden: { opacity: 0, x: -20, y: 20 },
+  visible: { opacity: 1, x: 0, y: 0 },
+};
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const HeaderText = styled(motion.span)({
+  display: "inline-block",
+});
+
+const headerTextVariants = {
+  initial: {
+    opacity: 0,
+    x: -20,
+    filter: "blur(10px)",
+  },
+  animate: {
+    opacity: 1,
+    filter: "blur(0px)",
+    x: 0,
+  },
+  exit: {
+    opacity: 0,
+    filter: "blur(10px)",
+    x: 20,
+  },
 };
 
 interface MainFrameProps {
@@ -131,7 +158,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
   };
 
   return (
-    <>
+    <div>
       <ScrollProgressBar />
       <Header>
         <HeaderItem>
@@ -140,62 +167,84 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
             onClick={() => handleMenuClick(refs.nameCardRef)}
           />
         </HeaderItem>
-        <HeaderItem onClick={toggleMenu}>MENU</HeaderItem>
+        <HeaderItem onClick={toggleMenu}>
+          <AnimatePresence mode="wait">
+            <HeaderText
+              key={isOpen ? "close" : "menu"}
+              variants={headerTextVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.2 }}
+            >
+              {isOpen ? "CLOSE" : "MENU"}
+            </HeaderText>
+          </AnimatePresence>
+        </HeaderItem>
       </Header>
 
       <Overlay isOpen={showOverlay} />
-
-      <MenuList isOpen={isOpen}>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.envelopeRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <SlideUpText>RSVP</SlideUpText>
-          <MenuDescription>참석회신</MenuDescription>
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.locationRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <SlideUpText>Location</SlideUpText>
-          <MenuDescription>오시는 길</MenuDescription>
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.timetableRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <MenuDescription>식순</MenuDescription>
-          <SlideUpText>TIMETABLE</SlideUpText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.profileRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <SlideUpText>About</SlideUpText>
-          <MenuDescription>소개</MenuDescription>
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.galleryRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <MenuDescription>사진</MenuDescription>
-          <SlideUpText>Gallery</SlideUpText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleMenuClick(refs.contactRef)}
-          variants={menuVariants}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <SlideUpText>CONTACT</SlideUpText>
-          <MenuDescription>연락</MenuDescription>
-        </MenuItem>
-      </MenuList>
-    </>
+      <AnimatePresence>
+        {isOpen && (
+          <MenuList
+            variants={listVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            transition={{ duration: 0.5 }}
+          >
+            <MenuItem
+              variants={menuVariants}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleMenuClick(refs.envelopeRef)}
+            >
+              <SlideUpText>RSVP</SlideUpText>
+              <MenuDescription>참석회신</MenuDescription>
+            </MenuItem>
+            <MenuItem
+              variants={menuVariants}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleMenuClick(refs.locationRef)}
+            >
+              <SlideUpText>Location</SlideUpText>
+              <MenuDescription>오시는 길</MenuDescription>
+            </MenuItem>
+            <MenuItem
+              variants={menuVariants}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleMenuClick(refs.timetableRef)}
+            >
+              <MenuDescription>식순</MenuDescription>
+              <SlideUpText>TIMETABLE</SlideUpText>
+            </MenuItem>
+            <MenuItem
+              variants={menuVariants}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleMenuClick(refs.profileRef)}
+            >
+              <SlideUpText>About</SlideUpText>
+              <MenuDescription>소개</MenuDescription>
+            </MenuItem>
+            <MenuItem
+              variants={menuVariants}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleMenuClick(refs.galleryRef)}
+            >
+              <MenuDescription>사진</MenuDescription>
+              <SlideUpText>Gallery</SlideUpText>
+            </MenuItem>
+            <MenuItem
+              variants={menuVariants}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleMenuClick(refs.contactRef)}
+            >
+              <SlideUpText>CONTACT</SlideUpText>
+              <MenuDescription>연락</MenuDescription>
+            </MenuItem>
+          </MenuList>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

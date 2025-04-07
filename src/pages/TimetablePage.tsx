@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { motion, useScroll } from "motion/react";
+import { motion, useScroll, AnimatePresence } from "motion/react";
 import React from "react";
 import StarSvg from "@/assets/icons/star.svg?react";
 import WineSvg from "@/assets/icons/wine.svg?react";
@@ -9,6 +9,7 @@ import BeerSvg from "@/assets/icons/beer.svg?react";
 import ToastSvg from "@/assets/icons/toast.svg?react";
 import ForkandknifeSvg from "@/assets/icons/forkandknife.svg?react";
 import HeartSvg from "@/assets/icons/heart.svg?react";
+import HandsHeartSvg from "@/assets/icons/handheart.svg?react";
 
 import colorToken from "@/utils/colorToken";
 
@@ -72,6 +73,28 @@ const Description = styled("div")({
   textAlign: "center",
   transition: "color 0.5s ease",
 });
+
+const DescriptionText = styled(motion.div)({
+  display: "inline-block",
+});
+
+const descriptionVariants = {
+  initial: {
+    opacity: 0,
+    x: -20,
+    filter: "blur(10px)",
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+  },
+  exit: {
+    opacity: 0,
+    x: 20,
+    filter: "blur(10px)",
+  },
+};
 
 const PageTitle = styled("div")({
   position: "absolute",
@@ -138,10 +161,10 @@ const StyledBeer = styled(BeerSvg)({
   },
 });
 
-const StyledToast = styled(ToastSvg)({
-  width: "20px",
-  height: "20px",
-  "& path:nth-of-type(2)": {
+const StyledHandHeart = styled(HandsHeartSvg)({
+  width: "25px",
+  height: "25px",
+  "& *": {
     fill: "currentColor",
   },
 });
@@ -173,8 +196,8 @@ const ToastCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
     >
       <ToastSvg
         style={{
-          width: "20px",
-          height: "20px",
+          width: "25px",
+          height: "25px",
         }}
       />
     </div>
@@ -192,8 +215,8 @@ const HeartCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
     >
       <HeartSvg
         style={{
-          width: "20px",
-          height: "20px",
+          width: "22px",
+          height: "22px",
         }}
       />
     </div>
@@ -214,6 +237,19 @@ const DinnerCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
   );
 };
 
+const HandHeartCard = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "10px",
+        color: isDarkTheme ? "white" : "black",
+      }}
+    >
+      <StyledHandHeart />
+    </div>
+  );
+};
 const TimetablePage: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -243,7 +279,15 @@ const TimetablePage: React.FC = () => {
       time: "5PM",
       title: "OPENING",
       angle: 0,
-      description: `환영합니다! 웰컴푸드와 샴페인이 준비되어있으니 식전에 즐겨주세요`,
+      description: (
+        <div>
+          환영합니다!
+          <br />
+          웰컴푸드와 샴페인이 준비되어있으니
+          <br />
+          식전에 즐겨주세요
+        </div>
+      ),
       component: <ToastCard isDarkTheme={currentIndex >= 2} />,
     },
     {
@@ -257,22 +301,40 @@ const TimetablePage: React.FC = () => {
       time: "7PM",
       title: "DINNER",
       angle: 90,
-      description: "예식이 진행된 같은 장소에서 뷔페 식사를 제공합니다",
+      description: (
+        <div>
+          예식이 진행된 같은 장소에서
+          <br />
+          뷔페식으로 식사를 제공합니다
+        </div>
+      ),
       component: <DinnerCard isDarkTheme={currentIndex >= 2} />,
     },
     {
       time: "8PM",
       title: "RECEPTION",
       angle: 135,
-      description: "이어서 애프터 파티를 진행합니다. 함께 먹고 마시고 얘기해요",
+      description: (
+        <div>
+          이어서 애프터 파티를 진행합니다
+          <br />
+          함께 먹고 마시고 얘기해요
+        </div>
+      ),
       component: <DrinkCard isDarkTheme={currentIndex >= 2} />,
     },
     {
       time: "9PM",
       title: "CLOSING",
       angle: 180,
-      description: "저희의 결혼을 축하해주고, 함께 즐겨주셔서 감사합니다",
-      component: <></>,
+      description: (
+        <div>
+          저희의 결혼을 축하해주고,
+          <br />
+          함께 즐겨주셔서 감사합니다
+        </div>
+      ),
+      component: <HandHeartCard isDarkTheme={currentIndex >= 2} />,
     },
   ];
 
@@ -359,7 +421,16 @@ const TimetablePage: React.FC = () => {
           TIMETABLE
         </PageTitle>
         <PageImage style={{ color: isDarkTheme ? "white" : "black" }}>
-          {numbers[currentIndex].component}
+          <DescriptionText
+            key={currentIndex}
+            variants={descriptionVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.3 }}
+          >
+            {numbers[currentIndex].component}
+          </DescriptionText>
         </PageImage>
         <CircleWrapper>
           <Circle
@@ -419,7 +490,18 @@ const TimetablePage: React.FC = () => {
           </Circle>
         </CircleWrapper>
         <Description style={{ color: isDarkTheme ? "white" : "black" }}>
-          {numbers[currentIndex].description}
+          <AnimatePresence mode="wait">
+            <DescriptionText
+              key={currentIndex}
+              variants={descriptionVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.2 }}
+            >
+              {numbers[currentIndex].description}
+            </DescriptionText>
+          </AnimatePresence>
         </Description>
       </div>
     </section>

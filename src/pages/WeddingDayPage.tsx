@@ -6,6 +6,7 @@ import colorToken from "../utils/colorToken";
 import { useEffect, useState, useRef } from "react";
 
 import duration from "dayjs/plugin/duration.js";
+import ShowText from "@/components/showText";
 dayjs.extend(duration);
 
 const targetDate = dayjs("2025-06-21 18:00:00");
@@ -40,20 +41,6 @@ const DateNumber = styled.div({
   textAlign: "center",
 });
 
-const DateSlotWrapper = styled(motion.div)({
-  display: "flex",
-  flexDirection: "row",
-  gap: "2px",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#fff",
-});
-const DateSlot = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  position: "absolute",
-});
 const DateSlotNumber = styled.div({
   fontFamily: "PPEditorialNew",
   fontSize: "1rem",
@@ -129,9 +116,7 @@ function WeddingDayPage() {
   });
 
   const dateRef = useRef(null);
-  const timeRef = useRef(null);
   const isDateInView = useInView(dateRef, { once: false });
-  const isTimeInView = useInView(timeRef, { once: false });
 
   const countRef = useRef(null);
   const isCountInView = useInView(countRef, { once: false });
@@ -188,7 +173,7 @@ function WeddingDayPage() {
 
   return (
     <Card>
-      <InnerBox>
+      <InnerBox ref={dateRef}>
         <TopLeftSquare {...squareAnimation} />
         <TopRightSquare
           {...{
@@ -251,7 +236,6 @@ function WeddingDayPage() {
         </div>
 
         <motion.div
-          ref={dateRef}
           initial={{ filter: "blur(8px)", opacity: 0 }}
           animate={
             isDateInView
@@ -273,14 +257,19 @@ function WeddingDayPage() {
         </motion.div>
 
         <div style={{ fontSize: "0.6rem", fontFamily: "satoshi" }}>
-          SATURDAY SUMMER NIGHT
+          <ShowText isInView={isDateInView}>SATURDAY</ShowText>
+          <ShowText delay={0.2} isInView={isDateInView}>
+            SUMMER
+          </ShowText>
+          <ShowText delay={0.4} noSpace isInView={isDateInView}>
+            NIGHT
+          </ShowText>
         </div>
 
         <motion.div
-          ref={timeRef}
           initial={{ filter: "blur(8px)", opacity: 0 }}
           animate={
-            isTimeInView
+            isDateInView
               ? { filter: "blur(0px)", opacity: 1 }
               : { filter: "blur(8px)", opacity: 0 }
           }
@@ -297,7 +286,9 @@ function WeddingDayPage() {
             marginBottom: "10px",
           }}
         >
-          ✶ COMING SOON ✶
+          <ShowText delay={0.6} noSpace isInView={isDateInView}>
+            ✶ COMING SOON ✶
+          </ShowText>
         </div>
 
         <motion.div
@@ -346,7 +337,7 @@ function WeddingDayPage() {
               fontFamily: "PPEditorialNew",
               fontWeight: "800",
               color: colorToken.black,
-              width: "30px",
+              width: "28px",
               height: "20px",
               margin: "0px",
               lineHeight: "1em",
@@ -358,21 +349,20 @@ function WeddingDayPage() {
             justifyContent: "center",
           },
           "& .MuiPickersDay-root": {
-            width: "30px",
-            height: "30px",
-            fontSize: "0.8rem",
-            fontFamily: "PPEditorialNew",
+            width: "28px",
+            height: "28px",
+            fontSize: "0.7rem",
+            fontFamily: "SUITRegular",
             fontWeight: "800",
-            letterSpacing: "0.1em",
             margin: "0px",
             lineHeight: "1",
-            padding: "4px 0 0 0",
+            padding: "0 0 0 0",
           },
           "& .MuiPickersCalendarHeader-root": {
             marginBottom: "10px",
             minHeight: "10px",
             "& .MuiPickersCalendarHeader-label": {
-              fontSize: "1rem",
+              fontSize: "1.2rem",
               fontWeight: "400",
               fontFamily: "PPEditorialNew",
               paddingBottom: "0px",
@@ -381,7 +371,7 @@ function WeddingDayPage() {
           "& .MuiDayCalendar-monthContainer": {
             margin: "0px",
           },
-          width: "300px",
+          width: "250px",
           height: "210px",
           marginTop: "20px",
           marginBottom: "20px",
