@@ -31,6 +31,16 @@ const Container = styled("div")({
     display: "none",
   },
   touchAction: "pan-y",
+  "& > div": {
+    marginBottom: 0,
+    marginTop: 0,
+  },
+  backgroundColor: colorToken.white,
+});
+
+const PageSection = styled.div({
+  margin: 0,
+  padding: 0,
 });
 
 const ScrollScreen: React.FC = () => {
@@ -66,39 +76,39 @@ const ScrollScreen: React.FC = () => {
       <MovingBackground />
       <Container id="container">
         <Background />
-        <div ref={nameCardRef}>
+        <PageSection ref={nameCardRef}>
           <NamePage />
-        </div>
-        <div>
+        </PageSection>
+        <PageSection>
           <WeddingDayPage />
-        </div>
-        <div>
+        </PageSection>
+        <PageSection>
           <PhotoSlideCard />
-        </div>
-        <div ref={envelopeRef}>
+        </PageSection>
+        <PageSection ref={envelopeRef}>
           <EnvelopePage />
-        </div>
-        <div ref={locationRef}>
+        </PageSection>
+        <PageSection ref={locationRef}>
           <LocationPage />
-        </div>
-        <div ref={timetableRef}>
+        </PageSection>
+        <PageSection ref={timetableRef}>
           <TimetablePage />
-        </div>
-        <div ref={profileRef}>
+        </PageSection>
+        <PageSection ref={profileRef}>
           <ProfileScrollPage />
-        </div>
-        <div ref={galleryRef}>
+        </PageSection>
+        <PageSection ref={galleryRef}>
           <OverlayExpandGallery />
-        </div>
-        <div>
+        </PageSection>
+        <PageSection>
           <FlexExpandGallery />
-        </div>
-        <div>
+        </PageSection>
+        <PageSection>
           <CarouselGallery />
-        </div>
-        <div ref={contactRef}>
+        </PageSection>
+        <PageSection ref={contactRef}>
           <ContactPage />
-        </div>
+        </PageSection>
       </Container>
     </>
   );
