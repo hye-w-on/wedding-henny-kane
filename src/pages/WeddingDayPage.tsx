@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { DateCalendar } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { motion, useInView, animate, cubicBezier } from "motion/react";
-import colorToken from "../utils/colorToken";
+import colorToken from "@/utils/colorToken";
 import { useEffect, useState, useRef } from "react";
 
 import duration from "dayjs/plugin/duration.js";

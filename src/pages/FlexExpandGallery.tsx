@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
 import { motion } from "motion/react";
-import colorToken from "../utils/colorToken";
+import colorToken from "@/utils/colorToken";
 
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net/yds";
 

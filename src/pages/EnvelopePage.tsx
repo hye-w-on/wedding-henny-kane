@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   motion,
   useInView,
@@ -6,9 +5,9 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { useRef, useState } from "react";
-import colorToken from "../utils/colorToken";
-import Letter from "../components/Letter";
+import { useRef } from "react";
+import colorToken from "@/utils/colorToken";
+import Letter from "@/components/Letter";
 import envelope from "@/assets/images/envelope.png";
 import envelopeTop from "@/assets/images/envelopeTop.png";
 import envelopeInner from "@/assets/images/envelopeInner.png";

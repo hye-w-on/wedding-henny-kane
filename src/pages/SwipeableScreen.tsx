@@ -1,7 +1,6 @@
 import React, { useState, TouchEvent } from "react";
 import "./styles.css";
 import { AnimatePresence, motion } from "motion/react";
-import { SlideUpText } from "./common/CommonStyled";
 
 const PageOne: React.FC = () => {
   return (
@@ -16,7 +15,7 @@ const PageOne: React.FC = () => {
         }}
       >
         <h1>Page 1</h1>
-        <SlideUpText>This is the first page.</SlideUpText>
+        <>This is the first page.</>
       </div>
     </>
   );
@@ -33,7 +32,7 @@ const PageTwo = () => (
     }}
   >
     <h1>Page 2</h1>
-    <SlideUpText>This is the 2 page.</SlideUpText>
+    <>This is the 2 page.</>
   </div>
 );
 

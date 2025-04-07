@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "motion/react";
-import colorToken from "../utils/colorToken";
-import BackwardIcon from "../assets/icons/backward.svg";
-import ForwardIcon from "../assets/icons/forward.svg";
+import colorToken from "@/utils/colorToken";
+import BackwardIcon from "@/assets/icons/backward.svg";
+import ForwardIcon from "@/assets/icons/forward.svg";
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net/newzealand";
 
 interface ImageData {

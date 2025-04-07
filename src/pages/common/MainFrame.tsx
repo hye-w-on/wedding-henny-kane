@@ -1,10 +1,9 @@
 import styled from "@emotion/styled";
 import React, { useState } from "react";
-import { SlideUpText } from "./CommonStyled";
 import { motion, AnimatePresence } from "motion/react";
-import ScrollProgressBar from "../../components/ScrollProgressBar";
-import colorToken from "../../utils/colorToken";
-import StarSvg from "../../assets/icons/star.svg?react";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import colorToken from "@/utils/colorToken";
+import StarSvg from "@/assets/icons/star.svg?react";
 
 const Header = styled.header({
   position: "fixed",
@@ -198,7 +197,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.envelopeRef)}
             >
-              <SlideUpText>RSVP</SlideUpText>
+              RSVP
               <MenuDescription>참석회신</MenuDescription>
             </MenuItem>
             <MenuItem
@@ -206,7 +205,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.locationRef)}
             >
-              <SlideUpText>Location</SlideUpText>
+              Location
               <MenuDescription>오시는 길</MenuDescription>
             </MenuItem>
             <MenuItem
@@ -215,14 +214,14 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
               onClick={() => handleMenuClick(refs.timetableRef)}
             >
               <MenuDescription>식순</MenuDescription>
-              <SlideUpText>TIMETABLE</SlideUpText>
+              TIMETABLE
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.profileRef)}
             >
-              <SlideUpText>About</SlideUpText>
+              About
               <MenuDescription>소개</MenuDescription>
             </MenuItem>
             <MenuItem
@@ -231,14 +230,14 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
               onClick={() => handleMenuClick(refs.galleryRef)}
             >
               <MenuDescription>사진</MenuDescription>
-              <SlideUpText>Gallery</SlideUpText>
+              Gallery
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.contactRef)}
             >
-              <SlideUpText>CONTACT</SlideUpText>
+              CONTACT
               <MenuDescription>연락</MenuDescription>
             </MenuItem>
           </MenuList>

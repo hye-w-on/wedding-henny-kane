@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import styled from "@emotion/styled";
 import { motion, LayoutGroup, AnimatePresence } from "motion/react";
-import colorToken from "../utils/colorToken";
+import colorToken from "@/utils/colorToken";
 
 interface ImageData {
   id: string;

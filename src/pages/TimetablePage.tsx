@@ -13,24 +13,6 @@ import HandsHeartSvg from "@/assets/icons/handheart.svg?react";
 
 import colorToken from "@/utils/colorToken";
 
-const Container = styled("div")({
-  height: "400vh",
-  position: "relative",
-  overflow: "hidden",
-});
-
-const StickyContainer = styled("div")({
-  height: "100vh",
-  width: "100%",
-  position: "sticky",
-  top: 0,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  transition: "background-color 0.5s ease",
-  zIndex: 10,
-});
-
 const CircleWrapper = styled("div")({
   transform: "translateX(-45vh)",
 });
