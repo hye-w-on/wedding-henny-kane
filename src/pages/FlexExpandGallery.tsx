@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
 import colorToken from "@/utils/colorToken";
+import ShowText from "@/components/showText";
 
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net/yds";
 
@@ -53,6 +54,8 @@ const SlideImage = styled(motion.img)`
 `;
 
 const FlexExpandingSlider = () => {
+  const infoRef = useRef(null);
+  const isInfoInView = useInView(infoRef, { once: false });
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   return (
@@ -64,22 +67,34 @@ const FlexExpandingSlider = () => {
           justifyContent: "center",
           alignItems: "center",
           color: colorToken.white,
-          gap: "10px",
-          marginBottom: "10px",
+          gap: "5px",
+          marginBottom: "15px",
         }}
+        ref={infoRef}
       >
-        <div style={{ fontFamily: "PPEditorialOldItalic", fontSize: "2.5rem" }}>
+        <motion.div
+          style={{ fontFamily: "PPEditorialOldItalic", fontSize: "2.5rem" }}
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={{
+            opacity: isInfoInView ? 1 : 0,
+            x: isInfoInView ? 0 : -20,
+            filter: isInfoInView ? "blur(0px)" : "blur(10px)",
+          }}
+          transition={{ duration: 0.5 }}
+        >
           Film Photos
-        </div>
-        <div
+        </motion.div>
+        <motion.div
           style={{
             fontFamily: "SUITRegular",
             fontSize: "0.8rem",
             color: "#ffffffaa",
           }}
         >
-          클릭하면 확장이 가능합니다
-        </div>
+          <ShowText isInView={isInfoInView}>
+            클릭하면 확장이 가능합니다
+          </ShowText>
+        </motion.div>
       </div>
 
       <Slider>

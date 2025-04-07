@@ -34,7 +34,7 @@ export const colorTokensCSS = `
     --color-baby-pink: #F2CECE;
     --color-red: #bd1550;
     --color-pink: #FF8CB5;
-    --color-beige: #D9D4CF;
+    --color-beige: #D0CDC8;
     --color-gray-900: #1D2022;
     --color-gray-800: #26282b;
     --color-gray-700: #333639;

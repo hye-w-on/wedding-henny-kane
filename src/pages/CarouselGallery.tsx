@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useInView } from "motion/react";
 import colorToken from "@/utils/colorToken";
 import BackwardIcon from "@/assets/icons/backward.svg";
 import ForwardIcon from "@/assets/icons/forward.svg";
+import ShowText from "@/components/showText";
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net/newzealand";
 
 interface ImageData {
@@ -130,6 +131,8 @@ const ExpandedImage = styled(motion.img)`
 `;
 
 const CarouselGallery = () => {
+  const infoRef = useRef(null);
+  const isInfoInView = useInView(infoRef, { once: false });
   const [displayedImages, setDisplayedImages] = useState(originalImages);
   const [index, setIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -204,25 +207,44 @@ const CarouselGallery = () => {
             justifyContent: "center",
             alignItems: "flex-end",
           }}
+          ref={infoRef}
         >
-          <div
+          <motion.div
             style={{ fontFamily: "PPEditorialOldItalic", fontSize: "2.5rem" }}
+            initial={{ opacity: 0, filter: "blur(10px)" }}
+            animate={{
+              opacity: isInfoInView ? 1 : 0,
+              x: isInfoInView ? 0 : -20,
+              filter: isInfoInView ? "blur(0px)" : "blur(10px)",
+            }}
+            transition={{ duration: 0.5 }}
           >
             New Zealand
-          </div>
-          <div style={{ fontFamily: "PPEditorialOldItalic", fontSize: "2rem" }}>
+          </motion.div>
+          <motion.div
+            style={{ fontFamily: "PPEditorialOldItalic", fontSize: "2rem" }}
+            initial={{ opacity: 0, filter: "blur(10px)" }}
+            animate={{
+              opacity: isInfoInView ? 1 : 0,
+              x: isInfoInView ? 0 : -20,
+              filter: isInfoInView ? "blur(0px)" : "blur(10px)",
+            }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             Self Snapshots
-          </div>
+          </motion.div>
         </div>
         <div
           style={{
-            marginTop: "10px",
+            marginTop: "8px",
             fontFamily: "SUITRegular",
             fontSize: "0.8rem",
             color: "#ffffff99",
           }}
         >
-          클릭하면 확대가 가능합니다
+          <ShowText isInView={isInfoInView} delay={0.1}>
+            클릭하면 확대가 가능합니다
+          </ShowText>
         </div>
       </div>
       <Track

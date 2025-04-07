@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "motion/react";
 import { colorToken } from "@/utils/colorToken";
 import PhoneIcon from "@/assets/icons/phone.svg";
 import MessageIcon from "@/assets/icons/message.svg";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownSvg from "@/assets/icons/down.svg?react";
 import Toast from "@/components/Toast";
+import ShowText from "@/components/showText";
 
 interface ContactInfo {
   role: string;
@@ -96,7 +97,7 @@ const GradientContainer = styled("div")({
   zIndex: -1,
 });
 
-const Title = styled("h1")({
+const Title = styled(motion.div)({
   fontSize: "5rem",
   fontWeight: "bold",
   fontFamily: '"PPPlayground"',
@@ -105,10 +106,10 @@ const Title = styled("h1")({
   zIndex: 1,
 });
 
-const SubTitle = styled("p")({
+const SubTitle = styled(motion.div)({
   color: "rgba(255, 255, 255, 0.467)",
   lineHeight: 1.2,
-  fontSize: "0.7rem",
+  fontSize: "0.8rem",
   marginBottom: "20px",
   position: "relative",
   zIndex: 1,
@@ -305,6 +306,9 @@ const CopyButton = styled("div")({
 });
 
 const ContactPage = () => {
+  const infoRef = useRef(null);
+  const isInfoInView = useInView(infoRef, { once: false });
+
   const [activeTab, setActiveTab] = useState<"groom" | "bride">("groom");
   const [showToast, setShowToast] = useState(false);
   const [showAccountModals, setShowAccountModals] = useState<string[]>([]);
@@ -427,11 +431,23 @@ const ContactPage = () => {
         </GradientContainer>
       </Background>
 
-      <Title>Contact</Title>
+      <Title
+        ref={infoRef}
+        initial={{ opacity: 0, filter: "blur(10px)" }}
+        animate={{
+          opacity: isInfoInView ? 1 : 0,
+          x: isInfoInView ? 0 : -20,
+          filter: isInfoInView ? "blur(0px)" : "blur(10px)",
+        }}
+        transition={{ duration: 0.5 }}
+      >
+        Contact
+      </Title>
       <SubTitle>
-        방문이 어려우신 분들을 위해 기재하였습니다
-        <br />
-        너그러운 마음으로 양해 부탁드립니다
+        <ShowText isInView={isInfoInView} delay={0.2}>
+          방문이 어려우신 분들을 위해 기재하였습니다
+          <br /> 너그러운 마음으로 양해 부탁드립니다
+        </ShowText>
       </SubTitle>
 
       <TabContainer>

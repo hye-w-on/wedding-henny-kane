@@ -1,7 +1,8 @@
-import { memo, useState } from "react";
+import { memo, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { motion, LayoutGroup, AnimatePresence } from "motion/react";
+import { motion, LayoutGroup, AnimatePresence, useInView } from "motion/react";
 import colorToken from "@/utils/colorToken";
+import ShowText from "@/components/showText";
 
 interface ImageData {
   id: string;
@@ -32,7 +33,7 @@ const images: ImageData[] = [...group100Images, ...group200Images];
 
 const Container = styled.div`
   background: ${colorToken.black};
-  padding: 30px 15px 40px 15px;
+  padding: 50px 15px 40px 15px;
 `;
 
 const GalleryGrid = styled.ul`
@@ -148,6 +149,8 @@ function ExpandedView({ image, onClick }: ExpandedViewProps) {
 }
 
 const OverlayExpandGallery = () => {
+  const infoRef = useRef(null);
+  const isInfoInView = useInView(infoRef, { once: false });
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selectedImage = images.find((img) => img.id === selectedId);
@@ -161,22 +164,34 @@ const OverlayExpandGallery = () => {
           justifyContent: "center",
           alignItems: "center",
           color: colorToken.white,
-          gap: "12px",
-          marginBottom: "10px",
+          gap: "11px",
+          marginBottom: "15px",
         }}
+        ref={infoRef}
       >
-        <div style={{ fontFamily: "PPEditorialOldItalic", fontSize: "4rem" }}>
+        <motion.div
+          style={{ fontFamily: "PPEditorialOldItalic", fontSize: "4rem" }}
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={{
+            opacity: isInfoInView ? 1 : 0,
+            x: isInfoInView ? 0 : -20,
+            filter: isInfoInView ? "blur(0px)" : "blur(10px)",
+          }}
+          transition={{ duration: 0.5 }}
+        >
           Gallery
-        </div>
-        <div
+        </motion.div>
+        <motion.div
           style={{
             fontFamily: "SUITRegular",
             fontSize: "0.8rem",
             color: "#ffffffaa",
           }}
         >
-          클릭하면 확대가 가능합니다
-        </div>
+          <ShowText isInView={isInfoInView}>
+            클릭하면 확대가 가능합니다
+          </ShowText>
+        </motion.div>
       </div>
       <LayoutGroup>
         <Gallery images={images} setSelectedId={setSelectedId} />
