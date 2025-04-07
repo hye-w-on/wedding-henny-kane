@@ -6,26 +6,8 @@
   font-style: normal;
 }
 @font-face {
-  font-family: "RoobertTRIAL";
-  src: url("/src/assets/fonts/RoobertTRIAL-Medium.otf") format("opentype");
-}
-@font-face {
-  font-family: "Freesentation";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2")
-    format("woff2");
-  font-weight: 900;
-  font-style: normal;
-}
-@font-face {
-  font-family: "FunnelSans";
-  src: url("https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Timmana&display=swap")
-    format("woff2");
-  font-style: normal;
-}
-@font-face {
   font-family: "integralCF";
-  src: url("/src/assets/fonts/Fontspring-DEMO-integralcf-regular.otf")
-    format("opentype");
+  src: url("/fonts/Fontspring-DEMO-integralcf-regular.otf") format("opentype");
 }
 
 /*thin*/
@@ -56,8 +38,7 @@
 
 @font-face {
   font-family: "PPEditorialOldItalic";
-  src: url("/src/assets/fonts/PPEditorialOld-UltralightItalic.otf")
-    format("opentype");
+  src: url("/fonts/PPEditorialOld-UltralightItalic.otf") format("opentype");
 }
 
 /*한글*/

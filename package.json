@@ -25,7 +25,6 @@
     "gsap": "^3.12.7",
     "motion": "^12.4.7",
     "react": "^18.3.1",
-    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^5.0.0",
     "react-router-dom": "^7.1.5",

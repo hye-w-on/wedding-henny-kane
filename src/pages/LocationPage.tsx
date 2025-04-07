@@ -128,7 +128,6 @@ const IconButton = styled(motion.button)({
   width: "80px",
   height: "25px",
   fontFamily: "SUITRegular",
-  fontWeight: "bold",
   fontSize: "0.7rem",
   padding: "4px 4px 4px 3px",
   borderRadius: "12px",

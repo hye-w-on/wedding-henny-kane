@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   Chart,
   RadialLinearScale,
@@ -9,13 +8,11 @@ import {
   Legend,
 } from "chart.js";
 import { useRef, useState } from "react";
-import { Radar } from "react-chartjs-2";
-import Balloon from "./Balloon";
 import colorToken from "../utils/colorToken";
-import image from "@/assets/images/p01.png";
 import IdGroom from "@/assets/images/id_groom.webp";
 import IdBride from "@/assets/images/id_bride.webp";
 import { motion } from "motion/react";
+import Star5Svg from "@/assets/icons/star5.svg?react";
 
 Chart.register(
   RadialLinearScale,
@@ -140,7 +137,8 @@ function Profile({ isVisible, type }: ProfileProps) {
         </div>
         <div
           style={{
-            fontFamily: "Freesentation",
+            fontFamily: "helvetica",
+            fontWeight: "bold",
             fontSize: "2rem",
             color: colorToken.black,
             lineHeight: "0.9em",
@@ -179,7 +177,7 @@ function Profile({ isVisible, type }: ProfileProps) {
         </div>
         <div
           style={{
-            marginTop: "10px",
+            marginTop: "8px",
             width: "100%",
             display: "flex",
             justifyContent: "center",
@@ -190,7 +188,11 @@ function Profile({ isVisible, type }: ProfileProps) {
             //letterSpacing: "-0.05em",
           }}
         >
-          ★★★★★
+          <Star5Svg style={{ width: "14px", height: "14px" }} />
+          <Star5Svg style={{ width: "14px", height: "14px" }} />
+          <Star5Svg style={{ width: "14px", height: "14px" }} />
+          <Star5Svg style={{ width: "14px", height: "14px" }} />
+          <Star5Svg style={{ width: "14px", height: "14px" }} />
         </div>
         {/*
       <div

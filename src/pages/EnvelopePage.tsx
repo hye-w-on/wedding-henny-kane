@@ -74,7 +74,7 @@ const EnvelopePage = () => {
         </div>
         <div
           style={{
-            fontFamily: "RoobertTRIAL",
+            fontFamily: "helvetica",
             fontSize: "3rem",
             fontWeight: "bold",
             lineHeight: "0.5em",

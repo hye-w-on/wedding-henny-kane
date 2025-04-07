@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { motion } from "motion/react";
 import colorToken from "@/utils/colorToken";
+import StarSvg from "@/assets/icons/star.svg?react";
 
 const Container = styled(motion.div)`
   position: fixed;
@@ -20,16 +21,14 @@ const LoaderWrapper = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
-  display: flex;
-  gap: 6px;
-  margin-top: 11px;
+  gap: 10px;
+  margin-top: 10px;
 `;
 
-const Dot = styled(motion.div)`
-  width: 11px;
-  height: 11px;
-  background: ${colorToken.white};
-  border-radius: 50%;
+const StarWrapper = styled(motion.div)`
+  width: 25px;
+  height: 25px;
+  color: ${colorToken.white};
 `;
 
 const containerVariants = {
@@ -58,19 +57,23 @@ const Splash = ({ isLoading }: PreloaderProps) => {
       <img src="/logo.webp" alt="logo" />
       <LoaderWrapper>
         {[0, 1, 2].map((index) => (
-          <Dot
+          <StarWrapper
             key={index}
-            initial="initial"
+            initial={{ scale: 1 }}
             animate={{
-              y: [0, -10, 0],
+              scale: [1, 1.3, 1],
+              rotate: 180,
+              y: [0, -2, 0],
               transition: {
-                duration: 0.7,
+                duration: 0.8,
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: index * 0.2,
+                delay: index * 0.3,
               },
             }}
-          />
+          >
+            <StarSvg width="100%" height="100%" />
+          </StarWrapper>
         ))}
       </LoaderWrapper>
     </Container>

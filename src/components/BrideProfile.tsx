@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   Chart,
   BarElement,
@@ -8,8 +7,6 @@ import {
 } from "chart.js";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
-import { Bar } from "react-chartjs-2";
-import Balloon from "./Balloon";
 import colorToken from "../utils/colorToken";
 import IdBride from "@/assets/images/id_bride.webp";
 
@@ -102,7 +99,7 @@ function BrideProfile({ isVisible }: BrideProfileProps) {
         </div>
         <div
           style={{
-            fontFamily: "Freesentation",
+            fontFamily: "helvetica",
             fontSize: "2rem",
             color: colorToken.black,
             lineHeight: "0.9em",

@@ -5,88 +5,96 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import colorToken from "@/utils/colorToken";
 import StarSvg from "@/assets/icons/star.svg?react";
 
-const Header = styled.header({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "45px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "0 15px",
-  boxSizing: "border-box",
-  //backgroundColor: "rgba(255, 255, 255, 0.1)",
-  //backdropFilter: "blur(10px)",
-  color: "black",
-  zIndex: 1000,
-});
+const Header = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  box-sizing: border-box;
+  //background-color: rgba(255, 255, 255, 0.1);
+  //backdrop-filter: blur(10px);
+  color: black;
+  z-index: 1000;
+`;
 
-const HeaderItem = styled.div({
-  fontFamily: "satoshi",
-  fontSize: "0.9rem",
-  fontWeight: 100,
-  cursor: "pointer",
-});
+const HeaderItem = styled.div`
+  font-family: satoshi;
+  font-size: 0.9rem;
+  font-weight: 100;
+  cursor: pointer;
+`;
 
-const Overlay = styled.div<{ isOpen: boolean }>(({ isOpen }) => ({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  opacity: isOpen ? 1 : 0,
-  visibility: isOpen ? "visible" : "hidden",
-  backdropFilter: "blur(10px)",
-  transition: "opacity 0.3s ease, visibility 0.3s ease",
-  zIndex: 998,
-}));
+const Overlay = styled.div<{ isOpen: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: ${(props) => (props.isOpen ? 1 : 0)};
+  visibility: ${(props) => (props.isOpen ? "visible" : "hidden")};
+  backdrop-filter: blur(10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 998;
+`;
 
-const MenuList = styled(motion.div)({
-  position: "fixed",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  borderRadius: "8px",
-  padding: "20px",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-  zIndex: 999,
-});
+const MenuList = styled(motion.div)`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+`;
 
-const MenuItem = styled(motion.div)({
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "flex-end",
-  //justifyContent: "flex-end",
-  fontFamily: "helvetica",
-  fontSize: "4rem",
-  lineHeight: "0.7em",
-  letterSpacing: "-0.06em",
-  color: colorToken.white,
-  cursor: "pointer",
-  textTransform: "uppercase",
-});
+const MenuItem = styled(motion.div)`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  font-family: helvetica;
+  font-size: 4rem;
+  height: 40px;
+  //border: 1px solid red;
+  letter-spacing: -0.08em;
+  color: ${colorToken.white};
+  cursor: pointer;
+  text-transform: uppercase;
+  margin: 5px 0;
+  position: relative;
+`;
 
-const MenuDescription = styled(motion.div)({
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "flex-end",
-  justifyContent: "flex-end",
-  fontFamily: "SUITRegular",
-  fontSize: "0.8rem",
-  color: "#fff",
-  letterSpacing: "-0.1em",
-  lineHeight: 1,
-  paddingBottom: "5px",
-  margin: "auto 5px",
-});
+const MenuItemText = styled.div`
+  display: inline-block;
+  height: 100%;
+  padding: 0px 0;
+`;
+
+const MenuDescription = styled(motion.div)`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  font-family: SUITRegular;
+  font-size: 0.8rem;
+  color: #fff;
+  letter-spacing: -0.1em;
+  line-height: 1;
+  padding-bottom: 5px;
+  margin: auto 5px;
+`;
 
 const menuVariants = {
   hidden: { opacity: 0, x: -20, y: 20 },
@@ -103,9 +111,9 @@ const listVariants = {
   },
 };
 
-const HeaderText = styled(motion.span)({
-  display: "inline-block",
-});
+const HeaderText = styled(motion.span)`
+  display: inline-block;
+`;
 
 const headerTextVariants = {
   initial: {
@@ -115,13 +123,13 @@ const headerTextVariants = {
   },
   animate: {
     opacity: 1,
-    filter: "blur(0px)",
     x: 0,
+    filter: "blur(0px)",
   },
   exit: {
     opacity: 0,
-    filter: "blur(10px)",
     x: 20,
+    filter: "blur(10px)",
   },
 };
 
@@ -195,51 +203,73 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => handleMenuClick(refs.envelopeRef)}
             >
-              RSVP
+              <MenuItemText>RSVP</MenuItemText>
               <MenuDescription>참석회신</MenuDescription>
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.locationRef)}
+              whileTap={{ scale: 0.9 }}
             >
-              Location
+              <MenuItemText>LOCATION</MenuItemText>
               <MenuDescription>오시는 길</MenuDescription>
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.timetableRef)}
+              whileTap={{ scale: 0.9 }}
             >
               <MenuDescription>식순</MenuDescription>
-              TIMETABLE
+              <MenuItemText>TIMETABLE</MenuItemText>
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.profileRef)}
+              whileTap={{ scale: 0.9 }}
             >
-              About
+              <MenuItemText>ABOUT</MenuItemText>
               <MenuDescription>소개</MenuDescription>
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.galleryRef)}
+              whileTap={{ scale: 0.9 }}
             >
               <MenuDescription>사진</MenuDescription>
-              Gallery
+              <MenuItemText>GALLERY</MenuItemText>
             </MenuItem>
             <MenuItem
               variants={menuVariants}
               transition={{ duration: 0.3 }}
               onClick={() => handleMenuClick(refs.contactRef)}
+              whileTap={{ scale: 0.9 }}
             >
-              CONTACT
+              <MenuItemText>CONTACT</MenuItemText>
               <MenuDescription>연락</MenuDescription>
             </MenuItem>
+            <div
+              style={{
+                position: "fixed",
+                bottom: "20px",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                display: "flex",
+                textAlign: "center",
+                fontSize: "0.8rem",
+                color: colorToken.white,
+                fontFamily: "integralCF",
+              }}
+            >
+              made by <br />
+              hyewon and myeongjin
+            </div>
           </MenuList>
         )}
       </AnimatePresence>
