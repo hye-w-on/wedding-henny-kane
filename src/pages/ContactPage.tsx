@@ -240,9 +240,6 @@ const IconButton = styled(motion.button)({
     height: "15px",
     filter: "brightness(0) invert(1)",
   },
-  "&:hover": {
-    background: "rgba(255, 255, 255, 0.2)",
-  },
 });
 
 const AccountButton = styled(motion.button)<{ isOpen?: boolean }>(
