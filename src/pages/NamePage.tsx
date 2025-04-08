@@ -57,7 +57,7 @@ const ProfileContainer = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "flex-end",
-  border: `0.5px solid rgba(0, 0, 0, 0.1)`,
+  //border: `0.5px solid rgba(0, 0, 0, 0.1)`,
   marginBottom: "-20px",
   paddingBottom: "5px",
 });
