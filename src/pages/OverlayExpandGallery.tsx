@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useRef, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import {
   motion,
@@ -90,7 +90,7 @@ const Overlay = styled(motion.div)`
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.8);
-  z-index: 10;
+  z-index: 999999;
 `;
 
 const ExpandedWrapper = styled.div`
@@ -102,7 +102,7 @@ const ExpandedWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20;
+  z-index: 1000000;
 `;
 
 const ExpandedImageContainer = styled(motion.div)`
@@ -131,10 +131,39 @@ const InfoContainer = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  z-index: 30;
+  z-index: 1000001;
   font-family: "SUITRegular";
   font-size: 0.8rem;
   color: #ffffffaa;
+`;
+
+// 새로운 스타일 컴포넌트 추가
+const ClickArea = styled.div<{ position: 'left' | 'center' | 'right' }>`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  ${({ position }) => {
+    switch (position) {
+      case 'left':
+        return `
+          left: 0;
+          width: 25%;
+          cursor: w-resize;
+        `;
+      case 'right':
+        return `
+          right: 0;
+          width: 25%;
+          cursor: e-resize;
+        `;
+      case 'center':
+        return `
+          left: 25%;
+          width: 50%;
+          cursor: zoom-out;
+        `;
+    }
+  }}
 `;
 
 interface GalleryProps {
@@ -185,15 +214,26 @@ function ExpandedView({ image, onClick, onNext, onPrev }: ExpandedViewProps) {
   };
 
   return (
-    <ExpandedWrapper onClick={onClick}>
+    <ExpandedWrapper>
       <ExpandedImageContainer
-        onClick={(e) => e.stopPropagation()}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         onDragEnd={handleDragEnd}
         dragElastic={0.2}
       >
         <ExpandedImage layoutId={image.id} src={image.url} />
+        <ClickArea position="left" onClick={(e) => {
+          e.stopPropagation();
+          onPrev();
+        }} />
+        <ClickArea position="center" onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }} />
+        <ClickArea position="right" onClick={(e) => {
+          e.stopPropagation();
+          onNext();
+        }} />
       </ExpandedImageContainer>
     </ExpandedWrapper>
   );
@@ -205,6 +245,20 @@ const OverlayExpandGallery = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selectedImage = images.find((img) => img.id === selectedId);
+
+  // Overlay가 표시될 때 body 스크롤 제어
+  useEffect(() => {
+    if (selectedId) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // 컴포넌트가 언마운트될 때 원래대로 복구
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedId]);
 
   const handleNext = () => {
     if (!selectedId) return;
@@ -221,72 +275,79 @@ const OverlayExpandGallery = () => {
   };
 
   return (
-    <Container>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          color: colorToken.white,
-          gap: "11px",
-          marginBottom: "15px",
-        }}
-        ref={infoRef}
-      >
-        <motion.div
-          style={{ fontFamily: "PPEditorialOldItalic", fontSize: "4rem" }}
-          initial={{ opacity: 0, filter: "blur(10px)" }}
-          animate={{
-            opacity: isInfoInView ? 1 : 0,
-            x: isInfoInView ? 0 : -20,
-            filter: isInfoInView ? "blur(0px)" : "blur(10px)",
-          }}
-          transition={{ duration: 0.5 }}
-        >
-          Gallery
-        </motion.div>
-        <motion.div
+    <>
+      <Container>
+        <div
           style={{
-            fontFamily: "SUITRegular",
-            fontSize: "0.8rem",
-            color: "#ffffffaa",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: colorToken.white,
+            gap: "11px",
+            marginBottom: "15px",
           }}
+          ref={infoRef}
         >
-          <ShowText isInView={isInfoInView}>
-            클릭하면 확대가 가능합니다
-          </ShowText>
-        </motion.div>
-      </div>
-      <LayoutGroup>
-        <Gallery images={images} setSelectedId={setSelectedId} />
-        <AnimatePresence>
-          {selectedId && selectedImage && (
-            <>
-              <Overlay
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              />
-              <InfoContainer style={{ gap: "3px" }}>
-                <ShowText isInView={true}>
-                  양옆으로 스와이프하면 이미지를 넘길 수 있습니다
-                </ShowText>
-                <ShowText isInView={true}>
-                  이미지 밖을 클릭하면 닫힙니다
-                </ShowText>
-              </InfoContainer>
-              <ExpandedView
-                image={selectedImage}
-                onClick={() => setSelectedId(null)}
-                onNext={handleNext}
-                onPrev={handlePrev}
-              />
-            </>
-          )}
-        </AnimatePresence>
-      </LayoutGroup>
-    </Container>
+          <motion.div
+            style={{ fontFamily: "PPEditorialOldItalic", fontSize: "4rem" }}
+            initial={{ opacity: 0, filter: "blur(10px)" }}
+            animate={{
+              opacity: isInfoInView ? 1 : 0,
+              x: isInfoInView ? 0 : -20,
+              filter: isInfoInView ? "blur(0px)" : "blur(10px)",
+            }}
+            transition={{ duration: 0.5 }}
+          >
+            Gallery
+          </motion.div>
+          <motion.div
+            style={{
+              fontFamily: "SUITRegular",
+              fontSize: "0.8rem",
+              color: "#ffffffaa",
+            }}
+          >
+            <ShowText isInView={isInfoInView}>
+              클릭하면 확대가 가능합니다
+            </ShowText>
+          </motion.div>
+        </div>
+        <LayoutGroup>
+          <Gallery images={images} setSelectedId={setSelectedId} />
+        </LayoutGroup>
+      </Container>
+      <AnimatePresence>
+        {selectedId && selectedImage && (
+          <>
+            <Overlay
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+            <InfoContainer 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ gap: "3px" }}
+            >
+              <ShowText isInView={true}>
+              이미지를 넘기려면 양끝을 클릭하거나 양옆으로 스와이프하세요
+              </ShowText>
+              <ShowText isInView={true}>
+              이미지 닫으려면 중앙을 클릭하세요 
+              </ShowText>
+            </InfoContainer>
+            <ExpandedView
+              image={selectedImage}
+              onClick={() => setSelectedId(null)}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

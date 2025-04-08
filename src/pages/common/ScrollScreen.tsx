@@ -42,7 +42,6 @@ const PageSection = styled.div({
   margin: 0,
   padding: 0,
   position: "relative",
-  zIndex: 2,
 });
 
 const ScrollScreen: React.FC = () => {

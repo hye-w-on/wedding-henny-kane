@@ -1,5 +1,5 @@
 import React, { useState, TouchEvent } from "react";
-import "./styles.css";
+import "./SwipeableStyles.css";
 import { AnimatePresence, motion } from "motion/react";
 
 const PageOne: React.FC = () => {

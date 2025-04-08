@@ -22,6 +22,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 const Slider = styled.div`
@@ -31,6 +32,7 @@ const Slider = styled.div`
   max-width: 500px;
   height: 550px;
   gap: 2px;
+  position: relative;
 `;
 
 const Slide = styled(motion.div)<{ isSelected: boolean }>`
@@ -47,7 +49,7 @@ const SlideImage = styled(motion.img)`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block; /* inline-image 깨짐 방지 */
+  display: block;
   object-position: center;
   backface-visibility: hidden;
   will-change: transform;

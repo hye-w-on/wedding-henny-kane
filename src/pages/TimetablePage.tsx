@@ -311,7 +311,7 @@ const TimetablePage: React.FC = () => {
       angle: 180,
       description: (
         <div>
-          저희의 결혼을 축하해주고,
+          저희의 결혼을 축하해주시고,
           <br />
           함께 즐겨주셔서 감사합니다
         </div>
