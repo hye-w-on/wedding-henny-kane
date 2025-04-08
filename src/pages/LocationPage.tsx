@@ -80,6 +80,23 @@ const DetailContainer = styled(motion.div)({
   borderRadius: "20px",
 });
 
+const MapContainer = styled.div({
+  position: "relative",
+  width: "300px",
+  height: "300px",
+});
+
+const MapCircleMask = styled.div({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "300px",
+  height: "300px",
+  borderRadius: "50%",
+  overflow: "hidden",
+});
+
 const MapWrapper = styled(motion.div)({
   touchAction: "none",
   overflow: "hidden",
@@ -97,6 +114,8 @@ const MapWrapper = styled(motion.div)({
     height: "100%",
     borderRadius: "50%",
     pointerEvents: "auto",
+    maskImage: "radial-gradient(circle, white 100%, transparent 100%)",
+    WebkitMaskImage: "radial-gradient(circle, white 100%, transparent 100%)",
   },
   "&::after": {
     content: '""',
@@ -272,7 +291,9 @@ function LocationPage() {
               </IconButton>
             </div>
           </div>
-          <div style={{ position: "relative", zIndex: 2 }}>
+          <div
+            style={{ position: "relative", zIndex: 2, pointerEvents: "none" }}
+          >
             <BorderCircle
               animate={{
                 borderWidth: ["10px", "20px", "10px"],
@@ -283,9 +304,13 @@ function LocationPage() {
                 ease: "easeInOut",
               }}
             />
-            <MapWrapper>
-              <NaverMap ref={mapRef} />
-            </MapWrapper>
+            <MapContainer>
+              <MapCircleMask>
+                <MapWrapper>
+                  <NaverMap ref={mapRef} />
+                </MapWrapper>
+              </MapCircleMask>
+            </MapContainer>
           </div>
           <div
             style={{ display: "flex", gap: "10px", marginTop: "10px" }}

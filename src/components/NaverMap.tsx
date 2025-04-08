@@ -12,8 +12,12 @@ const MapContainer = styled.div({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  width: "380px",
-  height: "380px",
+  width: "100%",
+  height: "100%",
+  borderRadius: "50%",
+  overflow: "hidden",
+  clipPath: "circle(50%)",
+  WebkitClipPath: "circle(50%)",
 });
 
 interface NaverMapProps {
