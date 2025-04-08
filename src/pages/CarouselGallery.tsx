@@ -133,40 +133,73 @@ const ExpandedImage = styled(motion.img)`
 const CarouselGallery = () => {
   const infoRef = useRef(null);
   const isInfoInView = useInView(infoRef, { once: false });
-  const [displayedImages, setDisplayedImages] = useState(originalImages);
-  const [index, setIndex] = useState(0);
+
+  // 무한 슬라이드를 위한 초기 설정: 3배 크기의 이미지 배열 생성
+  const initialImages = [
+    ...originalImages.map((img) => ({ ...img, id: `prev-${img.id}` })),
+    ...originalImages,
+    ...originalImages.map((img) => ({ ...img, id: `next-${img.id}` })),
+  ];
+
+  const [displayedImages, setDisplayedImages] = useState(initialImages);
+  const [index, setIndex] = useState(originalImages.length); // 중간 세트부터 시작
   const [autoPlay, setAutoPlay] = useState(true);
-  const [cycleCount, setCycleCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
 
+  // 인덱스가 변경될 때마다 필요한 이미지 추가
+  useEffect(() => {
+    // 오른쪽으로 이동하여 마지막 세트에 접근하는 경우
+    if (index >= displayedImages.length - originalImages.length / 2) {
+      const nextImages = originalImages.map((img) => ({
+        ...img,
+        id: `next-${img.id}-${Date.now()}`,
+      }));
+      setDisplayedImages((prev) => [...prev, ...nextImages]);
+    }
+
+    // 왼쪽으로 이동하여 첫 번째 세트에 접근하는 경우
+    if (index < originalImages.length / 2) {
+      const prevImages = originalImages.map((img) => ({
+        ...img,
+        id: `prev-${img.id}-${Date.now()}`,
+      }));
+      // 왼쪽에 이미지 추가 후 인덱스 조정
+      setDisplayedImages((prev) => [...prevImages, ...prev]);
+      setIndex((prev) => prev + originalImages.length);
+    }
+  }, [index]);
+
+  // 다음 슬라이드로 이동
   const handleNext = () => {
-    setIndex((prev) => {
-      const nextIndex = prev + 1;
-      // 마지막 이미지에 도달했을 때
-      if (nextIndex >= displayedImages.length - 1) {
-        // 다음 사이클의 이미지들을 추가
-        setDisplayedImages((current) => [
-          ...current,
-          ...originalImages.map((img) => ({
-            ...img,
-            id: `image-${img.id}-cycle-${cycleCount}`,
-          })),
-        ]);
-        setCycleCount((prev) => prev + 1);
-      }
-      return nextIndex;
-    });
+    setIndex((prev) => prev + 1);
   };
 
+  // 이전 슬라이드로 이동
   const handlePrev = () => {
-    setIndex((prev) => {
-      if (prev === 0) {
-        return 0;
-      }
-      return prev - 1;
-    });
+    setIndex((prev) => prev - 1);
   };
 
+  // 이미지 클릭 처리
+  const handleImageClick = (image: ImageData, clickedIndex: number) => {
+    if (clickedIndex === index) {
+      // 현재 활성화된 이미지 클릭 시 확대
+      setSelectedImage(image);
+      setAutoPlay(false);
+    } else {
+      // 다른 이미지 클릭 시 해당 위치로 이동
+      setIndex(clickedIndex);
+    }
+  };
+
+  // 닷 내비게이션 클릭 처리 (실제 원본 이미지의 인덱스 기준)
+  const handleDotClick = (dotIndex: number) => {
+    // 현재 표시되는 세트에서의 인덱스를 계산
+    const currentOffset =
+      Math.floor(index / originalImages.length) * originalImages.length;
+    setIndex(currentOffset + dotIndex);
+  };
+
+  // 자동 재생
   useEffect(() => {
     if (!autoPlay) return;
 
@@ -175,15 +208,10 @@ const CarouselGallery = () => {
     }, 3000);
 
     return () => clearInterval(timer);
-  }, [index, autoPlay]);
+  }, [autoPlay]);
 
   // 실제 표시되는 인덱스 계산 (닷 네비게이션용)
   const displayIndex = index % originalImages.length;
-
-  const handleImageClick = (image: ImageData) => {
-    setSelectedImage(image);
-    setAutoPlay(false);
-  };
 
   return (
     <Container
@@ -263,9 +291,9 @@ const CarouselGallery = () => {
                 duration: 0.3,
                 ease: "easeInOut",
               }}
-              onClick={() => i === index && handleImageClick(img)}
+              onClick={() => handleImageClick(img, i)}
               whileTap={{ scale: 1.1 }}
-              style={{ cursor: i === index ? "pointer" : "default" }}
+              style={{ cursor: "pointer" }}
             />
           </Slide>
         ))}
@@ -282,7 +310,7 @@ const CarouselGallery = () => {
           <Dot
             key={i}
             isActive={i === displayIndex}
-            onClick={() => setIndex(i)}
+            onClick={() => handleDotClick(i)}
           />
         ))}
       </Dots>
