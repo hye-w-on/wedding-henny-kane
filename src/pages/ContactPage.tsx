@@ -189,20 +189,22 @@ const ContactList = styled(motion.div)({
   margin: "0 auto",
 });
 
-const ContactCard = styled(motion.div)({
-  padding: "0px 15px 0px 20px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "10px",
-  textAlign: "center",
-});
+const ContactCard = styled(motion.div)`
+  padding: 0px 12px 0px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 12px;
+`;
 
 const ContactRole = styled("div")({
   color: colorToken.beige,
   fontSize: "0.7rem",
-  marginBottom: "5px",
+  marginBottom: "2px",
   textAlign: "center",
 });
 
@@ -213,34 +215,40 @@ const ContactName = styled("div")({
   textAlign: "center",
 });
 
-const ButtonGroup = styled("div")({
-  display: "flex",
-  gap: "5px",
-  justifyContent: "center",
-  marginBottom: "5px",
-  width: "100%",
-});
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 5px;
+  width: 100%;
+`;
 
-const IconButton = styled(motion.button)({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "5px",
-  width: "80px",
-  padding: "8px 10px",
-  borderRadius: "6px",
-  background: "rgba(255, 255, 255, 0.2)",
-  color: colorToken.white,
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-  fontSize: "0.7rem",
-  backdropFilter: "blur(10px)",
-  "& img": {
-    width: "15px",
-    height: "15px",
-    filter: "brightness(0) invert(1)",
-  },
-});
+const IconButton = styled(motion.button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 80px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: ${colorToken.white};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.7rem;
+  backdrop-filter: blur(10px);
+  border: none !important;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  & img {
+    width: 15px;
+    height: 15px;
+    filter: brightness(0) invert(1);
+  }
+`;
 
 const AccountButton = styled(motion.button)<{ isOpen?: boolean }>(
   ({ isOpen }) => ({
@@ -474,16 +482,24 @@ const ContactPage = () => {
         transition={{ duration: 0.5 }}
       >
         <AnimatePresence mode="wait">
-          {(activeTab === "groom" ? groomContacts : brideContacts).map(
-            (contact, index) => (
-              <motion.div
-                key={contact.role}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
-                <ContactCard>
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {(activeTab === "groom" ? groomContacts : brideContacts).map(
+              (contact, index) => (
+                <ContactCard
+                  key={contact.role}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { delay: index * 0.05, duration: 0.3 },
+                  }}
+                >
                   <div style={{ width: "100%" }}>
                     <ContactRole>{contact.role}</ContactRole>
                     <ContactName>{contact.name}</ContactName>
@@ -491,6 +507,7 @@ const ContactPage = () => {
                   <div>
                     <ButtonGroup>
                       <IconButton
+                        type="button"
                         onClick={() => handleCopyAccount(contact.account)}
                         whileTap={{ scale: 1.2 }}
                         whileHover={{ scale: 1.05 }}
@@ -499,6 +516,7 @@ const ContactPage = () => {
                         번호복사
                       </IconButton>
                       <IconButton
+                        type="button"
                         onClick={() => handleCall(contact.phone)}
                         whileTap={{ scale: 1.2 }}
                         whileHover={{ scale: 1.05 }}
@@ -507,6 +525,7 @@ const ContactPage = () => {
                         전화
                       </IconButton>
                       <IconButton
+                        type="button"
                         onClick={() => handleMessage(contact.phone)}
                         whileTap={{ scale: 1.2 }}
                         whileHover={{ scale: 1.05 }}
@@ -547,30 +566,40 @@ const ContactPage = () => {
                         </motion.span>
                       </div>
                       {showAccountModals.includes(contact.name) && (
-                        <AccountInfo
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
                           transition={{ duration: 0.2 }}
+                          style={{ width: "100%", overflow: "hidden" }}
                         >
-                          <BankLabel>{contact.bank}</BankLabel>
-                          <AccountNumber>{contact.account}</AccountNumber>
-                          <CopyButton
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCopyAccount(contact.account);
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "flex-end",
+                              width: "100%",
+                              marginTop: "10px",
                             }}
                           >
-                            복사
-                          </CopyButton>
-                        </AccountInfo>
+                            <BankLabel>{contact.bank}</BankLabel>
+                            <AccountNumber>{contact.account}</AccountNumber>
+                            <CopyButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyAccount(contact.account);
+                              }}
+                            >
+                              복사
+                            </CopyButton>
+                          </div>
+                        </motion.div>
                       )}
                     </AccountButton>
                   </div>
                 </ContactCard>
-              </motion.div>
-            )
-          )}
+              )
+            )}
+          </motion.div>
         </AnimatePresence>
       </ContactList>
 

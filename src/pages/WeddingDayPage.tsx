@@ -317,16 +317,82 @@ function WeddingDayPage() {
       <DateCalendar
         defaultValue={targetDate}
         readOnly
+        disableHighlightToday
+        showDaysOutsideCurrentMonth={false}
+        disabled
         views={["day"]}
         slots={{
           leftArrowIcon: () => null,
           rightArrowIcon: () => null,
+          day: (props) => {
+            // 현재 월에 속하는 날짜인지 확인
+            const isCurrentMonth = props.day.month() === targetDate.month();
+
+            // 현재 월에 속하지 않으면 빈 div 반환
+            if (!isCurrentMonth) {
+              return <div style={{ width: "28px", height: "28px" }}></div>;
+            }
+
+            // 선택된 날짜(결혼 날짜)만 특별 스타일링
+            const isWeddingDay = targetDate.isSame(props.day, "day");
+            if (isWeddingDay) {
+              return (
+                <div
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    backgroundColor: colorToken.beige,
+                    color: colorToken.black,
+                    fontWeight: 800,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.7rem",
+                    fontFamily: "SUITRegular",
+                  }}
+                >
+                  {props.day.date()}
+                </div>
+              );
+            }
+
+            // 현재 월의 다른 날짜
+            return (
+              <div
+                style={{
+                  width: "28px",
+                  height: "28px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.7rem",
+                  fontFamily: "SUITRegular",
+                }}
+              >
+                {props.day.date()}
+              </div>
+            );
+          },
         }}
         sx={{
           "& .MuiPickersDay-root.Mui-selected": {
             backgroundColor: colorToken.beige,
             color: colorToken.black,
             fontWeight: "800",
+          },
+          "& .MuiPickersDay-root:focus.Mui-selected": {
+            backgroundColor: colorToken.beige,
+          },
+          "& .MuiPickersDay-root:hover": {
+            backgroundColor: "transparent",
+            cursor: "default",
+          },
+          "& .MuiPickersDay-root.Mui-selected:focus": {
+            backgroundColor: colorToken.beige,
+          },
+          "& .MuiPickersDay-root.Mui-selected:hover": {
+            backgroundColor: colorToken.beige,
           },
           "& .MuiDayCalendar-header": {
             paddingTop: "0px",
@@ -338,7 +404,7 @@ function WeddingDayPage() {
               fontWeight: "800",
               color: colorToken.black,
               width: "28px",
-              height: "20px",
+              height: "24px",
               margin: "0px",
               lineHeight: "1em",
             },
@@ -349,8 +415,6 @@ function WeddingDayPage() {
             justifyContent: "center",
           },
           "& .MuiPickersDay-root": {
-            width: "28px",
-            height: "28px",
             fontSize: "0.7rem",
             fontFamily: "SUITRegular",
             fontWeight: "800",
@@ -372,8 +436,8 @@ function WeddingDayPage() {
             margin: "0px",
           },
           width: "250px",
-          height: "210px",
-          marginTop: "20px",
+          height: "200px",
+          marginTop: "30px",
           marginBottom: "20px",
         }}
       />

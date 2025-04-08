@@ -327,6 +327,7 @@ const TimetablePage: React.FC = () => {
       ref={sectionRef}
       style={{
         height: "400vh",
+        position: "relative",
       }}
     >
       <div

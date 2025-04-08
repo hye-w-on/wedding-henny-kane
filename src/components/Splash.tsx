@@ -54,7 +54,6 @@ const Splash = ({ isLoading }: PreloaderProps) => {
       exit="exit"
       variants={containerVariants}
     >
-      <img src="/logo.webp" alt="logo" />
       <LoaderWrapper>
         {[0, 1, 2].map((index) => (
           <StarWrapper

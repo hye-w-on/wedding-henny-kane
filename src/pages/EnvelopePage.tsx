@@ -54,6 +54,7 @@ const EnvelopePage = () => {
         perspective: 1000,
         scrollMargin: "20vh",
         backgroundColor: colorToken.white,
+        position: "relative",
       }}
     >
       <motion.div
