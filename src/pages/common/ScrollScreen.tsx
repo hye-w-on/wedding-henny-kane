@@ -5,7 +5,6 @@ import NamePage from "@/pages/NamePage";
 import EnvelopePage from "@/pages/EnvelopePage";
 import WeddingDayPage from "@/pages/WeddingDayPage";
 import LocationPage from "@/pages/LocationPage";
-import colorToken from "@/utils/colorToken";
 import MainFrame from "@/pages/common/MainFrame";
 import TimetablePage from "@/pages/TimetablePage";
 import ContactPage from "@/pages/ContactPage";
