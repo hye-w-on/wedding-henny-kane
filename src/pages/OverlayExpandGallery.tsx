@@ -166,6 +166,15 @@ const ClickArea = styled.div<{ position: 'left' | 'center' | 'right' }>`
   }}
 `;
 
+const LockScrollStyle = styled.div<{ isLocked: boolean }>`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  inset: 0;
+  z-index: 999998;
+  display: ${props => props.isLocked ? 'block' : 'none'};
+`;
+
 interface GalleryProps {
   images: ImageData[];
   setSelectedId: (id: string | null) => void;
@@ -248,15 +257,28 @@ const OverlayExpandGallery = () => {
 
   // Overlay가 표시될 때 body 스크롤 제어
   useEffect(() => {
+    const handleScroll = (e: Event) => {
+      if (selectedId) {
+        e.preventDefault();
+        window.scrollTo(window.scrollX, window.scrollY);
+      }
+    };
+
     if (selectedId) {
       document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+      window.addEventListener('scroll', handleScroll, { passive: false });
+      window.addEventListener('touchmove', handleScroll, { passive: false });
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     }
 
-    // 컴포넌트가 언마운트될 때 원래대로 복구
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('touchmove', handleScroll);
     };
   }, [selectedId]);
 
@@ -320,6 +342,7 @@ const OverlayExpandGallery = () => {
       <AnimatePresence>
         {selectedId && selectedImage && (
           <>
+            <LockScrollStyle isLocked={!!selectedId} />
             <Overlay
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

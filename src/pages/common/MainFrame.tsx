@@ -313,7 +313,16 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 							<MenuDescription>식순</MenuDescription>
 							<MenuItemText>TIMETABLE</MenuItemText>
 						</MenuItem>
+				
 						<MenuItem
+							variants={menuVariants}
+							transition={{ duration: 0.3 }}
+							onClick={() => handleMenuClick(refs.galleryRef)}
+							whileTap={{ scale: 0.9 }}
+						>
+						<MenuDescription>사진</MenuDescription>
+							<MenuItemText>GALLERY</MenuItemText>
+						</MenuItem>	<MenuItem
 							variants={menuVariants}
 							transition={{ duration: 0.3 }}
 							onClick={() => handleMenuClick(refs.profileRef)}
@@ -321,15 +330,6 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 						>
 							<MenuItemText>ABOUT</MenuItemText>
 							<MenuDescription>소개</MenuDescription>
-						</MenuItem>
-						<MenuItem
-							variants={menuVariants}
-							transition={{ duration: 0.3 }}
-							onClick={() => handleMenuClick(refs.galleryRef)}
-							whileTap={{ scale: 0.9 }}
-						>
-							<MenuDescription>사진</MenuDescription>
-							<MenuItemText>GALLERY</MenuItemText>
 						</MenuItem>
 						<MenuItem
 							variants={menuVariants}

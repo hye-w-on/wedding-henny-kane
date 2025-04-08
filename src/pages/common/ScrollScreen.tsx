@@ -93,9 +93,6 @@ const ScrollScreen: React.FC = () => {
         <PageSection ref={timetableRef}>
           <TimetablePage />
         </PageSection>
-        <PageSection ref={profileRef}>
-          <ProfileScrollPage />
-        </PageSection>
         <PageSection ref={galleryRef}>
           <OverlayExpandGallery />
         </PageSection>
@@ -104,6 +101,9 @@ const ScrollScreen: React.FC = () => {
         </PageSection>
         <PageSection>
           <CarouselGallery />
+        </PageSection>
+        <PageSection ref={profileRef}>
+          <ProfileScrollPage />
         </PageSection>
         <PageSection ref={contactRef}>
           <ContactPage />
