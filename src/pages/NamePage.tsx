@@ -18,8 +18,8 @@ const OvalContainer = styled.div({
   alignItems: "center",
   justifyContent: "center",
   marginBottom: "0.24rem",
-  padding: "0.3rem 0.7rem 0.2rem 0.7rem",
-  fontSize: "0.8rem",
+  padding: "4px 10px 4px 10px",
+  fontSize: "14px",
   fontFamily: "helvetica",
   fontWeight: "bold",
   color: colorToken.black,
@@ -57,14 +57,14 @@ const ProfileContainer = styled(motion.div)({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "flex-end",
-  //border: `0.5px solid rgba(0, 0, 0, 0.1)`,
+  border: `0.5px solid rgba(0, 0, 0, 0.1)`,
   marginBottom: "-20px",
   paddingBottom: "5px",
 });
 
 const ProfileTitle = styled(motion.div)({
   fontSize: "2rem",
-  lineHeight: "0.7em",
+  lineHeight: "0.5em",
   fontFamily: "PPPlayground",
 });
 

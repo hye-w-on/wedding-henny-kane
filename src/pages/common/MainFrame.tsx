@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import colorToken from '@/utils/colorToken';
 import StarSvg from '@/assets/icons/star.svg?react';
+import PlusSvg from '@/assets/icons/plus.svg?react';
+import MinusSvg from '@/assets/icons/minus.svg?react';
 
 const Header = styled.header`
 	position: fixed;
@@ -23,9 +25,6 @@ const Header = styled.header`
 `;
 
 const HeaderItem = styled.div`
-	font-family: satoshi;
-	font-size: 0.9rem;
-	font-weight: 100;
 	cursor: pointer;
 `;
 
@@ -64,21 +63,13 @@ const MenuItem = styled(motion.div)`
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
-	/* FONT 가 문제임  helvetica 이 폰트가 너무 많은 영역을 차지함 */
-	/* font-family: helvetica; */
 	font-family: math;
-	font-size: 4rem;
-	/* 높이도 날리겠음. */
-	//height: 40px;
-	//border: 1px solid red;
+	font-size: 64px;
 	letter-spacing: -0.08em;
 	color: ${colorToken.white};
 	cursor: pointer;
 	text-transform: uppercase;
-	/* 마진은 날리겠음 */
-	/* margin: 5px 0; */
 	position: relative;
-	/* line-height를 이용해서 높이를 조절함 */
 	line-height: 50px;
 `;
 
@@ -119,6 +110,9 @@ const listVariants = {
 
 const HeaderText = styled(motion.span)`
 	display: inline-block;
+	font-size: 14px;
+	font-family: satoshi;
+	font-weight: 100;
 `;
 
 const headerTextVariants = {
@@ -139,6 +133,61 @@ const headerTextVariants = {
 	},
 };
 
+const ToggleSwitch = styled.label`
+	position: relative;
+	display: inline-block;
+	width: 32px;
+	height: 18px;
+`;
+
+const ToggleSlider = styled.span<{ isActive: boolean }>`
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: ${props => props.isActive ? colorToken.black : colorToken.beige};
+	transition: .4s;
+	border-radius: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 4px;
+
+	svg {
+		width: 8px;
+		height: 8px;
+		z-index: 1;
+		path {
+			fill: ${props => props.isActive ? colorToken.beige : colorToken.black};
+		}
+	}
+
+	&:before {
+		position: absolute;
+		content: "";
+		height: 14px;
+		width: 14px;
+		left: 2px;
+		bottom: 2px;
+		background-color: white;
+		transition: .4s;
+		border-radius: 50%;
+		transform: ${props => props.isActive ? 'translateX(14px)' : 'translateX(0)'};
+		z-index: 2;
+	}
+`;
+
+const FontSizeContainer = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-family: satoshi;
+	font-size: 0.9rem;
+	color: ${colorToken.black};
+`;
+
 interface MainFrameProps {
 	scrollToSection: (ref: React.RefObject<HTMLDivElement>) => void;
 	refs: {
@@ -155,10 +204,16 @@ interface MainFrameProps {
 const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showOverlay, setShowOverlay] = useState(false);
+	const [isLargeFont, setIsLargeFont] = useState(false);
 
 	const toggleMenu = () => {
 		setIsOpen(!isOpen);
 		setShowOverlay(!showOverlay);
+	};
+
+	const toggleFontSize = () => {
+		setIsLargeFont(!isLargeFont);
+		document.documentElement.style.fontSize = !isLargeFont ? '20px' : '16px';
 	};
 
 	const handleMenuClick = (ref: React.RefObject<HTMLDivElement>) => {
@@ -174,15 +229,25 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 		<div>
 			<ScrollProgressBar />
 			<Header>
-				<HeaderItem>
-					<StarSvg
-						style={{ width: '20px', height: '20px', color: colorToken.black }}
-						onClick={() => handleMenuClick(refs.nameCardRef)}
-					/>
-				</HeaderItem>
+				<FontSizeContainer>
+					<span style={{ fontFamily: 'SUITRegular', fontSize: '12px', color: colorToken.black }}>글자크기</span>
+					<ToggleSwitch>
+						<input
+							type="checkbox"
+							checked={isLargeFont}
+							onChange={toggleFontSize}
+							style={{ display: 'none' }}
+						/>
+						<ToggleSlider isActive={isLargeFont}>
+							<span style={{ fontSize: '12px', color: colorToken.white }}>-</span>
+							<span style={{ fontSize: '12px', color: colorToken.black }}>+</span>
+						</ToggleSlider>
+					</ToggleSwitch>
+				</FontSizeContainer>
 				<HeaderItem onClick={toggleMenu}>
 					<AnimatePresence mode="wait">
 						<HeaderText
+							style={{ color: colorToken.black }}
 							key={isOpen ? 'close' : 'menu'}
 							variants={headerTextVariants}
 							initial="initial"
@@ -206,6 +271,15 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 						exit="hidden"
 						transition={{ duration: 0.5 }}
 					>
+						<MenuItem
+							variants={menuVariants}
+							transition={{ duration: 0.3 }}
+							whileTap={{ scale: 0.9 }}
+							onClick={() => handleMenuClick(refs.nameCardRef)}
+						>
+							<MenuItemText>HOME</MenuItemText>
+							<MenuDescription>처음으로</MenuDescription>
+						</MenuItem>
 						<MenuItem
 							variants={menuVariants}
 							transition={{ duration: 0.3 }}

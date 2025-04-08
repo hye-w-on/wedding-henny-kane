@@ -50,7 +50,7 @@ const EnvelopePage = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "650px",
+        height: "680px",
         perspective: 1000,
         scrollMargin: "20vh",
         backgroundColor: colorToken.white,
@@ -60,7 +60,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           fontFamily: "PPPlayground",
-          fontSize: "3rem",
+          fontSize: "48px",
           color: colorToken.black,
           position: "absolute",
           top: "60px",
@@ -76,7 +76,7 @@ const EnvelopePage = () => {
         <div
           style={{
             fontFamily: "helvetica",
-            fontSize: "3rem",
+            fontSize: "48px",
             fontWeight: "bold",
             lineHeight: "0.5em",
             letterSpacing: "-0.05em",
@@ -87,7 +87,7 @@ const EnvelopePage = () => {
         <div
           style={{
             lineHeight: "1.3em",
-            fontSize: "4rem",
+            fontSize: "64px",
             letterSpacing: "-0.05em",
           }}
         >
@@ -104,14 +104,14 @@ const EnvelopePage = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          top: "195px",
+          top: "200px",
           zIndex: 2,
           gap: "2px",
         }}
         ref={textRef}
       >
         <ShowText isInView={isTextInView}>
-          원활한 식사 제공을 위해 참석 인원 확인이 필요합니다.
+          원활한 식사 제공을 위해 참석 인원 확인이 필요합니다
         </ShowText>
         <ShowText isInView={isTextInView} delay={0.2}>
           <b>
@@ -129,7 +129,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "420px",
+          top: "450px",
           width: "350px",
           height: "200px",
           backgroundColor: "#F2F1F0",
@@ -151,7 +151,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "420px",
+          top: "450px",
           width: "350px",
           height: "200px",
           backgroundColor: "#dad9d9",
@@ -174,7 +174,7 @@ const EnvelopePage = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          top: "430px",
+          top: "460px",
           width: "330px",
           height: "200px",
           backgroundColor: "#121212", // 편지지 색상
@@ -193,7 +193,7 @@ const EnvelopePage = () => {
       <motion.div
         style={{
           position: "absolute",
-          top: "420px",
+          top: "450px",
           width: "350px",
           height: "200px",
           display: "flex",

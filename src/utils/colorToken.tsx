@@ -42,7 +42,7 @@ export const colorTokensCSS = `
     --color-gray-500: #4D5053;
     --color-gray-400: #5A5D60;
     --color-gray-300: #676A6D;
-    --color-gray-200: #74777A;
+    --color-gray-200: #D3D3D3;
     --color-gray-100: #EEEEEE;
     --color-gray-50: #F6F6F6;
     --color-pink-400: #FAD0C9;
