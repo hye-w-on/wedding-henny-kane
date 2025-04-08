@@ -1,6 +1,12 @@
 import { memo, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { motion, LayoutGroup, AnimatePresence, useInView } from "motion/react";
+import {
+  motion,
+  LayoutGroup,
+  AnimatePresence,
+  useInView,
+  PanInfo,
+} from "motion/react";
 import colorToken from "@/utils/colorToken";
 import ShowText from "@/components/showText";
 
@@ -87,18 +93,26 @@ const Overlay = styled(motion.div)`
   z-index: 10;
 `;
 
-const ExpandedImageContainer = styled.div`
+const ExpandedWrapper = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 20;
+`;
+
+const ExpandedImageContainer = styled(motion.div)`
   width: 90vw;
   max-width: 1200px;
   max-height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  touch-action: none;
 `;
 
 const ExpandedImage = styled(motion.img)`
@@ -106,6 +120,21 @@ const ExpandedImage = styled(motion.img)`
   height: 100%;
   object-fit: contain;
   border-radius: 1rem;
+`;
+
+const InfoContainer = styled(motion.div)`
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 30;
+  font-family: "SUITRegular";
+  font-size: 0.8rem;
+  color: #ffffffaa;
 `;
 
 interface GalleryProps {
@@ -116,6 +145,8 @@ interface GalleryProps {
 interface ExpandedViewProps {
   image: ImageData;
   onClick: () => void;
+  onNext: () => void;
+  onPrev: () => void;
 }
 
 const GalleryImageComponent = memo(({ src }: { src: string }) => {
@@ -140,11 +171,31 @@ function Gallery({ images, setSelectedId }: GalleryProps) {
   );
 }
 
-function ExpandedView({ image, onClick }: ExpandedViewProps) {
+function ExpandedView({ image, onClick, onNext, onPrev }: ExpandedViewProps) {
+  const handleDragEnd = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    const SWIPE_THRESHOLD = 50;
+    if (info.offset.x > SWIPE_THRESHOLD) {
+      onPrev();
+    } else if (info.offset.x < -SWIPE_THRESHOLD) {
+      onNext();
+    }
+  };
+
   return (
-    <ExpandedImageContainer onClick={onClick}>
-      <ExpandedImage layoutId={image.id} src={image.url} />
-    </ExpandedImageContainer>
+    <ExpandedWrapper onClick={onClick}>
+      <ExpandedImageContainer
+        onClick={(e) => e.stopPropagation()}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        onDragEnd={handleDragEnd}
+        dragElastic={0.2}
+      >
+        <ExpandedImage layoutId={image.id} src={image.url} />
+      </ExpandedImageContainer>
+    </ExpandedWrapper>
   );
 }
 
@@ -154,6 +205,20 @@ const OverlayExpandGallery = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selectedImage = images.find((img) => img.id === selectedId);
+
+  const handleNext = () => {
+    if (!selectedId) return;
+    const currentIndex = images.findIndex((img) => img.id === selectedId);
+    const nextIndex = (currentIndex + 1) % images.length;
+    setSelectedId(images[nextIndex].id);
+  };
+
+  const handlePrev = () => {
+    if (!selectedId) return;
+    const currentIndex = images.findIndex((img) => img.id === selectedId);
+    const prevIndex = (currentIndex - 1 + images.length) % images.length;
+    setSelectedId(images[prevIndex].id);
+  };
 
   return (
     <Container>
@@ -203,9 +268,19 @@ const OverlayExpandGallery = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               />
+              <InfoContainer style={{ gap: "3px" }}>
+                <ShowText isInView={true}>
+                  양옆으로 스와이프하면 이미지를 넘길 수 있습니다
+                </ShowText>
+                <ShowText isInView={true}>
+                  이미지 밖을 클릭하면 닫힙니다
+                </ShowText>
+              </InfoContainer>
               <ExpandedView
                 image={selectedImage}
                 onClick={() => setSelectedId(null)}
+                onNext={handleNext}
+                onPrev={handlePrev}
               />
             </>
           )}
