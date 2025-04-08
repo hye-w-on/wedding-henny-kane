@@ -3,6 +3,7 @@ import ProfileCard, { CardHole } from "@/components/ProfileCard";
 import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import styled from "@emotion/styled";
 import Profile from "@/components/Profile";
+import colorToken from "@/utils/colorToken";
 
 const DraggableContainer = styled(motion.div)<{ $isDraggable: boolean }>`
   display: flex;
@@ -33,6 +34,50 @@ const CardContent = styled.div`
   background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
   backface-visibility: hidden;
+`;
+
+const MovingBackground = styled("div")`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${colorToken.gray100};
+  overflow: hidden;
+  z-index: 0;
+  opacity: 1;
+
+  &::before {
+    width: 100%;
+    content: "We're getting married We're getting married We're getting married";
+    position: absolute;
+    white-space: nowrap;
+    font-size: 10rem;
+    font-family: helvetica;
+    letter-spacing: -0.08em;
+    color: rgba(0, 0, 0, 1);
+    animation: moveText 20s linear infinite;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  @keyframes moveText {
+    0% {
+      transform: translate(0, -50%);
+    }
+    25% {
+      transform: translate(-25%, -50%);
+    }
+    50% {
+      transform: translate(-50%, -50%);
+    }
+    75% {
+      transform: translate(-25%, -50%);
+    }
+    100% {
+      transform: translate(0, -50%);
+    }
+  }
 `;
 
 const ProfileScrollPage: React.FC = () => {
@@ -83,8 +128,10 @@ const ProfileScrollPage: React.FC = () => {
         height: isDraggable ? "180vh" : "100vh",
         position: "relative",
         overflow: "clip",
+        backgroundColor: "transparent",
       }}
     >
+      <MovingBackground />
       <div
         style={{
           position: isDraggable ? "sticky" : "relative",
@@ -96,8 +143,23 @@ const ProfileScrollPage: React.FC = () => {
           padding: "100px 50px",
           transform: "translateZ(0)",
           touchAction: isDraggable ? "pan-y" : "none",
+          backgroundColor: "transparent",
         }}
       >
+        <div
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "50%",
+            transform: "translate(-50%)",
+            height: "100%",
+            fontFamily: "SUITRegular",
+            fontSize: "0.7rem",
+            color: "#000000aa",
+          }}
+        >
+          위아래로 스크롤하세요
+        </div>
         <DraggableContainer
           $isDraggable={isDraggable}
           style={{ x }}
@@ -144,7 +206,15 @@ const ProfileScrollPage: React.FC = () => {
               }}
             >
               <CardHole />
-              <CardContent></CardContent>
+              <CardContent
+                style={{
+                  fontFamily: "SUITRegular",
+                  fontWeight: "200",
+                  fontSize: "0.8rem",
+                }}
+              >
+                준비중
+              </CardContent>
             </ProfileCard>
           </CardWrapper>
           <CardWrapper
@@ -182,7 +252,15 @@ const ProfileScrollPage: React.FC = () => {
               }}
             >
               <CardHole />
-              <CardContent></CardContent>
+              <CardContent
+                style={{
+                  fontFamily: "SUITRegular",
+                  fontWeight: "200",
+                  fontSize: "0.8rem",
+                }}
+              >
+                준비중
+              </CardContent>
             </ProfileCard>
           </CardWrapper>
         </DraggableContainer>

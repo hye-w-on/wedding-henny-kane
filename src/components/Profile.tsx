@@ -142,7 +142,7 @@ function Profile({ isVisible, type }: ProfileProps) {
             fontSize: "2rem",
             color: colorToken.black,
             lineHeight: "0.9em",
-            letterSpacing: "-0.05em",
+            letterSpacing: "-0.09em",
           }}
         >
           {type === "groom" ? "MYEONGJIN LEE" : "HYEWON YOON"}

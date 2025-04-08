@@ -35,12 +35,14 @@ const Container = styled("div")({
     marginBottom: 0,
     marginTop: 0,
   },
-  backgroundColor: colorToken.white,
+  backgroundColor: "transparent",
 });
 
 const PageSection = styled.div({
   margin: 0,
   padding: 0,
+  position: "relative",
+  zIndex: 2,
 });
 
 const ScrollScreen: React.FC = () => {
@@ -73,9 +75,7 @@ const ScrollScreen: React.FC = () => {
           contactRef,
         }}
       />
-      <MovingBackground />
       <Container id="container">
-        <Background />
         <PageSection ref={nameCardRef}>
           <NamePage />
         </PageSection>
@@ -115,80 +115,3 @@ const ScrollScreen: React.FC = () => {
 };
 
 export default ScrollScreen;
-
-const Background = styled.div({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100vh",
-  zIndex: -2,
-
-  "--hdr-gradient": `radial-gradient(
-    farthest-side circle at 59% 40% in oklch,
-    oklch(100% 0 0) 63% 63%,
-    62%,
-    oklch(100% 0.01 360) 45% 45%,
-    73%,
-    oklch(93% 0.08 294) 76% 83%,
-    92%,
-    oklch(100% 0.01 0) 100%
-  )`,
-  "--sdr-gradient": `radial-gradient(
-    farthest-side circle at 59% 40%,
-    #fff 63% 63%,
-    62%,
-    #fffcff 45% 45%,
-    73%,
-    #eadeff 76% 83%,
-    92%,
-    #fffcff 100%
-  )`,
-  //background: "var(--hdr-gradient)",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-});
-
-const MovingBackground = styled("div")`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: ${colorToken.gray100};
-  overflow: hidden;
-  z-index: -1;
-
-  &::before {
-    width: 100%;
-    content: "We're getting married We're getting married We're getting married";
-    position: absolute;
-    white-space: nowrap;
-    font-size: 10rem;
-    font-family: helvetica;
-    letter-spacing: -0.08em;
-    color: rgba(0, 0, 0, 1);
-    animation: moveText 20s linear infinite;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  @keyframes moveText {
-    0% {
-      transform: translate(0, -50%);
-    }
-    25% {
-      transform: translate(-25%, -50%);
-    }
-    50% {
-      transform: translate(-50%, -50%);
-    }
-    75% {
-      transform: translate(-25%, -50%);
-    }
-    100% {
-      transform: translate(0, -50%);
-    }
-  }
-`;
