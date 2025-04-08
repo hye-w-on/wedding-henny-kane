@@ -154,7 +154,7 @@ const ProfileScrollPage: React.FC = () => {
             transform: "translate(-50%)",
             height: "100%",
             fontFamily: "SUITRegular",
-            fontSize: "0.7rem",
+            fontSize: "0.8rem",
             color: "#000000aa",
           }}
         >

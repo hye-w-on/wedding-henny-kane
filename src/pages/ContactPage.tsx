@@ -119,7 +119,7 @@ const TabContainer = styled('div')({
 	display: 'flex',
 	justifyContent: 'center',
 	margin: '0 auto',
-	width: '80%',
+	width: '90%',
 	maxWidth: '400px',
 	height: '35px',
 	overflow: 'hidden',
@@ -177,7 +177,7 @@ const Tab = styled(motion.button)<{ active: boolean }>(props => ({
 
 const ContactList = styled(motion.div)({
 	display: 'flex',
-	width: '80%',
+	width: '90%',
 	maxWidth: '400px',
 	flexDirection: 'column',
 	borderRadius: '0 0 8px 8px',
@@ -216,6 +216,7 @@ const ContactName = styled('div')({
 });
 
 const ButtonGroup = styled.div`
+	width: '100%';
 	display: flex;
 	gap: 5px;
 	justify-content: center;
@@ -228,7 +229,7 @@ const IconButton = styled(motion.button)`
 	align-items: center;
 	justify-content: center;
 	gap: 5px;
-	width: 80px;
+	width: 90px;
 	padding: 8px 10px;
 	border-radius: 6px;
 	background-color: rgba(255, 255, 255, 0.2);

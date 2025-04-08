@@ -36,7 +36,7 @@ const NameContainer = styled(motion.div)({
 
 const NameText = styled(motion.div)({
   fontFamily: "PPEditorialOld",
-  fontSize: "2.3rem",
+  fontSize: "37px",
   lineHeight: "1em",
   color: colorToken.black,
   textShadow: `
@@ -93,7 +93,7 @@ const StarWrapper = styled(motion.div)({
 const GradientContainer = styled.div`
   position: relative;
   height: 120px;
-  width: 22rem;
+  width: 350px;
   overflow: hidden;
   margin: 10px auto 0px;
 
@@ -288,7 +288,7 @@ function NamePage() {
           <NameText>
             <span
               style={{
-                fontSize: "5rem",
+                fontSize: "81px",
                 fontFamily: "PPPlayground",
               }}
             >
@@ -314,7 +314,7 @@ function NamePage() {
           >
             <span
               style={{
-                fontSize: "4.1rem",
+                fontSize: "64px",
                 fontFamily: "PPPlayground",
               }}
             >
@@ -341,7 +341,7 @@ function NamePage() {
               damping: 20,
             }}
             style={{
-              fontSize: "1.5rem",
+              fontSize: "24px",
               fontFamily: "PPPlayground",
               textShadow: `
                 -1px -1px 0 #fff,  

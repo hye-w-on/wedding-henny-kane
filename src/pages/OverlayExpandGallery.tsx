@@ -124,7 +124,7 @@ const ExpandedImage = styled(motion.img)`
 
 const InfoContainer = styled(motion.div)`
   position: fixed;
-  top: 20px;
+  top: 40px;
   left: 0;
   right: 0;
   display: flex;
@@ -332,7 +332,7 @@ const OverlayExpandGallery = () => {
               style={{ gap: "3px" }}
             >
               <ShowText isInView={true}>
-              이미지를 넘기려면 양끝을 클릭하거나 양옆으로 스와이프하세요
+              이미지를 넘기려면 양끝을 클릭하거나 스와이프하세요
               </ShowText>
               <ShowText isInView={true}>
               이미지 닫으려면 중앙을 클릭하세요 

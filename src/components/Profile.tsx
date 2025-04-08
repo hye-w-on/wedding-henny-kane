@@ -24,7 +24,7 @@ Chart.register(
 );
 
 const data = {
-  labels: ["잘생김", "다정함", "멘탈힐링", "센스", "유머", "집안일"],
+  labels: ["", "", "", "", "", ""],
   datasets: [
     {
       data: [10, 10, 9, 9, 9, 9],
@@ -81,18 +81,18 @@ function Profile({ isVisible, type }: ProfileProps) {
       y: 50,
       width: 40,
       height: 20,
-      text: "대충아무말비밀입니다",
+      text: "",
     },
-    { id: 2, x: 100, y: 190, width: 40, height: 20, text: "여기에 있습니다" },
+    { id: 2, x: 100, y: 190, width: 40, height: 20, text: "" },
   ]);
 
   const labels = [
-    { text: "귀여움", value: "00" },
-    { text: "다정함", value: "00" },
-    { text: "잘생김", value: "00" },
     { text: "", value: "00" },
-    { text: "효율적", value: "00" },
-    { text: "가정적", value: "00" },
+    { text: "", value: "00" },
+    { text: "", value: "00" },
+    { text: "", value: "00" },
+    { text: "", value: "00" },
+    { text: "", value: "00" },
   ];
 
   const getPosition = (index: number, total: number, radius: number) => {
@@ -139,7 +139,7 @@ function Profile({ isVisible, type }: ProfileProps) {
           style={{
             fontFamily: "helvetica",
             fontWeight: "bold",
-            fontSize: "2rem",
+            fontSize: "32px",
             color: colorToken.black,
             lineHeight: "0.9em",
             letterSpacing: "-0.09em",
