@@ -221,6 +221,7 @@ const ButtonGroup = styled.div`
 	justify-content: center;
 	margin-bottom: 5px;
 	width: 100%;
+	backdrop-filter: blur(10px);
 `;
 
 const IconButton = styled(motion.button)`
@@ -236,7 +237,6 @@ const IconButton = styled(motion.button)`
 	cursor: pointer;
 	transition: all 0.2s ease;
 	font-size: 0.7rem;
-	backdrop-filter: blur(10px);
 	border: none !important;
 	outline: none;
 	-webkit-appearance: none;
