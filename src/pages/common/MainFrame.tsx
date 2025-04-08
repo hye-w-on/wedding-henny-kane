@@ -16,7 +16,7 @@ const Header = styled.header`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0 15px;
+	padding: 0px;
 	box-sizing: border-box;
 	//background-color: rgba(255, 255, 255, 0.1);
 	//backdrop-filter: blur(10px);
@@ -26,6 +26,7 @@ const Header = styled.header`
 
 const HeaderItem = styled.div`
 	cursor: pointer;
+	padding: 0px 10px;
 `;
 
 const Overlay = styled.div<{ isOpen: boolean }>`
@@ -180,12 +181,17 @@ const ToggleSlider = styled.span<{ isActive: boolean }>`
 `;
 
 const FontSizeContainer = styled.div`
+	height: 100%;
+	width: 100px;
+	padding: 0px 10px;
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 3px;
 	font-family: satoshi;
 	font-size: 0.9rem;
 	color: ${colorToken.black};
+	background-color: #ffffff;
+	border-radius:  0% 0% 100% 0%;
 `;
 
 interface MainFrameProps {
@@ -230,7 +236,7 @@ const MainFrame: React.FC<MainFrameProps> = ({ scrollToSection, refs }) => {
 			<ScrollProgressBar />
 			<Header>
 				<FontSizeContainer>
-					<span style={{ fontFamily: 'SUITRegular', fontSize: '12px', color: colorToken.black }}>글자크기</span>
+					<span style={{ fontFamily: 'SUITRegular', fontSize: '12px', color: colorToken.black }}>글자</span>
 					<ToggleSwitch>
 						<input
 							type="checkbox"

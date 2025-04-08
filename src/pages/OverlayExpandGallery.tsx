@@ -124,7 +124,7 @@ const ExpandedImage = styled(motion.img)`
 
 const InfoContainer = styled(motion.div)`
   position: fixed;
-  top: 40px;
+  top: 50px;
   left: 0;
   right: 0;
   display: flex;
