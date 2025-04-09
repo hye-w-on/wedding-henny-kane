@@ -40,57 +40,52 @@
 		<link rel="preload" href="/fonts/PPEditorialOld-Ultralight.otf" as="font" type="font/otf" crossorigin="anonymous" />
 		<link rel="preload" href="/fonts/SUIT-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
 		<style>
-			#redirect-message {
+			#redirect-overlay {
 				position: fixed;
 				top: 0;
 				left: 0;
 				right: 0;
 				bottom: 0;
-				background: white;
-				display: flex;
+				background: rgba(0, 0, 0, 0.8);
+				display: none;
 				justify-content: center;
 				align-items: center;
-				z-index: 9999;
+				z-index: 999999;
+			}
+			#redirect-message {
+				background: white;
+				padding: 20px 40px;
+				border-radius: 8px;
+				font-size: 16px;
 				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 			}
-			#redirect-message div {
-				text-align: center;
-				padding: 20px;
-			}
 		</style>
+	</head>
+	<body>
+		<div id="redirect-overlay">
+			<div id="redirect-message">외부 브라우저로 이동합니다</div>
+		</div>
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
 		<script>
 			(function () {
 				const userAgent = navigator.userAgent.toLowerCase();
 				const isKakao = userAgent.indexOf('kakaotalk') !== -1;
 				const hasRedirected = sessionStorage.getItem('redirected');
-				const currentUrl = window.location.href;
 
 				if (isKakao && !hasRedirected) {
-					// 리다이렉션 상태 저장
-					sessionStorage.setItem('redirected', 'true');
+					const overlay = document.getElementById('redirect-overlay');
+					if (overlay) {
+						overlay.style.display = 'flex';
+						sessionStorage.setItem('redirected', 'true');
 
-					// 페이지 콘텐츠를 숨기고 메시지 표시
-					document.documentElement.style.visibility = 'hidden';
-
-					// body가 로드된 후 메시지 표시
-					window.addEventListener('DOMContentLoaded', () => {
-						const message = document.createElement('div');
-						message.id = 'redirect-message';
-						message.innerHTML = '<div>외부 브라우저로 이동합니다...</div>';
-						document.body.appendChild(message);
-						document.documentElement.style.visibility = 'visible';
-
-						// 잠시 후 리다이렉션
 						setTimeout(() => {
+							const currentUrl = window.location.href;
 							window.location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(currentUrl);
-						}, 500);
-					});
+						}, 800);
+					}
 				}
 			})();
 		</script>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="/src/main.tsx"></script>
 	</body>
 </html>
