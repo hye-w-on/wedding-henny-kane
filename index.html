@@ -52,18 +52,30 @@
 				align-items: center;
 				z-index: 999999;
 			}
-			#redirect-message {
+			.redirect-message {
 				background: white;
-				padding: 20px 40px;
+				padding: 30px 40px;
 				border-radius: 8px;
 				font-size: 16px;
 				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+				text-align: center;
+				line-height: 1.6;
+			}
+			.redirect-message p {
+				margin: 0;
+				padding: 0;
+			}
+			.redirect-message p + p {
+				margin-top: 8px;
 			}
 		</style>
 	</head>
 	<body>
 		<div id="redirect-overlay">
-			<div id="redirect-message">외부 브라우저에서 볼 수 있어요:) 닫으시면 됩니다^^</div>
+			<div class="redirect-message">
+				<p>외부 브라우저에서 이용이 가능합니다.</p>
+				<p>해당 페이지는 닫으시면 됩니다.</p>
+			</div>
 		</div>
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
@@ -71,13 +83,11 @@
 			(function () {
 				const userAgent = navigator.userAgent.toLowerCase();
 				const isKakao = userAgent.indexOf('kakaotalk') !== -1;
-				const hasRedirected = sessionStorage.getItem('redirected');
 
-				if (isKakao && !hasRedirected) {
+				if (isKakao) {
 					const overlay = document.getElementById('redirect-overlay');
 					if (overlay) {
 						overlay.style.display = 'flex';
-						sessionStorage.setItem('redirected', 'true');
 
 						setTimeout(() => {
 							const currentUrl = window.location.href;
