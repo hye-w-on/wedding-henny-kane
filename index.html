@@ -12,10 +12,6 @@
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
 		<meta property="og:url" content="https://main.d1fjqa3vw6pi0w.amplifyapp.com/wedding-henny-kane/" />
-		<meta
-			property="al:mobile:url"
-			content="kakaotalk://web/openExternal?url=https://main.d1fjqa3vw6pi0w.amplifyapp.com/wedding-henny-kane/"
-		/>
 		<meta property="al:android:url" content="https://main.d1fjqa3vw6pi0w.amplifyapp.com/wedding-henny-kane/" />
 		<meta property="al:ios:url" content="https://main.d1fjqa3vw6pi0w.amplifyapp.com/wedding-henny-kane/" />
 		<meta property="al:web:url" content="https://main.d1fjqa3vw6pi0w.amplifyapp.com/wedding-henny-kane/" />
@@ -35,5 +31,17 @@
 	<body>
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
+		<script>
+			// 카카오톡 인앱 브라우저 여부 확인
+			function checkKakaoInApp() {
+				const userAgent = navigator.userAgent.toLowerCase();
+				return userAgent.indexOf('kakaotalk') > -1;
+			}
+
+			// 페이지 로드 시 카카오톡 인앱 브라우저면 외부 브라우저로 리다이렉트
+			if (checkKakaoInApp()) {
+				location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(window.location.href);
+			}
+		</script>
 	</body>
 </html>
