@@ -10,6 +10,7 @@ const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net/newzealand";
 interface ImageData {
   id: string;
   url: string;
+  isLandscape?: boolean;
 }
 
 const originalImages: ImageData[] = Array.from({ length: 6 }, (_, i) => ({
@@ -109,14 +110,14 @@ const Overlay = styled(motion.div)`
   z-index: 10;
 `;
 
-const ExpandedImageContainer = styled.div`
+const ExpandedImageContainer = styled.div<{ $isLandscape?: boolean }>`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 20;
   width: 90vw;
-  max-width: 1200px;
+  max-width: ${({ $isLandscape }) => ($isLandscape ? "800px" : "580px")};
   max-height: 90vh;
   display: flex;
   justify-content: center;
@@ -133,24 +134,51 @@ const ExpandedImage = styled(motion.img)`
 const CarouselGallery = () => {
   const infoRef = useRef(null);
   const isInfoInView = useInView(infoRef, { once: false });
-
-  // 무한 슬라이드를 위한 초기 설정: 3배 크기의 이미지 배열 생성
-  const initialImages = [
-    ...originalImages.map((img) => ({ ...img, id: `prev-${img.id}` })),
-    ...originalImages,
-    ...originalImages.map((img) => ({ ...img, id: `next-${img.id}` })),
-  ];
-
-  const [displayedImages, setDisplayedImages] = useState(initialImages);
+  const [images, setImages] = useState<ImageData[]>(originalImages);
+  const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
   const [index, setIndex] = useState(originalImages.length); // 중간 세트부터 시작
   const [autoPlay, setAutoPlay] = useState(true);
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
 
+  // 이미지 로드 및 isLandscape 계산
+  useEffect(() => {
+    const loadImages = async () => {
+      const loadedImages = await Promise.all(
+        originalImages.map(
+          (img) =>
+            new Promise<ImageData>((resolve) => {
+              const image = document.createElement("img");
+              image.onload = () => {
+                resolve({
+                  ...img,
+                  isLandscape: image.width > image.height,
+                });
+              };
+              image.src = img.url;
+            })
+        )
+      );
+      setImages(loadedImages);
+
+      // 초기 displayedImages 설정
+      const initialDisplayedImages = [
+        ...loadedImages.map((img) => ({ ...img, id: `prev-${img.id}` })),
+        ...loadedImages,
+        ...loadedImages.map((img) => ({ ...img, id: `next-${img.id}` })),
+      ];
+      setDisplayedImages(initialDisplayedImages);
+    };
+
+    loadImages();
+  }, []);
+
   // 인덱스가 변경될 때마다 필요한 이미지 추가
   useEffect(() => {
+    if (displayedImages.length === 0) return;
+
     // 오른쪽으로 이동하여 마지막 세트에 접근하는 경우
     if (index >= displayedImages.length - originalImages.length / 2) {
-      const nextImages = originalImages.map((img) => ({
+      const nextImages = images.map((img) => ({
         ...img,
         id: `next-${img.id}-${Date.now()}`,
       }));
@@ -159,15 +187,14 @@ const CarouselGallery = () => {
 
     // 왼쪽으로 이동하여 첫 번째 세트에 접근하는 경우
     if (index < originalImages.length / 2) {
-      const prevImages = originalImages.map((img) => ({
+      const prevImages = images.map((img) => ({
         ...img,
         id: `prev-${img.id}-${Date.now()}`,
       }));
-      // 왼쪽에 이미지 추가 후 인덱스 조정
       setDisplayedImages((prev) => [...prevImages, ...prev]);
       setIndex((prev) => prev + originalImages.length);
     }
-  }, [index]);
+  }, [index, images, displayedImages.length]);
 
   // 다음 슬라이드로 이동
   const handleNext = () => {
@@ -334,6 +361,7 @@ const CarouselGallery = () => {
                 setSelectedImage(null);
                 setAutoPlay(true);
               }}
+              $isLandscape={!!selectedImage?.isLandscape}
             >
               <ExpandedImage
                 src={selectedImage.url}

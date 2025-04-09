@@ -13,29 +13,23 @@ import ShowText from "@/components/showText";
 interface ImageData {
   id: string;
   url: string;
+  isLandscape?: boolean;
 }
 
 const CLOUDFRONT_URL = "https://d2fwec07ipx82e.cloudfront.net/eleven";
 
-interface ImageData {
-  id: string;
-  url: string;
-}
-
-// 100번대 이미지
+// 기본 이미지 데이터 정의
 const group100Images: ImageData[] = Array.from({ length: 5 }, (_, i) => ({
   id: `image1-${i}`,
   url: `${CLOUDFRONT_URL}/eleven${101 + i}.webp`,
 }));
 
-// 200번대 이미지
 const group200Images: ImageData[] = Array.from({ length: 13 }, (_, i) => ({
   id: `image2-${i + 5}`,
   url: `${CLOUDFRONT_URL}/eleven${201 + i}.webp`,
 }));
 
-// 모든 이미지 합치기
-const images: ImageData[] = [...group100Images, ...group200Images];
+const baseImages = [...group100Images, ...group200Images];
 
 const Container = styled.div`
   background: ${colorToken.black};
@@ -105,10 +99,10 @@ const ExpandedWrapper = styled.div`
   z-index: 1000000;
 `;
 
-const ExpandedImageContainer = styled(motion.div)`
+const ExpandedImageContainer = styled(motion.div)<{ $isLandscape: boolean }>`
   width: 90vw;
-  max-width: 1200px;
   max-height: 90vh;
+  max-width: ${({ $isLandscape }) => ($isLandscape ? "800px" : "580px")};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,25 +132,25 @@ const InfoContainer = styled(motion.div)`
 `;
 
 // 새로운 스타일 컴포넌트 추가
-const ClickArea = styled.div<{ position: 'left' | 'center' | 'right' }>`
+const ClickArea = styled.div<{ position: "left" | "center" | "right" }>`
   position: absolute;
   top: 0;
   bottom: 0;
   ${({ position }) => {
     switch (position) {
-      case 'left':
+      case "left":
         return `
           left: 0;
           width: 25%;
           cursor: w-resize;
         `;
-      case 'right':
+      case "right":
         return `
           right: 0;
           width: 25%;
           cursor: e-resize;
         `;
-      case 'center':
+      case "center":
         return `
           left: 25%;
           width: 50%;
@@ -172,7 +166,7 @@ const LockScrollStyle = styled.div<{ isLocked: boolean }>`
   height: 100vh;
   inset: 0;
   z-index: 999998;
-  display: ${props => props.isLocked ? 'block' : 'none'};
+  display: ${(props) => (props.isLocked ? "block" : "none")};
 `;
 
 interface GalleryProps {
@@ -225,24 +219,35 @@ function ExpandedView({ image, onClick, onNext, onPrev }: ExpandedViewProps) {
   return (
     <ExpandedWrapper>
       <ExpandedImageContainer
+        $isLandscape={!!image.isLandscape}
+        onClick={(e) => e.stopPropagation()}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         onDragEnd={handleDragEnd}
         dragElastic={0.2}
       >
         <ExpandedImage layoutId={image.id} src={image.url} />
-        <ClickArea position="left" onClick={(e) => {
-          e.stopPropagation();
-          onPrev();
-        }} />
-        <ClickArea position="center" onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }} />
-        <ClickArea position="right" onClick={(e) => {
-          e.stopPropagation();
-          onNext();
-        }} />
+        <ClickArea
+          position="left"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev();
+          }}
+        />
+        <ClickArea
+          position="center"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+        />
+        <ClickArea
+          position="right"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext();
+          }}
+        />
       </ExpandedImageContainer>
     </ExpandedWrapper>
   );
@@ -252,6 +257,30 @@ const OverlayExpandGallery = () => {
   const infoRef = useRef(null);
   const isInfoInView = useInView(infoRef, { once: false });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [images, setImages] = useState<ImageData[]>(baseImages);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      const loadedImages = await Promise.all(
+        baseImages.map(
+          (img) =>
+            new Promise<ImageData>((resolve) => {
+              const image = document.createElement("img");
+              image.onload = () => {
+                resolve({
+                  ...img,
+                  isLandscape: image.width > image.height,
+                });
+              };
+              image.src = img.url;
+            })
+        )
+      );
+      setImages(loadedImages);
+    };
+
+    loadImages();
+  }, []);
 
   const selectedImage = images.find((img) => img.id === selectedId);
 
@@ -265,20 +294,20 @@ const OverlayExpandGallery = () => {
     };
 
     if (selectedId) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
-      window.addEventListener('scroll', handleScroll, { passive: false });
-      window.addEventListener('touchmove', handleScroll, { passive: false });
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+      window.addEventListener("scroll", handleScroll, { passive: false });
+      window.addEventListener("touchmove", handleScroll, { passive: false });
     } else {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     }
 
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('touchmove', handleScroll);
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("touchmove", handleScroll);
     };
   }, [selectedId]);
 
@@ -348,17 +377,17 @@ const OverlayExpandGallery = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
-            <InfoContainer 
+            <InfoContainer
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               style={{ gap: "3px" }}
             >
               <ShowText isInView={true}>
-              이미지를 넘기려면 양끝을 클릭하거나 스와이프하세요
+                이미지를 넘기려면 양끝을 클릭하거나 스와이프하세요
               </ShowText>
               <ShowText isInView={true}>
-              이미지 닫으려면 중앙을 클릭하세요 
+                이미지 닫으려면 중앙을 클릭하세요
               </ShowText>
             </InfoContainer>
             <ExpandedView
