@@ -240,6 +240,7 @@ function LocationPage() {
           </RotatedBox>
           <div
             style={{
+              marginTop: "10px",
               width: "100%",
               fontFamily: "PPPlayground",
               fontSize: "4rem",
@@ -276,7 +277,7 @@ function LocationPage() {
             ref={addressRef}
           >
             <ShowText isInView={isAddressInView}>
-              <div style={{ marginTop: "5px" }}>
+              <div style={{ marginTop: "15px" }}>
                 서울 성북구 정릉로10길 127 르한스(한스갤러리)
               </div>
             </ShowText>

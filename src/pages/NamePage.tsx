@@ -236,7 +236,7 @@ function NamePage() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            borderRadius: "10px",
+            height: "35px",
           }}
         >
           <motion.div
@@ -247,7 +247,7 @@ function NamePage() {
             <OvalContainer>INVITATION</OvalContainer>
           </motion.div>
           <motion.div
-            style={{ fontSize: "0.6rem", fontFamily: "SUITRegular" }}
+            style={{ fontSize: "0.7rem", fontFamily: "SUITRegular" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: staggerDelay }}
