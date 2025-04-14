@@ -8,7 +8,7 @@ import {
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import colorToken from "../utils/colorToken";
-import IdBride from "@/assets/images/id_bride.webp";
+import IdBride from "@/assets/images/id_henny.webp";
 
 // Chart.js에서 사용하는 요소 등록
 Chart.register(BarElement, CategoryScale, LinearScale);

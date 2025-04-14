@@ -9,8 +9,8 @@ import {
 } from "chart.js";
 import { useRef, useState } from "react";
 import colorToken from "../utils/colorToken";
-import IdGroom from "@/assets/images/id_groom.webp";
-import IdBride from "@/assets/images/id_bride.webp";
+import IdGroom from "@/assets/images/id_kane.webp";
+import IdBride from "@/assets/images/id_henny.webp";
 import { motion } from "motion/react";
 import Star5Svg from "@/assets/icons/star5.svg?react";
 
@@ -155,7 +155,7 @@ function Profile({ isVisible, type }: ProfileProps) {
             marginTop: "5px",
             border: "1px solid #12121299",
             width: "200px",
-            height: "250px",
+            height: "200px",
             overflow: "hidden",
           }}
         >
