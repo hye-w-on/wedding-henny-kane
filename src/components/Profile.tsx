@@ -23,86 +23,12 @@ Chart.register(
   Legend
 );
 
-const data = {
-  labels: ["", "", "", "", "", ""],
-  datasets: [
-    {
-      data: [10, 10, 9, 9, 9, 9],
-      backgroundColor: "rgba(50, 50, 50, 0.7)",
-      borderColor: "rgba(50, 50, 50, 1)",
-      borderWidth: 0,
-      //pointBackgroundColor: "rgba(50, 50, 50, 1)",
-      // pointBorderColor: "rgba(50, 50, 50, 1)",
-      pointStyle: "circle",
-    },
-  ],
-};
-const options = {
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-  scales: {
-    r: {
-      min: 0,
-      max: 10,
-      angleLines: {
-        color: "rgba(0, 0, 0, .1)",
-        lineWidth: 1,
-        display: true,
-      },
-      grid: {
-        color: "rgba(0, 0, 0, .2)",
-      },
-      ticks: {
-        display: false,
-        stepSize: 3,
-        showLabelBackdrop: false,
-      },
-      pointLabels: {
-        display: false,
-      },
-    },
-  },
-};
-
 interface ProfileProps {
   isVisible?: boolean;
   type: "groom" | "bride";
 }
 
 function Profile({ isVisible, type }: ProfileProps) {
-  const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [balloons] = useState([
-    {
-      id: 1,
-      x: 50,
-      y: 50,
-      width: 40,
-      height: 20,
-      text: "",
-    },
-    { id: 2, x: 100, y: 190, width: 40, height: 20, text: "" },
-  ]);
-
-  const labels = [
-    { text: "", value: "00" },
-    { text: "", value: "00" },
-    { text: "", value: "00" },
-    { text: "", value: "00" },
-    { text: "", value: "00" },
-    { text: "", value: "00" },
-  ];
-
-  const getPosition = (index: number, total: number, radius: number) => {
-    const angle = (index * 2 * Math.PI) / total - Math.PI / 2; // 시작 각도 조정
-    return {
-      left: `${50 + radius * Math.cos(angle)}%`,
-      top: `${50 + radius * Math.sin(angle)}%`,
-    };
-  };
-
   return (
     <>
       <div
@@ -122,7 +48,7 @@ function Profile({ isVisible, type }: ProfileProps) {
             justifyContent: "center",
             alignItems: "center",
             fontFamily: "helvetica",
-            fontWeight: "100",
+            fontWeight: "bold",
             fontSize: "12px",
             color: colorToken.black,
             //backgroundColor: colorToken.black,
@@ -194,73 +120,30 @@ function Profile({ isVisible, type }: ProfileProps) {
           <Star5Svg style={{ width: "14px", height: "14px" }} />
           <Star5Svg style={{ width: "14px", height: "14px" }} />
         </div>
-        {/*
-      <div
-        ref={chartContainerRef}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          position: "relative",
-          width: "130px",
-          height: "130px",
-          margin: "20px",
-          padding: "8px",
-        }}
-      >
-        <Radar data={data} options={options} />
-
-        {balloons.map((balloon) => (
-          <Balloon
-            key={balloon.id}
-            initial={{ scale: 0, opacity: 0 }} // 초기 상태
-            animate={{ scale: 1, opacity: 1 }} // 나타날 때
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 10,
-            }}
-            style={{
-              top: balloon.y,
-              left: balloon.x,
-            }}
-          >
-            {balloon.text}
-          </Balloon>
-        ))}
-        {labels.map((label, index) => {
-          const position = getPosition(index, labels.length, 55);
-          return (
-            <div
-              key={index}
-              style={{
-                width: "30px",
-                height: "30px",
-                position: "absolute",
-                fontFamily: "",
-                color: "#121212",
-                fontSize: "0.6rem",
-                fontWeight: "100",
-                top: position.top,
-                left: position.left,
-                transform: "translate(-50%, -50%)",
-                textAlign: "center",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "PPEditorialNew",
-                  fontSize: "1.2rem",
-                  lineHeight: "0.8em",
-                }}
-              >
-                xx
-              </div>
-              {label.text}
+        <div
+          style={{
+            marginTop: "10px",
+            fontFamily: "SUITRegular",
+            fontSize: "0.8rem",
+            color: colorToken.black,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "5px",
+          }}
+        >
+          <div style={{ fontSize: "1rem" }}>
+            {type === "groom" ? "이명진" : "윤혜원"}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div>
+              직업 |
+              <span style={{ fontWeight: "100", marginLeft: "4px" }}>
+                {type === "groom" ? "개발자" : "그 뒷자리 개발자"}
+              </span>
             </div>
-          );
-        })}
-      </div>*/}
+          </div>
+        </div>
       </div>
     </>
   );

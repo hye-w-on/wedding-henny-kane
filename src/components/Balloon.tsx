@@ -5,12 +5,15 @@ const Balloon = styled(motion.div)({
   position: "absolute",
   backgroundColor: "#121212",
   color: "#fff",
-  fontSize: "10px",
+  fontSize: "0.8rem",
   fontWeight: 400,
   padding: "4px 10px",
   borderRadius: "10px",
   boxShadow: "1px 1px 10px rgba(0, 0, 0, 0.2)",
   transformOrigin: "bottom center",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 
   // 화살표
   "&:after": {

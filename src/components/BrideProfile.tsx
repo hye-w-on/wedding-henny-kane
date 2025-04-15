@@ -9,6 +9,8 @@ import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import colorToken from "../utils/colorToken";
 import IdBride from "@/assets/images/id_henny.webp";
+import Balloon from "./Balloon";
+import { Bar } from "react-chartjs-2";
 
 // Chart.js에서 사용하는 요소 등록
 Chart.register(BarElement, CategoryScale, LinearScale);
@@ -151,7 +153,7 @@ function BrideProfile({ isVisible }: BrideProfileProps) {
       >
         ★★★★★
       </div>
-      {/*
+
       <div
         ref={chartContainerRef}
         style={{
@@ -184,7 +186,6 @@ function BrideProfile({ isVisible }: BrideProfileProps) {
           </Balloon>
         ))}
       </div>
-      */}
     </>
   );
 }

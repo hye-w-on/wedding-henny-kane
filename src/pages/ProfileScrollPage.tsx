@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import styled from "@emotion/styled";
 import Profile from "@/components/Profile";
 import colorToken from "@/utils/colorToken";
+import ProfileBack from "@/components/ProfileBack";
 
 const DraggableContainer = styled(motion.div)<{ $isDraggable: boolean }>`
   display: flex;
@@ -213,7 +214,7 @@ const ProfileScrollPage: React.FC = () => {
                   fontSize: "0.8rem",
                 }}
               >
-                준비중
+                <ProfileBack type={"groom"} />
               </CardContent>
             </ProfileCard>
           </CardWrapper>
@@ -259,7 +260,7 @@ const ProfileScrollPage: React.FC = () => {
                   fontSize: "0.8rem",
                 }}
               >
-                준비중
+                <ProfileBack type={"bride"} />
               </CardContent>
             </ProfileCard>
           </CardWrapper>
