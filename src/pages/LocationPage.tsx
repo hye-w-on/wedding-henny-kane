@@ -207,7 +207,7 @@ function LocationPage() {
   };
 
   const handleKakaoMapClick = () => {
-    window.open("https://kko.kakao.com/bjlJf3oWOO", "_blank");
+    window.open("https://kko.kakao.com/eTF_5YmNVo", "_blank");
   };
 
   const handleNaverMapClick = () => {
