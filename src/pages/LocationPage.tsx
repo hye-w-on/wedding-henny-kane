@@ -207,7 +207,7 @@ function LocationPage() {
   };
 
   const handleKakaoMapClick = () => {
-    window.open("https://map.kakao.com/link/map/1039522002", "_blank");
+    window.open("https://map.kakao.com/link/map/1039522002");
   };
 
   const handleNaverMapClick = () => {
