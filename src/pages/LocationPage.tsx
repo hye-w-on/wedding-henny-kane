@@ -207,7 +207,13 @@ function LocationPage() {
   };
 
   const handleKakaoMapClick = () => {
-    window.open("https://map.kakao.com/link/map/1039522002");
+    // 모바일에서 카카오맵 앱 실행, 웹에서는 카카오맵 웹 버전으로 이동
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const kakaoMapUrl = isMobile 
+      ? "kakaomap://place?id=1039522002"
+      : "https://map.kakao.com/link/map/1039522002";
+    
+    window.open(kakaoMapUrl);
   };
 
   const handleNaverMapClick = () => {
