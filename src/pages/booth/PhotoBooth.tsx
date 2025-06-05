@@ -1,8 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import Webcam from 'react-webcam';
-import { FaceDetection } from '@mediapipe/face_detection';
-import { Camera } from '@mediapipe/camera_utils';
 
 const MAX_PHOTOS = 4;
 
@@ -29,6 +27,29 @@ interface FaceDetectionResult {
   width: number;
   height: number;
   confidence: number;
+}
+
+interface MediaPipeDetection {
+  boundingBox: {
+    xCenter: number;
+    yCenter: number;
+    width: number;
+    height: number;
+  };
+}
+
+interface MediaPipeResults {
+  detections?: MediaPipeDetection[];
+}
+
+interface MediaPipeFaceDetection {
+  close(): void;
+  send(inputs: { image: HTMLVideoElement }): Promise<void>;
+}
+
+interface MediaPipeCamera {
+  start(): void;
+  stop(): void;
 }
 
 interface Frame {
@@ -95,8 +116,8 @@ const PhotoBooth = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const webcamContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const faceDetectionRef = useRef<FaceDetection | null>(null);
-  const cameraRef = useRef<Camera | null>(null);
+  const faceDetectionRef = useRef<MediaPipeFaceDetection | null>(null);
+  const cameraRef = useRef<MediaPipeCamera | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
   const [currentFilter, setCurrentFilter] = useState<FilterType>('none');
   const [stickers, setStickers] = useState<Sticker[]>([]);
@@ -107,6 +128,8 @@ const PhotoBooth = () => {
   const [activeTab, setActiveTab] = useState<TabType>('filter');
   const [faceDetections, setFaceDetections] = useState<FaceDetectionResult[]>([]);
   const [isFaceDetectionEnabled, setIsFaceDetectionEnabled] = useState(false);
+  const [isMediaPipeLoading, setIsMediaPipeLoading] = useState(false);
+  const [isMediaPipeLoaded, setIsMediaPipeLoaded] = useState(false);
   const [isMobile] = useState(() => {
     if (typeof window !== 'undefined') {
       return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -145,48 +168,64 @@ const PhotoBooth = () => {
     });
   }, []);
 
-  // MediaPipe 얼굴 감지 초기화 (원래 작동하던 방식으로 복원)
+  // MediaPipe 조건부 로딩 함수
+  const loadMediaPipe = async () => {
+    if (isMediaPipeLoaded || isMediaPipeLoading) return;
+    
+    setIsMediaPipeLoading(true);
+    
+    try {
+      console.log('MediaPipe 로딩 시작...');
+      
+      // 동적 import로 MediaPipe 로딩
+      const [{ FaceDetection }, { Camera }] = await Promise.all([
+        import('@mediapipe/face_detection'),
+        import('@mediapipe/camera_utils')
+      ]);
+      
+      const faceDetection = new FaceDetection({
+        locateFile: (file: string) => {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
+        }
+      });
+
+      faceDetection.setOptions({
+        model: 'short',
+        minDetectionConfidence: 0.5,
+      });
+
+      faceDetection.onResults((results: MediaPipeResults) => {
+        if (results.detections && results.detections.length > 0) {
+          const detections: FaceDetectionResult[] = results.detections.map((detection: MediaPipeDetection) => {
+            return {
+              x: detection.boundingBox.xCenter * 100,
+              y: detection.boundingBox.yCenter * 100,
+              width: detection.boundingBox.width * 100,
+              height: detection.boundingBox.height * 100,
+              confidence: 0.8,
+            };
+          });
+          
+          setFaceDetections(detections);
+          updateFaceTrackingStickers(detections);
+        } else {
+          setFaceDetections([]);
+        }
+      });
+
+      faceDetectionRef.current = faceDetection;
+      setIsMediaPipeLoaded(true);
+      console.log('MediaPipe 로딩 완료!');
+    } catch (error) {
+      console.error('MediaPipe 로딩 실패:', error);
+      alert('얼굴감지 기능 로딩에 실패했습니다. 네트워크 연결을 확인해주세요.');
+    } finally {
+      setIsMediaPipeLoading(false);
+    }
+  };
+
+  // cleanup 함수
   useEffect(() => {
-    const initializeFaceDetection = async () => {
-      try {
-        const faceDetection = new FaceDetection({
-          locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
-          }
-        });
-
-        faceDetection.setOptions({
-          model: 'short',
-          minDetectionConfidence: 0.5,
-        });
-
-        faceDetection.onResults((results) => {
-          if (results.detections && results.detections.length > 0) {
-            const detections: FaceDetectionResult[] = results.detections.map((detection) => {
-              return {
-                x: detection.boundingBox.xCenter * 100,
-                y: detection.boundingBox.yCenter * 100,
-                width: detection.boundingBox.width * 100,
-                height: detection.boundingBox.height * 100,
-                confidence: 0.8,
-              };
-            });
-            
-            setFaceDetections(detections);
-            updateFaceTrackingStickers(detections);
-          } else {
-            setFaceDetections([]);
-          }
-        });
-
-        faceDetectionRef.current = faceDetection;
-      } catch (error) {
-        console.error('MediaPipe 초기화 실패:', error);
-      }
-    };
-
-    initializeFaceDetection();
-
     return () => {
       if (faceDetectionRef.current) {
         faceDetectionRef.current.close();
@@ -195,14 +234,15 @@ const PhotoBooth = () => {
         cameraRef.current.stop();
       }
     };
-  }, [updateFaceTrackingStickers]);
+  }, []);
 
-  // 웹캠이 로드되면 MediaPipe 카메라 시작 (원래 방식)
-  const handleUserMedia = useCallback((stream: MediaStream) => {
+  // 웹캠이 로드되면 MediaPipe 카메라 시작 (조건부)
+  const handleUserMedia = useCallback(async (stream: MediaStream) => {
     if (webcamRef.current?.video) {
       videoRef.current = webcamRef.current.video;
       
-      if (faceDetectionRef.current && isFaceDetectionEnabled) {
+      if (faceDetectionRef.current && isFaceDetectionEnabled && isMediaPipeLoaded) {
+        const { Camera } = await import('@mediapipe/camera_utils');
         const camera = new Camera(videoRef.current, {
           onFrame: async () => {
             if (faceDetectionRef.current && videoRef.current) {
@@ -216,28 +256,40 @@ const PhotoBooth = () => {
         camera.start();
       }
     }
-  }, [isFaceDetectionEnabled]);
+  }, [isFaceDetectionEnabled, isMediaPipeLoaded]);
 
-  // 얼굴 감지 토글 (원래 방식)
-  const toggleFaceDetection = () => {
-    setIsFaceDetectionEnabled(prev => !prev);
-    
-    if (!isFaceDetectionEnabled && videoRef.current && faceDetectionRef.current) {
-      const camera = new Camera(videoRef.current, {
-        onFrame: async () => {
-          if (faceDetectionRef.current && videoRef.current) {
-            await faceDetectionRef.current.send({ image: videoRef.current });
-          }
-        },
-        width: 640,
-        height: 640,
-      });
-      cameraRef.current = camera;
-      camera.start();
-    } else if (cameraRef.current) {
-      cameraRef.current.stop();
-      cameraRef.current = null;
-      setFaceDetections([]);
+  // 얼굴 감지 토글 (조건부 로딩 포함)
+  const toggleFaceDetection = async () => {
+    if (!isFaceDetectionEnabled) {
+      // 얼굴감지 켜기
+      if (!isMediaPipeLoaded) {
+        await loadMediaPipe(); // MediaPipe 로딩
+      }
+      
+      if (isMediaPipeLoaded && videoRef.current && faceDetectionRef.current) {
+        const { Camera } = await import('@mediapipe/camera_utils');
+        const camera = new Camera(videoRef.current, {
+          onFrame: async () => {
+            if (faceDetectionRef.current && videoRef.current) {
+              await faceDetectionRef.current.send({ image: videoRef.current });
+            }
+          },
+          width: 640,
+          height: 640,
+        });
+        cameraRef.current = camera;
+        camera.start();
+      }
+      
+      setIsFaceDetectionEnabled(true);
+    } else {
+      // 얼굴감지 끄기
+      if (cameraRef.current) {
+        cameraRef.current.stop();
+        cameraRef.current = null;
+        setFaceDetections([]);
+      }
+      setIsFaceDetectionEnabled(false);
     }
   };
 
@@ -549,8 +601,14 @@ const PhotoBooth = () => {
             <FaceToggleButton
               onClick={toggleFaceDetection}
               isActive={isFaceDetectionEnabled}
+              disabled={isMediaPipeLoading}
             >
-              {isFaceDetectionEnabled ? '🔍 얼굴감지 ON' : '👀 얼굴감지 OFF'}
+              {isMediaPipeLoading 
+                ? '⏳ 로딩 중...' 
+                : isFaceDetectionEnabled 
+                  ? '🔍 얼굴감지 ON' 
+                  : '👀 얼굴감지 OFF'
+              }
             </FaceToggleButton>
             {isFaceDetectionEnabled && faceDetections.length > 0 && (
               <FaceDetectionInfo>
@@ -1261,20 +1319,25 @@ const FaceDetectionToggle = styled.div({
   marginBottom: '0.5rem',
 });
 
-const FaceToggleButton = styled.button<{ isActive: boolean }>(({ isActive }) => ({
+const FaceToggleButton = styled.button<{ isActive: boolean; disabled?: boolean }>(({ isActive, disabled }) => ({
   padding: '0.4rem 0.8rem',
   fontSize: '0.7rem',
-  fontWeight: '600',
-  color: isActive ? '#f8e4e2' : '#333',
-  backgroundColor: isActive ? '#df3b3a' : '#ffffff',
-  border: `1px solid ${isActive ? '#df3b3a' : '#dee2e6'}`,
-  borderRadius: '15px',
+  fontWeight: '500',
+  borderRadius: '0.35rem',
+  border: '1px solid #df3b3a',
+  backgroundColor: isActive ? '#df3b3a' : 'white',
+  color: isActive ? 'white' : '#df3b3a',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   '&:hover': {
-    backgroundColor: '#df3b3a',
-    color: '#f8e4e2',
+    backgroundColor: isActive ? '#c23230' : '#fdf2f2',
     borderColor: '#df3b3a',
+  },
+  '&:disabled': {
+    backgroundColor: '#ccc',
+    cursor: 'not-allowed',
+    borderColor: '#ccc',
+    color: '#666',
   },
 }));
 
