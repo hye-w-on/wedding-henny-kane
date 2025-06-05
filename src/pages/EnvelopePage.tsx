@@ -115,13 +115,13 @@ const EnvelopePage = () => {
         </ShowText>
         <ShowText isInView={isTextInView} delay={0.2}>
           <b>
-            <u>5월 31일</u>
+            <u>이명진</u>
           </b>
-          까지{" "}
+          {" "}또는{" "}
           <b>
-            <u>참석여부</u>
+            <u>윤혜원</u>
           </b>
-          를 회신해주세요
+          에게 연락부탁드립니다.
         </ShowText>
       </div>
 

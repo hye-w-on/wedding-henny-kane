@@ -207,7 +207,29 @@ function LocationPage() {
   };
 
   const handleKakaoMapClick = () => {
-    window.open("https://kko.kakao.com/bjlJf3oWOO", "_blank");
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // 앱 실행 시도
+      const appUrl = "kakaomap://place?id=1039522002";
+      const webUrl = "https://map.kakao.com/link/map/1039522002";
+      
+      // 앱 실행 시도 후 2초 후에 웹 버전으로 전환
+      const timeoutId = setTimeout(() => {
+        window.location.href = webUrl;
+      }, 2000);
+      
+      // 앱 실행 시도
+      window.location.href = appUrl;
+      
+      // 페이지를 떠날 때 타이머 정리
+      window.addEventListener('pagehide', () => {
+        clearTimeout(timeoutId);
+      });
+    } else {
+      // 데스크톱에서는 바로 웹 버전으로 이동
+      window.open("https://map.kakao.com/link/map/1039522002");
+    }
   };
 
   const handleNaverMapClick = () => {
