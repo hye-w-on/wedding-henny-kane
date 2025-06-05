@@ -107,6 +107,8 @@ const PhotoBooth = () => {
   const [activeTab, setActiveTab] = useState<TabType>('filter');
   const [faceDetections, setFaceDetections] = useState<FaceDetectionResult[]>([]);
   const [isFaceDetectionEnabled, setIsFaceDetectionEnabled] = useState(false);
+  const [manualFacePosition, setManualFacePosition] = useState<{ x: number; y: number } | null>(null);
+  const [isManualMode, setIsManualMode] = useState(false);
   const [isMobile] = useState(() => {
     if (typeof window !== 'undefined') {
       return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -149,39 +151,51 @@ const PhotoBooth = () => {
   useEffect(() => {
     const initializeFaceDetection = async () => {
       try {
+        console.log('MediaPipe 초기화 시작...');
+        
         const faceDetection = new FaceDetection({
           locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
           }
         });
 
+        // 모바일에 최적화된 설정
         faceDetection.setOptions({
-          model: 'short',
-          minDetectionConfidence: 0.5,
+          model: 'short', // 가벼운 모델 사용
+          minDetectionConfidence: isMobile ? 0.3 : 0.5, // 모바일에서 더 낮은 threshold
         });
 
         faceDetection.onResults((results) => {
-          if (results.detections && results.detections.length > 0) {
-            const detections: FaceDetectionResult[] = results.detections.map((detection) => {
-              return {
-                x: detection.boundingBox.xCenter * 100, // 퍼센트로 변환
-                y: detection.boundingBox.yCenter * 100,
-                width: detection.boundingBox.width * 100,
-                height: detection.boundingBox.height * 100,
-                confidence: 0.8, // MediaPipe에서 감지된 얼굴은 기본적으로 높은 신뢰도
-              };
-            });
-            
-            setFaceDetections(detections);
-            updateFaceTrackingStickers(detections);
-          } else {
-            setFaceDetections([]);
+          try {
+            if (results.detections && results.detections.length > 0) {
+              const detections: FaceDetectionResult[] = results.detections.map((detection) => {
+                return {
+                  x: detection.boundingBox.xCenter * 100, // 퍼센트로 변환
+                  y: detection.boundingBox.yCenter * 100,
+                  width: detection.boundingBox.width * 100,
+                  height: detection.boundingBox.height * 100,
+                  confidence: 0.8, // MediaPipe에서 감지된 얼굴은 기본적으로 높은 신뢰도
+                };
+              });
+              
+              setFaceDetections(detections);
+              updateFaceTrackingStickers(detections);
+            } else {
+              setFaceDetections([]);
+            }
+          } catch (error) {
+            console.error('얼굴 감지 결과 처리 중 오류:', error);
           }
         });
 
         faceDetectionRef.current = faceDetection;
+        console.log('MediaPipe 초기화 완료');
       } catch (error) {
         console.error('MediaPipe 초기화 실패:', error);
+        // 모바일에서 초기화 실패 시 사용자에게 알림
+        if (isMobile) {
+          alert('모바일에서 얼굴감지 기능이 제한될 수 있습니다. WiFi 연결을 확인해주세요.');
+        }
       }
     };
 
@@ -195,47 +209,77 @@ const PhotoBooth = () => {
         cameraRef.current.stop();
       }
     };
-  }, [updateFaceTrackingStickers]); // updateFaceTrackingStickers 의존성 추가
+  }, [updateFaceTrackingStickers, isMobile]); // isMobile 의존성 추가
 
+  // 웹캠이 로드되면 MediaPipe 카메라 시작
   const handleUserMedia = useCallback((stream: MediaStream) => {
     if (webcamRef.current?.video) {
       videoRef.current = webcamRef.current.video;
       
+      // MediaPipe 카메라 설정
       if (faceDetectionRef.current && isFaceDetectionEnabled) {
-        const camera = new Camera(videoRef.current, {
-          onFrame: async () => {
-            if (faceDetectionRef.current && videoRef.current) {
-              await faceDetectionRef.current.send({ image: videoRef.current });
-            }
-          },
-          width: 640,
-          height: 640,
-        });
-        cameraRef.current = camera;
-        camera.start();
+        try {
+          const camera = new Camera(videoRef.current, {
+            onFrame: async () => {
+              if (faceDetectionRef.current && videoRef.current) {
+                try {
+                  await faceDetectionRef.current.send({ image: videoRef.current });
+                } catch (error) {
+                  console.error('프레임 처리 중 오류:', error);
+                }
+              }
+            },
+            width: isMobile ? 480 : 640, // 모바일에서 더 작은 해상도 사용
+            height: isMobile ? 480 : 640,
+          });
+          cameraRef.current = camera;
+          camera.start();
+          console.log('카메라 시작됨');
+        } catch (error) {
+          console.error('카메라 시작 실패:', error);
+        }
       }
     }
-  }, [isFaceDetectionEnabled]);
+  }, [isFaceDetectionEnabled, isMobile]); // isMobile 의존성 추가
 
+  // 얼굴 감지 토글
   const toggleFaceDetection = () => {
+    console.log('얼굴감지 토글:', !isFaceDetectionEnabled);
     setIsFaceDetectionEnabled(prev => !prev);
     
     if (!isFaceDetectionEnabled && videoRef.current && faceDetectionRef.current) {
-      const camera = new Camera(videoRef.current, {
-        onFrame: async () => {
-          if (faceDetectionRef.current && videoRef.current) {
-            await faceDetectionRef.current.send({ image: videoRef.current });
-          }
-        },
-        width: 640,
-        height: 640,
-      });
-      cameraRef.current = camera;
-      camera.start();
+      // 얼굴 감지 시작
+      try {
+        const camera = new Camera(videoRef.current, {
+          onFrame: async () => {
+            if (faceDetectionRef.current && videoRef.current) {
+              try {
+                await faceDetectionRef.current.send({ image: videoRef.current });
+              } catch (error) {
+                console.error('프레임 처리 중 오류:', error);
+              }
+            }
+          },
+          width: isMobile ? 480 : 640, // 모바일에서 더 작은 해상도 사용
+          height: isMobile ? 480 : 640,
+        });
+        cameraRef.current = camera;
+        camera.start();
+        console.log('얼굴감지 시작');
+      } catch (error) {
+        console.error('얼굴감지 시작 실패:', error);
+        alert('얼굴감지 시작에 실패했습니다. 페이지를 새로고침해주세요.');
+      }
     } else if (cameraRef.current) {
-      cameraRef.current.stop();
-      cameraRef.current = null;
-      setFaceDetections([]);
+      // 얼굴 감지 중지
+      try {
+        cameraRef.current.stop();
+        cameraRef.current = null;
+        setFaceDetections([]);
+        console.log('얼굴감지 중지');
+      } catch (error) {
+        console.error('얼굴감지 중지 실패:', error);
+      }
     }
   };
 
@@ -266,26 +310,49 @@ const PhotoBooth = () => {
 
   // 얼굴 추적 스티커 추가 (기존 얼굴 추적 스티커 제거 후 새로 추가)
   const addFaceTrackingSticker = (emoji: string) => {
-    if (faceDetections.length === 0) {
-      alert('얼굴이 감지되지 않았습니다. 얼굴 감지를 먼저 활성화해주세요!');
+    // 자동 얼굴 감지가 되면 자동 모드 사용
+    if (faceDetections.length > 0) {
+      const face = faceDetections[0];
+      const newSticker: Sticker = {
+        id: Date.now().toString(),
+        emoji,
+        x: face.x,
+        y: Math.max(5, face.y - face.height * 0.2),
+        size: 32,
+        isAutoTracking: true,
+      };
+      
+      setStickers(prev => {
+        const nonTrackingStickers = prev.filter(s => !s.isAutoTracking);
+        return [...nonTrackingStickers, newSticker];
+      });
       return;
     }
-
-    const face = faceDetections[0]; // 첫 번째 얼굴 사용
-    const newSticker: Sticker = {
-      id: Date.now().toString(),
-      emoji,
-      x: face.x,
-      y: Math.max(5, face.y - face.height * 0.2),
-      size: 32,
-      isAutoTracking: true, // 자동 추적 모드
-    };
     
-    setStickers(prev => {
-      // 기존 얼굴 추적 스티커들 제거 후 새 스티커 추가
-      const nonTrackingStickers = prev.filter(s => !s.isAutoTracking);
-      return [...nonTrackingStickers, newSticker];
-    });
+    // 수동 모드 사용
+    if (manualFacePosition) {
+      const newSticker: Sticker = {
+        id: Date.now().toString(),
+        emoji,
+        x: manualFacePosition.x,
+        y: Math.max(5, manualFacePosition.y - 10), // 수동 위치에서 약간 위로
+        size: 32,
+        isAutoTracking: true,
+      };
+      
+      setStickers(prev => {
+        const nonTrackingStickers = prev.filter(s => !s.isAutoTracking);
+        return [...nonTrackingStickers, newSticker];
+      });
+      return;
+    }
+    
+    // 모바일에서 MediaPipe 실패 시 안내
+    if (isMobile) {
+      alert('📱 모바일 모드: 웹캠 화면에서 얼굴 위치를 터치한 후 다시 시도해주세요!');
+    } else {
+      alert('얼굴이 감지되지 않았습니다. 얼굴 감지를 먼저 활성화해주세요!');
+    }
   };
 
   const handleStickerMouseDown = (e: React.MouseEvent, stickerId: string) => {
@@ -520,6 +587,36 @@ const PhotoBooth = () => {
     setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
   };
 
+  // 웹캠 클릭으로 수동 얼굴 위치 설정 (모바일 대안)
+  const handleWebcamClick = (e: React.MouseEvent) => {
+    if (!isFaceDetectionEnabled || faceDetections.length > 0) return; // 이미 자동 감지가 되면 수동 모드 안함
+    
+    const container = webcamContainerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    setManualFacePosition({ x, y });
+    setIsManualMode(true);
+    
+    // 수동 위치로 얼굴 추적 스티커 업데이트
+    updateFaceTrackingStickers([{
+      x,
+      y,
+      width: 20, // 가상의 얼굴 크기
+      height: 25,
+      confidence: 1.0
+    }]);
+  };
+
+  // 수동 모드 해제
+  const clearManualMode = () => {
+    setManualFacePosition(null);
+    setIsManualMode(false);
+  };
+
   return (
     <Container>
       <Title>Photo Booth</Title>
@@ -556,9 +653,20 @@ const PhotoBooth = () => {
                 ✅ {faceDetections.length}개 얼굴 감지됨
               </FaceDetectionInfo>
             )}
+            {isFaceDetectionEnabled && faceDetections.length === 0 && isMobile && (
+              <FaceDetectionInfo>
+                📱 화면을 터치해서 얼굴 위치 설정
+              </FaceDetectionInfo>
+            )}
+            {isManualMode && (
+              <ManualModeInfo>
+                🎯 수동 모드 
+                <ClearManualButton onClick={clearManualMode}>해제</ClearManualButton>
+              </ManualModeInfo>
+            )}
           </FaceDetectionToggle>
           
-          <WebcamWrapper ref={webcamContainerRef}>
+          <WebcamWrapper ref={webcamContainerRef} onClick={handleWebcamClick}>
             <Webcam
               audio={false}
               ref={webcamRef}
@@ -570,6 +678,7 @@ const PhotoBooth = () => {
               onUserMedia={handleUserMedia}
             />
             
+            {/* 얼굴 감지 영역 표시 */}
             {isFaceDetectionEnabled && faceDetections.map((face, index) => (
               <FaceDetectionBox
                 key={index}
@@ -581,6 +690,18 @@ const PhotoBooth = () => {
                 }}
               />
             ))}
+            
+            {/* 수동 얼굴 위치 표시 */}
+            {isManualMode && manualFacePosition && (
+              <ManualFaceMarker
+                style={{
+                  left: `${manualFacePosition.x}%`,
+                  top: `${manualFacePosition.y}%`,
+                }}
+              >
+                👤
+              </ManualFaceMarker>
+            )}
             
             {stickers.map(sticker => (
               <StickerOverlay
@@ -1353,6 +1474,41 @@ const CameraSwitchButton = styled.button({
   borderRadius: '15px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
+});
+
+const ManualModeInfo = styled.span({
+  fontSize: '0.7rem',
+  color: '#333',
+  fontWeight: '500',
+});
+
+const ClearManualButton = styled.button({
+  padding: '0.2rem 0.5rem',
+  fontSize: '0.7rem',
+  color: '#333',
+  backgroundColor: '#ffffff',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    backgroundColor: '#df3b3a',
+    color: '#f8e4e2',
+  },
+});
+
+const ManualFaceMarker = styled.div({
+  position: 'absolute',
+  width: '20px',
+  height: '20px',
+  border: '2px solid #df3b3a',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '16px',
+  color: '#df3b3a',
+  zIndex: 10,
 });
 
 export default PhotoBooth; 
