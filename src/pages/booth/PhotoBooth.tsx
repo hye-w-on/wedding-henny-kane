@@ -131,11 +131,11 @@ const PhotoBooth = () => {
       const updated = prev.map(sticker => {
         if (sticker.isAutoTracking && faces[0]) {
           const face = faces[0];
-          // 얼굴 중심에서 약간 위쪽으로 스티커 배치
+          // 얼굴 중심에서 더 정확한 위치 조정
           return {
             ...sticker,
-            x: face.x,
-            y: Math.max(5, face.y - face.height * 0.2), // 얼굴 위쪽으로
+            x: face.x - 20, // 스티커 크기를 고려해서 중심 맞춤
+            y: Math.max(5, face.y - face.height * 0.5),
           };
         }
         return sticker;
@@ -145,61 +145,49 @@ const PhotoBooth = () => {
     });
   }, []);
 
-  // MediaPipe 얼굴 감지 초기화 (모바일 최적화)
+  // MediaPipe 얼굴 감지 초기화 (원래 작동하던 방식으로 복원)
   useEffect(() => {
     const initializeFaceDetection = async () => {
       try {
-        console.log('MediaPipe 초기화 시작...');
-        
-        // 모바일에서 더 안정적인 CDN 사용
         const faceDetection = new FaceDetection({
           locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`;
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
           }
         });
 
-        // 모바일 최적화 설정
-        await faceDetection.setOptions({
-          model: 'short', // 가벼운 모델
-          minDetectionConfidence: isMobile ? 0.6 : 0.7, // 모바일에서도 적절한 정확도 유지
-          selfieMode: facingMode === 'user', // 전면카메라일 때 셀피 모드
+        faceDetection.setOptions({
+          model: 'short',
+          minDetectionConfidence: 0.5,
         });
 
         faceDetection.onResults((results) => {
-          try {
-            if (results.detections && results.detections.length > 0) {
-              const detections: FaceDetectionResult[] = results.detections.map((detection) => {
-                return {
-                  x: detection.boundingBox.xCenter * 100,
-                  y: detection.boundingBox.yCenter * 100,
-                  width: detection.boundingBox.width * 100,
-                  height: detection.boundingBox.height * 100,
-                  confidence: 0.8,
-                };
-              });
-              
-              setFaceDetections(detections);
-              updateFaceTrackingStickers(detections);
-            } else {
-              setFaceDetections([]);
-            }
-          } catch (error) {
-            console.error('얼굴 감지 결과 처리 중 오류:', error);
+          if (results.detections && results.detections.length > 0) {
+            const detections: FaceDetectionResult[] = results.detections.map((detection) => {
+              return {
+                x: detection.boundingBox.xCenter * 100,
+                y: detection.boundingBox.yCenter * 100,
+                width: detection.boundingBox.width * 100,
+                height: detection.boundingBox.height * 100,
+                confidence: 0.8,
+              };
+            });
+            
+            setFaceDetections(detections);
+            updateFaceTrackingStickers(detections);
+          } else {
+            setFaceDetections([]);
           }
         });
 
         faceDetectionRef.current = faceDetection;
-        console.log('MediaPipe 초기화 완료');
       } catch (error) {
         console.error('MediaPipe 초기화 실패:', error);
       }
     };
 
-    // 페이지 로드 후 약간의 지연을 두고 초기화 (모바일 안정성)
-    const timer = setTimeout(initializeFaceDetection, isMobile ? 1000 : 100);
+    initializeFaceDetection();
 
     return () => {
-      clearTimeout(timer);
       if (faceDetectionRef.current) {
         faceDetectionRef.current.close();
       }
@@ -207,89 +195,49 @@ const PhotoBooth = () => {
         cameraRef.current.stop();
       }
     };
-  }, [updateFaceTrackingStickers, isMobile, facingMode]); // facingMode 의존성 추가
+  }, [updateFaceTrackingStickers]);
 
-  // 웹캠이 로드되면 MediaPipe 카메라 시작
+  // 웹캠이 로드되면 MediaPipe 카메라 시작 (원래 방식)
   const handleUserMedia = useCallback((stream: MediaStream) => {
     if (webcamRef.current?.video) {
       videoRef.current = webcamRef.current.video;
       
-      // 비디오가 완전히 로드된 후에 MediaPipe 시작
-      const startMediaPipe = () => {
-        if (faceDetectionRef.current && isFaceDetectionEnabled && videoRef.current) {
-          try {
-            const camera = new Camera(videoRef.current, {
-              onFrame: async () => {
-                if (faceDetectionRef.current && videoRef.current && videoRef.current.readyState === 4) {
-                  try {
-                    await faceDetectionRef.current.send({ image: videoRef.current });
-                  } catch (error) {
-                    console.error('프레임 처리 중 오류:', error);
-                  }
-                }
-              },
-              width: 640, // 모바일도 640으로 통일 (더 안정적)
-              height: 640,
-            });
-            cameraRef.current = camera;
-            camera.start();
-            console.log('카메라 시작됨');
-          } catch (error) {
-            console.error('카메라 시작 실패:', error);
-          }
-        }
-      };
-
-      // 비디오 준비 완료 시 MediaPipe 시작
-      if (videoRef.current.readyState >= 2) {
-        startMediaPipe();
-      } else {
-        videoRef.current.addEventListener('loadeddata', startMediaPipe, { once: true });
+      if (faceDetectionRef.current && isFaceDetectionEnabled) {
+        const camera = new Camera(videoRef.current, {
+          onFrame: async () => {
+            if (faceDetectionRef.current && videoRef.current) {
+              await faceDetectionRef.current.send({ image: videoRef.current });
+            }
+          },
+          width: 640,
+          height: 640,
+        });
+        cameraRef.current = camera;
+        camera.start();
       }
     }
   }, [isFaceDetectionEnabled]);
 
-  // 얼굴 감지 토글
+  // 얼굴 감지 토글 (원래 방식)
   const toggleFaceDetection = () => {
-    console.log('얼굴감지 토글:', !isFaceDetectionEnabled);
     setIsFaceDetectionEnabled(prev => !prev);
     
     if (!isFaceDetectionEnabled && videoRef.current && faceDetectionRef.current) {
-      // 얼굴 감지 시작
-      setTimeout(() => { // 약간의 지연으로 안정성 확보
-        try {
-          if (videoRef.current && videoRef.current.readyState >= 2) {
-            const camera = new Camera(videoRef.current, {
-              onFrame: async () => {
-                if (faceDetectionRef.current && videoRef.current && videoRef.current.readyState === 4) {
-                  try {
-                    await faceDetectionRef.current.send({ image: videoRef.current });
-                  } catch (error) {
-                    console.error('프레임 처리 중 오류:', error);
-                  }
-                }
-              },
-              width: 640,
-              height: 640,
-            });
-            cameraRef.current = camera;
-            camera.start();
-            console.log('얼굴감지 시작');
+      const camera = new Camera(videoRef.current, {
+        onFrame: async () => {
+          if (faceDetectionRef.current && videoRef.current) {
+            await faceDetectionRef.current.send({ image: videoRef.current });
           }
-        } catch (error) {
-          console.error('얼굴감지 시작 실패:', error);
-        }
-      }, 500);
+        },
+        width: 640,
+        height: 640,
+      });
+      cameraRef.current = camera;
+      camera.start();
     } else if (cameraRef.current) {
-      // 얼굴 감지 중지
-      try {
-        cameraRef.current.stop();
-        cameraRef.current = null;
-        setFaceDetections([]);
-        console.log('얼굴감지 중지');
-      } catch (error) {
-        console.error('얼굴감지 중지 실패:', error);
-      }
+      cameraRef.current.stop();
+      cameraRef.current = null;
+      setFaceDetections([]);
     }
   };
 
@@ -329,9 +277,9 @@ const PhotoBooth = () => {
     const newSticker: Sticker = {
       id: Date.now().toString(),
       emoji,
-      x: face.x,
-      y: Math.max(5, face.y - face.height * 0.2),
-      size: 32,
+      x: face.x - 15, // 스티커 크기를 고려해서 중심 맞춤
+      y: Math.max(5, face.y - face.height * 0.4), // 10% 더 위로 (0.3 → 0.4)
+      size: 300,
       isAutoTracking: true,
     };
     
@@ -656,9 +604,6 @@ const PhotoBooth = () => {
                 >
                   ×
                 </DeleteButton>
-                {sticker.isAutoTracking && (
-                  <TrackingIndicator>🎯</TrackingIndicator>
-                )}
               </StickerOverlay>
             ))}
             {currentFrame !== 'none' && (
