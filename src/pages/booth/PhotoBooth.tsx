@@ -62,8 +62,8 @@ const FILTERS: Record<string, FilterStyle> = {
   },
 };
 
-const STICKER_OPTIONS = ['❤️', '💕', '⭐', '✨', '🎉', '💖', '🌟', '🎈', '🎁', '🌹'];
-const FACE_TRACKING_STICKERS = ['😍', '🥰', '😘', '🤩', '😎', '��', '😊', '😄'];
+const STICKER_OPTIONS = ['❤️', '💕', '⭐', '✨', '🎉', '💖', '🌟', '💍', '🎁', '🌹'];
+const FACE_TRACKING_STICKERS = ['😍', '🥰', '😘', '🤩', '😎', '😊', '😄','🕶️'];
 
 // 샘플 프레임들 - 1:1 정사각형 비율
 const FRAME_OPTIONS: Frame[] = [
@@ -113,11 +113,12 @@ const PhotoBooth = () => {
     }
     return false;
   });
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
 
   const videoConstraints = {
     width: { min: 640, ideal: 1080, max: 1920 },
     height: { min: 640, ideal: 1080, max: 1920 },
-    facingMode: isMobile ? "environment" : "user",
+    facingMode: facingMode,
     aspectRatio: 1, // 1:1 정사각형
     frameRate: { ideal: 30 },
   };
@@ -514,12 +515,20 @@ const PhotoBooth = () => {
     }
   }, [selectedPhotoIndex]);
 
+  // 카메라 전환 함수
+  const toggleCamera = () => {
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+  };
+
   return (
     <Container>
       <Title>Photo Booth</Title>
       <Content>
         <WebcamContainer>
           <CaptureButtonContainer>
+            <CameraSwitchButton onClick={toggleCamera}>
+              🔄 {facingMode === 'user' ? '후면' : '전면'}
+            </CameraSwitchButton>
             <PhotoCount>
               {photos.length}/{MAX_PHOTOS}장
             </PhotoCount>
@@ -1331,5 +1340,19 @@ const FaceTrackingStickerButton = styled.button<{ disabled?: boolean }>(({ disab
     fontSize: '8px',
   },
 }));
+
+const CameraSwitchButton = styled.button({
+  position: 'absolute',
+  left: 0,
+  padding: '0.4rem 0.8rem',
+  fontSize: '0.7rem',
+  fontWeight: '600',
+  color: '#323232',
+  backgroundColor: '#ffffff',
+  border: 'none',
+  borderRadius: '15px',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+});
 
 export default PhotoBooth; 
