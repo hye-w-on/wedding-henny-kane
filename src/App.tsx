@@ -18,6 +18,7 @@ import {
   useState,
 } from "react";
 import Splash from "./components/Splash";
+import PhotoBooth from "./pages/booth/PhotoBooth";
 
 const LoadingContext = createContext<{
   loaded: boolean;
@@ -33,6 +34,10 @@ function App() {
     {
       path: "/wedding-henny-kane",
       element: <ScrollScreen />,
+    },
+    {
+      path: "/wedding-henny-kane/photo-booth",
+      element: <PhotoBooth />,
     },
   ]);
 

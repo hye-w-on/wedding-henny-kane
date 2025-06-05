@@ -728,6 +728,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mediapipe/camera_utils@npm:^0.3.1675466862":
+  version: 0.3.1675466862
+  resolution: "@mediapipe/camera_utils@npm:0.3.1675466862"
+  checksum: 10c0/beb200f14a942ccffcd6867b8877e2a74ae39af830b2e81eef14a5f9fb4ce04205aa10094ca0b1b4ded7b2475f777030f82993189864238b9c5ac743a53ccfce
+  languageName: node
+  linkType: hard
+
+"@mediapipe/face_detection@npm:^0.4.1646425229":
+  version: 0.4.1646425229
+  resolution: "@mediapipe/face_detection@npm:0.4.1646425229"
+  checksum: 10c0/f9e1f41119caea76e1fbca005f68936574f6f5b1d427ac53fb8fd5e0615598d981bc182b16f9f0a0c85eb317a9e7893dec05ad2b01adfec32a0548e048c2976d
+  languageName: node
+  linkType: hard
+
 "@mediapipe/tasks-vision@npm:0.10.17":
   version: 0.10.17
   resolution: "@mediapipe/tasks-vision@npm:0.10.17"
@@ -4167,6 +4181,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-webcam@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "react-webcam@npm:7.2.0"
+  peerDependencies:
+    react: ">=16.2.0"
+    react-dom: ">=16.2.0"
+  checksum: 10c0/d639a9e4cd545f66a5ecbfdc6c38344f6ae40e6609ba5fb26db730b48723158dedeeecdecba94e4d117517f4db0be828169db270c329b9b71d847e54aba6f7f0
+  languageName: node
+  linkType: hard
+
 "react@npm:^18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
@@ -4958,6 +4982,8 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
     "@eslint/js": "npm:^9.13.0"
+    "@mediapipe/camera_utils": "npm:^0.3.1675466862"
+    "@mediapipe/face_detection": "npm:^0.4.1646425229"
     "@mui/material": "npm:^6.3.1"
     "@mui/system": "npm:^6.3.1"
     "@mui/x-date-pickers": "npm:^7.23.3"
@@ -4983,6 +5009,7 @@ __metadata:
     react-dom: "npm:^18.3.1"
     react-error-boundary: "npm:^5.0.0"
     react-router-dom: "npm:^7.1.5"
+    react-webcam: "npm:^7.2.0"
     three: "npm:^0.171.0"
     typescript: "npm:^5.7.3"
     typescript-eslint: "npm:^8.11.0"
