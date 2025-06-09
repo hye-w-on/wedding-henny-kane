@@ -12,6 +12,7 @@ import PhotoSlideCard from "@/components/PhotoSlideCard";
 import OverlayExpandGallery from "@/pages/OverlayExpandGallery";
 import FlexExpandGallery from "@/pages/FlexExpandGallery";
 import CarouselGallery from "@/pages/CarouselGallery";
+import PhotoBooth from "../booth/PhotoBooth";
 
 const Container = styled("div")({
   display: "flex",
@@ -88,6 +89,9 @@ const ScrollScreen: React.FC = () => {
         </PageSection>
         <PageSection ref={locationRef}>
           <LocationPage />
+        </PageSection>
+        <PageSection>
+          <PhotoBooth />
         </PageSection>
         <PageSection ref={timetableRef}>
           <TimetablePage />

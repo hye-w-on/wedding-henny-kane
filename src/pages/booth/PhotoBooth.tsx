@@ -1,8 +1,9 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import Webcam from 'react-webcam';
-
-const MAX_PHOTOS = 4;
+import { colorToken } from '../../utils/colorToken';
+import ChangeIcon from '../../assets/icons/change.svg';
+import CameraIcon from '../../assets/icons/camera.svg';
 
 interface FilterStyle {
   name: string;
@@ -83,10 +84,9 @@ const FILTERS: Record<string, FilterStyle> = {
   },
 };
 
-const STICKER_OPTIONS = ['❤️', '💕', '⭐', '✨', '🎉', '💖', '🌟', '💍', '🎁', '🌹'];
+const STICKER_OPTIONS = ['❤️', '💕', '⭐', '✨', '🎉', '💖', '🌟', '💍'];
 const FACE_TRACKING_STICKERS = ['😍', '🥰', '😘', '🤩', '😎', '😊', '😄','🕶️'];
 
-// 샘플 프레임들 - 1:1 정사각형 비율
 const FRAME_OPTIONS: Frame[] = [
   { id: 'none', name: '프레임 없음', src: '' },
   { 
@@ -96,20 +96,18 @@ const FRAME_OPTIONS: Frame[] = [
   },
 ];
 
-// 프레임 경로를 1:1 정사각형 기준으로 반환하는 함수
 const getFrameSrc = (frameId: string): string => {
   if (frameId === 'none') return '';
   if (frameId === 'frame1') return '/frames/frame1.png';
   return `/frames/${frameId}-frame-square.png`;
 };
 
-// 현재 선택된 프레임의 src 가져오기
 const getCurrentFrameSrc = (frameId: string): string => {
   return getFrameSrc(frameId);
 };
 
 type FilterType = keyof typeof FILTERS;
-type TabType = 'filter' | 'sticker' | 'frame';
+type TabType = 'filter' | 'sticker';
 
 const PhotoBooth = () => {
   const webcamRef = useRef<Webcam>(null);
@@ -121,32 +119,25 @@ const PhotoBooth = () => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [currentFilter, setCurrentFilter] = useState<FilterType>('none');
   const [stickers, setStickers] = useState<Sticker[]>([]);
-  const [currentFrame, setCurrentFrame] = useState<string>('none');
+  const [currentFrame, setCurrentFrame] = useState<string>('frame1');
   const [draggedSticker, setDraggedSticker] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('filter');
   const [faceDetections, setFaceDetections] = useState<FaceDetectionResult[]>([]);
   const [isFaceDetectionEnabled, setIsFaceDetectionEnabled] = useState(false);
   const [isMediaPipeLoading, setIsMediaPipeLoading] = useState(false);
   const [isMediaPipeLoaded, setIsMediaPipeLoaded] = useState(false);
-  const [isMobile] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    }
-    return false;
-  });
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+  const [isCameraReady, setIsCameraReady] = useState(false);
 
   const videoConstraints = {
     width: { min: 640, ideal: 1080, max: 1920 },
     height: { min: 640, ideal: 1080, max: 1920 },
     facingMode: facingMode,
-    aspectRatio: 1, // 1:1 정사각형
+    aspectRatio: 1,
     frameRate: { ideal: 30 },
   };
 
-  // 얼굴 추적 스티커 위치 업데이트
   const updateFaceTrackingStickers = useCallback((faces: FaceDetectionResult[]) => {
     if (faces.length === 0) return;
 
@@ -154,10 +145,9 @@ const PhotoBooth = () => {
       const updated = prev.map(sticker => {
         if (sticker.isAutoTracking && faces[0]) {
           const face = faces[0];
-          // 얼굴 중심에서 더 정확한 위치 조정
           return {
             ...sticker,
-            x: face.x - 20, // 스티커 크기를 고려해서 중심 맞춤
+            x: face.x - 20,
             y: Math.max(5, face.y - face.height * 0.5),
           };
         }
@@ -168,16 +158,13 @@ const PhotoBooth = () => {
     });
   }, []);
 
-  // MediaPipe 조건부 로딩 함수
   const loadMediaPipe = async () => {
     if (isMediaPipeLoaded || isMediaPipeLoading) return;
     
     setIsMediaPipeLoading(true);
     
     try {
-      console.log('MediaPipe 로딩 시작...');
       
-      // 동적 import로 MediaPipe 로딩
       const [{ FaceDetection }, { Camera }] = await Promise.all([
         import('@mediapipe/face_detection'),
         import('@mediapipe/camera_utils')
@@ -224,7 +211,6 @@ const PhotoBooth = () => {
     }
   };
 
-  // cleanup 함수
   useEffect(() => {
     return () => {
       if (faceDetectionRef.current) {
@@ -236,8 +222,9 @@ const PhotoBooth = () => {
     };
   }, []);
 
-  // 웹캠이 로드되면 MediaPipe 카메라 시작 (조건부)
   const handleUserMedia = useCallback(async (stream: MediaStream) => {
+    setIsCameraReady(true);
+    
     if (webcamRef.current?.video) {
       videoRef.current = webcamRef.current.video;
       
@@ -258,12 +245,10 @@ const PhotoBooth = () => {
     }
   }, [isFaceDetectionEnabled, isMediaPipeLoaded]);
 
-  // 얼굴 감지 토글 (조건부 로딩 포함)
   const toggleFaceDetection = async () => {
     if (!isFaceDetectionEnabled) {
-      // 얼굴감지 켜기
       if (!isMediaPipeLoaded) {
-        await loadMediaPipe(); // MediaPipe 로딩
+        await loadMediaPipe();
       }
       
       if (isMediaPipeLoaded && videoRef.current && faceDetectionRef.current) {
@@ -283,7 +268,6 @@ const PhotoBooth = () => {
       
       setIsFaceDetectionEnabled(true);
     } else {
-      // 얼굴감지 끄기
       if (cameraRef.current) {
         cameraRef.current.stop();
         cameraRef.current = null;
@@ -297,11 +281,9 @@ const PhotoBooth = () => {
     setCurrentFilter(filter);
     
     if (videoRef.current) {
-      // 모든 스타일 초기화
       videoRef.current.style.filter = '';
       videoRef.current.style.webkitFilter = '';
       
-      // 선택된 필터 적용
       Object.assign(videoRef.current.style, FILTERS[filter].style);
     }
   };
@@ -318,7 +300,6 @@ const PhotoBooth = () => {
     setStickers(prev => [...prev, newSticker]);
   };
 
-  // 얼굴 추적 스티커 추가
   const addFaceTrackingSticker = (emoji: string) => {
     if (faceDetections.length === 0) {
       alert('얼굴이 감지되지 않았습니다. 잠시 후 다시 시도해주세요!');
@@ -329,8 +310,8 @@ const PhotoBooth = () => {
     const newSticker: Sticker = {
       id: Date.now().toString(),
       emoji,
-      x: face.x - 15, // 스티커 크기를 고려해서 중심 맞춤
-      y: Math.max(5, face.y - face.height * 0.4), // 10% 더 위로 (0.3 → 0.4)
+      x: face.x - 15,
+      y: Math.max(5, face.y - face.height * 0.4),
       size: 300,
       isAutoTracking: true,
     };
@@ -499,7 +480,6 @@ const PhotoBooth = () => {
               resolve(dataURL);
             };
             frameImg.onerror = () => {
-              console.log(`프레임 로드 실패: ${frameSrc}`);
               const dataURL = canvas.toDataURL('image/png');
               resolve(dataURL);
             };
@@ -516,7 +496,18 @@ const PhotoBooth = () => {
   };
 
   const capture = async () => {
-    if (webcamRef.current && photos.length < MAX_PHOTOS) {
+    if (!isCameraReady) {
+      setIsCameraReady(true);
+      return;
+    }
+
+    if (photos.length > 0) {
+      setPhotos([]);
+      setStickers([]);
+      return;
+    }
+
+    if (webcamRef.current) {
       let imageSrc: string | null = null;
       
       if (stickers.length > 0 || currentFrame !== 'none' || currentFilter !== 'none') {
@@ -540,35 +531,6 @@ const PhotoBooth = () => {
     document.body.removeChild(link);
   };
 
-  const deletePhoto = (index: number) => {
-    setPhotos(prev => prev.filter((_, i) => i !== index));
-    setSelectedPhotoIndex(null);
-  };
-
-  const openPhotoModal = (index: number) => {
-    setSelectedPhotoIndex(index);
-  };
-
-  const closePhotoModal = () => {
-    setSelectedPhotoIndex(null);
-  };
-
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && selectedPhotoIndex !== null) {
-        closePhotoModal();
-      }
-    };
-
-    if (selectedPhotoIndex !== null) {
-      document.addEventListener('keydown', handleEscKey);
-      return () => {
-        document.removeEventListener('keydown', handleEscKey);
-      };
-    }
-  }, [selectedPhotoIndex]);
-
-  // 카메라 전환 함수
   const toggleCamera = () => {
     setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
   };
@@ -580,23 +542,31 @@ const PhotoBooth = () => {
         <WebcamContainer>
           <CaptureButtonContainer>
             <CameraSwitchButton onClick={toggleCamera}>
-              🔄 {facingMode === 'user' ? '후면' : '전면'}
+              <img src={ChangeIcon} alt="카메라 전환" width="16" height="16" />
+              {facingMode === 'user' ? '후면' : '전면'}
             </CameraSwitchButton>
-            <PhotoCount>
-              {photos.length}/{MAX_PHOTOS}장
-            </PhotoCount>
             <CaptureButton 
               onClick={capture}
-              disabled={photos.length >= MAX_PHOTOS}
             >
-              <svg viewBox="-0.5 -0.5 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                <path stroke="currentColor" d="M5.625 8.125a1.875 1.875 0 1 0 3.75 0 1.875 1.875 0 1 0 -3.75 0" strokeWidth="1"></path>
-                <path d="M6.1111125 13.125h2.7777625c1.9506875000000001 0 2.926 0 3.6266249999999998 -0.45962500000000006 0.30325 -0.199 0.5636875 -0.4546875 0.766375 -0.7524375 0.468125 -0.687875 0.468125 -1.6455 0.468125 -3.5606875 0 -1.915125 0 -2.87274375 -0.468125 -3.560625 -0.2026875 -0.2977875 -0.463125 -0.553475 -0.766375 -0.7524500000000001 -0.45025000000000004 -0.29534375 -1.0138125 -0.40090624999999996 -1.8767500000000001 -0.4386375 -0.4118125 0 -0.7663125 -0.3063625 -0.8470624999999999 -0.7028125000000001C9.6705 2.30305625 9.1386875 1.875 8.5210625 1.875h-2.042125c-0.61765625 0 -1.14946875 0.42805625 -1.2706062500000002 1.022725 -0.08075625 0.39644999999999997 -0.4353 0.7028125000000001 -0.84708125 0.7028125000000001 -0.8629187500000001 0.03773125 -1.42653125 0.14329375 -1.876725 0.4386375 -0.30330625 0.19897499999999999 -0.563725 0.45466249999999997 -0.7663875 0.7524500000000001C1.25 5.47950625 1.25 6.437125 1.25 8.35225c0 1.9151874999999998 0 2.8728124999999998 0.4681375 3.5606875 0.2026625 0.29775 0.46308125 0.5534375 0.7663875 0.7524375C3.18515 13.125 4.16046875 13.125 6.1111125 13.125Z" stroke="currentColor" strokeWidth="1"></path>
-                <path d="M11.875 6.25h-0.625" stroke="currentColor" strokeLinecap="round" strokeWidth="1"></path>
-              </svg>
+              {!isCameraReady ? (
+                '촬영하기'
+              ) : photos.length > 0 ? (
+                <>
+                  <img src={CameraIcon} alt="카메라" width="20" height="20" />
+                  다시찍기
+                </>
+              ) : (
+                <img src={CameraIcon} alt="카메라" width="20" height="20" />
+              )}
             </CaptureButton>
+            <DownloadButton 
+              onClick={() => photos.length > 0 && downloadPhoto(photos[photos.length - 1], photos.length - 1)}
+              disabled={photos.length === 0}
+            >
+              다운로드
+            </DownloadButton>
           </CaptureButtonContainer>
-          
+        
           <FaceDetectionToggle>
             <FaceToggleButton
               onClick={toggleFaceDetection}
@@ -612,69 +582,81 @@ const PhotoBooth = () => {
             </FaceToggleButton>
             {isFaceDetectionEnabled && faceDetections.length > 0 && (
               <FaceDetectionInfo>
-                ✅ {faceDetections.length}개 얼굴 감지됨
+                {faceDetections.length}개 얼굴 감지됨
               </FaceDetectionInfo>
             )}
           </FaceDetectionToggle>
           
           <WebcamWrapper ref={webcamContainerRef}>
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/png"
-              screenshotQuality={1.0}
-              width="100%"
-              height="100%"
-              videoConstraints={videoConstraints}
-              onUserMedia={handleUserMedia}
-            />
-            
-            {/* 얼굴 감지 영역 표시 */}
-            {isFaceDetectionEnabled && faceDetections.map((face, index) => (
-              <FaceDetectionBox
-                key={index}
-                style={{
-                  left: `${face.x - face.width / 2}%`,
-                  top: `${face.y - face.height / 2}%`,
-                  width: `${face.width}%`,
-                  height: `${face.height}%`,
-                }}
+            {photos.length > 0 ? (
+              <CapturedPhoto 
+                src={photos[photos.length - 1]} 
+                alt="촬영된 사진"
               />
-            ))}
-            
-            {stickers.map(sticker => (
-              <StickerOverlay
-                key={sticker.id}
-                style={{
-                  left: `${sticker.x}%`,
-                  top: `${sticker.y}%`,
-                  fontSize: `${sticker.size}px`,
-                  cursor: draggedSticker === sticker.id ? 'grabbing' : 'grab',
-                }}
-                onMouseDown={(e) => handleStickerMouseDown(e, sticker.id)}
-                onTouchStart={(e) => handleStickerTouchStart(e, sticker.id)}
-                onDoubleClick={(e) => removeSticker(sticker.id, e)}
-              >
-                {sticker.emoji}
-                <DeleteButton
-                  onClick={(e) => removeSticker(sticker.id, e)}
-                  title="스티커 삭제 (또는 더블클릭)"
-                >
-                  ×
-                </DeleteButton>
-              </StickerOverlay>
-            ))}
-            {currentFrame !== 'none' && (
-              <FrameOverlay>
-                <FrameImage 
-                  src={getCurrentFrameSrc(currentFrame)}
-                  alt="선택된 프레임"
-                  onError={(e) => {
-                    console.log('프레임 이미지 로드 실패:', e);
-                    setCurrentFrame('none');
-                  }}
+            ) : isCameraReady ? (
+              <>
+                <Webcam
+                  audio={false}
+                  ref={webcamRef}
+                  screenshotFormat="image/png"
+                  screenshotQuality={1.0}
+                  width="100%"
+                  height="100%"
+                  videoConstraints={videoConstraints}
+                  onUserMedia={handleUserMedia}
                 />
-              </FrameOverlay>
+                
+                {isFaceDetectionEnabled && faceDetections.map((face, index) => (
+                  <FaceDetectionBox
+                    key={index}
+                    style={{
+                      left: `${face.x - face.width / 2}%`,
+                      top: `${face.y - face.height / 2}%`,
+                      width: `${face.width}%`,
+                      height: `${face.height}%`,
+                    }}
+                  />
+                ))}
+                
+                {stickers.map(sticker => (
+                  <StickerOverlay
+                    key={sticker.id}
+                    style={{
+                      left: `${sticker.x}%`,
+                      top: `${sticker.y}%`,
+                      fontSize: `${sticker.size}px`,
+                      cursor: draggedSticker === sticker.id ? 'grabbing' : 'grab',
+                    }}
+                    onMouseDown={(e) => handleStickerMouseDown(e, sticker.id)}
+                    onTouchStart={(e) => handleStickerTouchStart(e, sticker.id)}
+                    onDoubleClick={(e) => removeSticker(sticker.id, e)}
+                  >
+                    {sticker.emoji}
+                    <DeleteButton
+                      onClick={(e) => removeSticker(sticker.id, e)}
+                      title="스티커 삭제 (또는 더블클릭)"
+                    >
+                      ×
+                    </DeleteButton>
+                  </StickerOverlay>
+                ))}
+                {currentFrame !== 'none' && (
+                  <FrameOverlay>
+                    <FrameImage 
+                      src={getCurrentFrameSrc(currentFrame)}
+                      alt="선택된 프레임"
+                      onError={(e) => {
+                        setCurrentFrame('none');
+                      }}
+                    />
+                  </FrameOverlay>
+                )}
+              </>
+            ) : (
+              <CameraPlaceholder>
+                <img src={CameraIcon} alt="카메라" width="48" height="48" />
+                <PlaceholderText>촬영하기 버튼을 눌러 카메라를 시작하세요</PlaceholderText>
+              </CameraPlaceholder>
             )}
           </WebcamWrapper>
           
@@ -689,7 +671,7 @@ const PhotoBooth = () => {
                 isActive={activeTab === 'filter'} 
                 onClick={() => setActiveTab('filter')}
               >
-                Filter
+                Filter & Frame
               </TabButton>
               <TabButton 
                 isActive={activeTab === 'sticker'} 
@@ -697,17 +679,12 @@ const PhotoBooth = () => {
               >
                 Sticker
               </TabButton>
-              <TabButton 
-                isActive={activeTab === 'frame'} 
-                onClick={() => setActiveTab('frame')}
-              >
-                Frame
-              </TabButton>
             </TabNavigation>
 
             <TabContent>
               {activeTab === 'filter' && (
                 <FilterSection>
+                  <SectionTitle>필터</SectionTitle>
                   <FilterGrid>
                     {(Object.entries(FILTERS) as [FilterType, FilterStyle][]).map(([filter, { name }]) => (
                       <FilterButton
@@ -719,46 +696,8 @@ const PhotoBooth = () => {
                       </FilterButton>
                     ))}
                   </FilterGrid>
-                </FilterSection>
-              )}
-
-              {activeTab === 'sticker' && (
-                <StickerSection>
-                  <StickerSubTitle>일반 스티커</StickerSubTitle>
-                  <StickerGrid>
-                    {STICKER_OPTIONS.map((emoji, index) => (
-                      <StickerButton
-                        key={index}
-                        onClick={() => addSticker(emoji)}
-                        title={`${emoji} 스티커 추가`}
-                      >
-                        {emoji}
-                      </StickerButton>
-                    ))}
-                  </StickerGrid>
                   
-                  <StickerSubTitle>🎯 얼굴 추적 스티커</StickerSubTitle>
-                  <StickerGrid>
-                    {FACE_TRACKING_STICKERS.map((emoji, index) => (
-                      <FaceTrackingStickerButton
-                        key={index}
-                        onClick={() => addFaceTrackingSticker(emoji)}
-                        title={`${emoji} 얼굴 추적 스티커 추가`}
-                        disabled={!isFaceDetectionEnabled || faceDetections.length === 0}
-                      >
-                        {emoji}
-                      </FaceTrackingStickerButton>
-                    ))}
-                  </StickerGrid>
-                  
-                  <ClearStickersButton onClick={() => setStickers([])}>
-                    모든 스티커 삭제
-                  </ClearStickersButton>
-                </StickerSection>
-              )}
-
-              {activeTab === 'frame' && (
-                <FrameSection>
+                  <SectionTitle>프레임</SectionTitle>
                   <FrameGrid>
                     {frameOptionsWithSrc.map((frame) => (
                       <FrameButton
@@ -768,7 +707,7 @@ const PhotoBooth = () => {
                         title={frame.name}
                       >
                         {frame.id === 'none' ? (
-                          <NoFrameIndicator>없음</NoFrameIndicator>
+                          <NoFrameIndicator></NoFrameIndicator>
                         ) : (
                           <FramePreview 
                             src={frame.src}
@@ -782,60 +721,42 @@ const PhotoBooth = () => {
                       </FrameButton>
                     ))}
                   </FrameGrid>
-                </FrameSection>
+                </FilterSection>
+              )}
+
+              {activeTab === 'sticker' && (
+                <StickerSection>
+                  <SectionTitle>일반 스티커</SectionTitle>
+                  <StickerGrid>
+                    {STICKER_OPTIONS.map((emoji, index) => (
+                      <StickerButton
+                        key={index}
+                        onClick={() => addSticker(emoji)}
+                        title={`${emoji} 스티커 추가`}
+                      >
+                        {emoji}
+                      </StickerButton>
+                    ))}
+                  </StickerGrid>
+                  <SectionTitle>얼굴 추적 스티커</SectionTitle>
+                  <StickerGrid>
+                    {FACE_TRACKING_STICKERS.map((emoji, index) => (
+                      <FaceTrackingStickerButton
+                        key={index}
+                        onClick={() => addFaceTrackingSticker(emoji)}
+                        title={`${emoji} 얼굴 추적 스티커 추가`}
+                        disabled={!isFaceDetectionEnabled || faceDetections.length === 0}
+                      >
+                        {emoji}
+                      </FaceTrackingStickerButton>
+                    ))}
+                  </StickerGrid>
+                </StickerSection>
               )}
             </TabContent>
           </TabContainer>
         </WebcamContainer>
-        <PhotoGrid>
-          {photos.map((photo, index) => (
-            <PhotoItem 
-              key={index} 
-              src={photo} 
-              alt={`촬영된 사진 ${index + 1}`}
-              onClick={() => openPhotoModal(index)}
-            />
-          ))}
-          {[...Array(MAX_PHOTOS - photos.length)].map((_, index) => (
-            <EmptyPhotoItem key={`empty-${index}`} />
-          ))}
-        </PhotoGrid>
       </Content>
-
-      {selectedPhotoIndex !== null && (
-        <PhotoModal onClick={closePhotoModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              <CloseButton onClick={closePhotoModal}>×</CloseButton>
-            </ModalHeader>
-            <ModalImageContainer>
-              <ModalImage 
-                src={photos[selectedPhotoIndex]} 
-                alt={`사진 ${selectedPhotoIndex + 1}`}
-              />
-            </ModalImageContainer>
-            <ModalActions>
-              <ActionButton 
-                $primary
-                onClick={() => downloadPhoto(photos[selectedPhotoIndex], selectedPhotoIndex)}
-              >
-               Download
-              </ActionButton>
-              <ActionButton 
-                $danger
-                onClick={() => {
-                    deletePhoto(selectedPhotoIndex);
-                }}
-              >
-                Delete
-              </ActionButton>
-              <ActionButton onClick={closePhotoModal}>
-                Close
-              </ActionButton>
-            </ModalActions>
-          </ModalContent>
-        </PhotoModal>
-      )}
     </Container>
   );
 };
@@ -846,20 +767,19 @@ const Container = styled.div({
   padding: '2rem',
   backgroundColor: '#eee',
   '@media (max-width: 768px)': {
-    padding: '1rem 0.5rem',
+    padding: '2rem 0.5rem 1rem 0.5rem',
   },
 });
 
 const Title = styled.h1({
-  fontFamily: 'PPEditorialNew',
-  fontSize: '3rem',
+  fontFamily: 'PPEditorialOldItalic',
+  fontSize: '4rem',
   fontWeight: 'bold',
   textAlign: 'center',
-  color: '#df3b3a',
+  color: colorToken.black,
 });
 
 const Content = styled.div({
-  maxWidth: '1200px',
   margin: '0 auto',
   padding: '1rem',
 });
@@ -941,20 +861,20 @@ const TabNavigation = styled.div({
 
 const TabButton = styled.button<{ isActive: boolean }>(({ isActive }) => ({
   flex: 1,
-  padding: '0.8rem 1rem',
-  margin: '0.5rem',
+  padding: '0.6rem',
+  margin: '0.2rem',
   fontSize: '0.8rem',
-  fontWeight: 800,
-  color: isActive ? '#f8e4e2' : '#333',
-  backgroundColor: isActive ? '#df3b3a' : '#ffffff',
-  border: `1px solid ${isActive ? '#df3b3a' : '#dee2e6'}`,
+  fontWeight: 600,
+  color: isActive ? '#fff' : '#333',
+  backgroundColor: isActive ? colorToken.black : '#ffffff',
+  border: `1px solid ${isActive ? colorToken.black : '#dee2e6'}`,
   borderRadius: '20px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   '&:hover': {
-    backgroundColor: isActive ? '#df3b3a' : '#f8f9fa',
-    color: isActive ? '#f8e4e2' : '#df3b3a',
-    borderColor: '#df3b3a',
+    backgroundColor: '#ddd',
+    border: `1px solid #ddd`,
+    color:  colorToken.black ,
   },
 }));
 
@@ -974,45 +894,11 @@ const FilterGrid = styled.div({
   flexWrap: 'wrap',
   gap: '0.1rem',
   justifyContent: 'center',
+  alignItems: 'center',
 });
 
 const StickerSection = styled.div({
   width: '100%',
-});
-
-const FrameSection = styled.div({
-  width: '100%',
-});
-
-const PhotoGrid = styled.div({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: '0.5rem',
-  padding: '1rem',
-  backgroundColor: '#fff',
-  borderRadius: '20px',
-  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-});
-
-const PhotoItem = styled.img({
-  width: '100%',
-  aspectRatio: '1',
-  objectFit: 'cover',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    transform: 'scale(1.05)',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-  },
-});
-
-const EmptyPhotoItem = styled.div({
-  width: '100%',
-  aspectRatio: '1',
-  backgroundColor: '#f1f3f5',
-  borderRadius: '8px',
 });
 
 const FrameOverlay = styled.div({
@@ -1031,36 +917,21 @@ const FrameImage = styled.img({
   objectFit: 'cover',
 });
 
-const FrameContainer = styled.div({
-  width: '100%',
-  marginTop: '1rem',
-  padding: '1rem',
-  backgroundColor: '#f8f9fa',
-  borderRadius: '8px',
-});
-
-const FrameTitle = styled.h3({
-  fontSize: '1.1rem',
-  fontWeight: '600',
-  marginBottom: '0.5rem',
-  color: '#333',
-  textAlign: 'center',
-});
-
 const FrameGrid = styled.div({
   display: 'flex',
   flexWrap: 'wrap',
   gap: '0.5rem',
   justifyContent: 'center',
+  alignItems: 'center',
 });
 
 const FrameButton = styled.button<{ isSelected: boolean }>(({ isSelected }) => ({
   padding: '0.5rem 1rem',
   minWidth: '100px',
-  height: '60px',
-  border: `2px solid ${isSelected ? '#df3b3a' : '#dee2e6'}`,
-  borderRadius: '8px',
-  backgroundColor: isSelected ? '#df3b3a' : '#ffffff',
+  height: '50px',
+  border: `1px solid ${isSelected ? colorToken.black : '#dee2e6'}`,
+  borderRadius: '10px',
+  backgroundColor: isSelected ? colorToken.black : '#ffffff',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   display: 'flex',
@@ -1070,11 +941,11 @@ const FrameButton = styled.button<{ isSelected: boolean }>(({ isSelected }) => (
   position: 'relative',
   fontSize: '0.7rem',
   fontWeight: isSelected ? '600' : '400',
-  color: isSelected ? '#f8e4e2' : '#333',
+  color: isSelected ? '#fff' : '#333',
   '&:hover': {
-    backgroundColor: '#df3b3a',
-    borderColor: '#df3b3a',
-    color: '#f8e4e2',
+    backgroundColor: '#ddd',
+    border: `1px solid #ddd`,
+    color:  colorToken.black ,
   },
 }));
 
@@ -1093,8 +964,8 @@ const FrameLabel = styled.span({
 });
 
 const NoFrameIndicator = styled.div({
-  width: '20px',
-  height: '20px',
+  width: '25px',
+  height: '25px',
   border: '1px dashed #ccc',
   borderRadius: '2px',
   display: 'flex',
@@ -1105,182 +976,19 @@ const NoFrameIndicator = styled.div({
   marginBottom: '0.25rem',
 });
 
-const PhotoModal = styled.div({
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  width: '100vw',
-  height: '100vh',
-  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  zIndex: 1000,
-  padding: '1rem',
-});
-
-const ModalContent = styled.div({
-  backgroundColor: '#fff',
-  borderRadius: '12px',
-  maxWidth: '95vw',
-  maxHeight: '95vh',
-  width: 'auto',
-  display: 'flex',
-  flexDirection: 'column',
-  overflow: 'hidden',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-});
-
-const ModalHeader = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '1rem 1.5rem',
-  borderBottom: '1px solid #eee',
-  backgroundColor: '#f8f9fa',
-});
-
-const CloseButton = styled.button({
-  width: '32px',
-  height: '32px',
-  border: 'none',
-  borderRadius: '50%',
-  backgroundColor: '#e9ecef',
-  color: '#666',
-  fontSize: '20px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    backgroundColor: '#dee2e6',
-    color: '#333',
-  },
-});
-
-const ModalImageContainer = styled.div({
-  flex: 1,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '1rem',
-  backgroundColor: '#f8f9fa',
-  minHeight: '60vh',
-});
-
-const ModalImage = styled.img({
-  width: '80vmin',
-  height: '80vmin',
-  objectFit: 'cover',
-  borderRadius: '8px',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-  '@media (max-width: 768px)': {
-    width: '90vmin',
-    height: '90vmin',
-  },
-});
-
-const ModalActions = styled.div({
-  display: 'flex',
-  gap: '0.5rem',
-  padding: '1rem 1.5rem',
-  borderTop: '1px solid #eee',
-  backgroundColor: '#fff',
-});
-
-const ActionButton = styled.button<{ $primary?: boolean; $danger?: boolean }>(({ $primary, $danger }) => ({
-  flex: 1,
-  padding: '0.75rem 1rem',
-  fontSize: '0.8rem',
-  fontWeight: '500',
-  border: $primary ? 'none' : $danger ? 'none' : '1px solid #dee2e6',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  backgroundColor: $primary ? '#df3b3a' : $danger ? '#dc3545' : '#ffffff',
-  color: $primary ? '#f8e4e2' : $danger ? '#fff' : '#333',
-  '&:hover': {
-    backgroundColor: $primary ? '#f8e4e2' : $danger ? '#c82333' : '#f8f9fa',
-    color: $primary ? '#df3b3a' : $danger ? '#fff' : '#333',
-    transform: 'translateY(-1px)',
-  },
-  '&:active': {
-    transform: 'translateY(0)',
-  },
-}));
-
-const CaptureButtonContainer = styled.div({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: '1rem',
-  width: '100%',
-});
-
-const PhotoCount = styled.span({
-  position: 'absolute',
-  right: 0,
-  fontSize: '0.8rem',
-  color: '#666',
-});
-
-const CaptureButton = styled.button({
-  padding: '0.8rem 2rem',
-  fontSize: '1.5rem',
-  fontWeight: '600',
-  color: '#df3b3a',
-  backgroundColor: '#f8e4e2',
-  border: 'none',
-  borderRadius: '20px',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  width: '100px',
-  height: '40px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  '&:hover:not(:disabled)': {
-    backgroundColor: '#df3b3a',
-    color: '#f8e4e2',
-    transform: 'scale(1.1)',
-  },
-  '&:disabled': {
-    backgroundColor: '#ccc',
-    cursor: 'not-allowed',
-  },
-});
-
-const FilterButton = styled.button<{ isSelected: boolean }>(({ isSelected }) => ({
-  padding: '0.5rem 1rem',
-  fontSize: '0.8rem',
-  fontWeight: isSelected ? '600' : '400',
-  color: isSelected ? '#f8e4e2' : '#333',
-  backgroundColor: isSelected ? '#df3b3a' : '#ffffff',
-  border: `1px solid ${isSelected ? '#df3b3a' : '#dee2e6'}`,
-  borderRadius: '20px',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    backgroundColor: '#df3b3a',
-    color: '#f8e4e2',
-    borderColor: '#df3b3a',
-  },
-}));
-
 const StickerGrid = styled.div({
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(32px, 1fr))',
   gap: '0.1rem',
   marginBottom: '0.8rem',
+  justifyItems: 'center',
+  alignItems: 'center',
 });
 
 const StickerButton = styled.button({
   width: '32px',
   height: '32px',
   fontSize: '18px',
-  border: `1px solid #dee2e6`,
   borderRadius: '8px',
   backgroundColor: '#ffffff',
   cursor: 'pointer',
@@ -1289,26 +997,8 @@ const StickerButton = styled.button({
   alignItems: 'center',
   justifyContent: 'center',
   '&:hover': {
-    backgroundColor: '#df3b3a',
-    borderColor: '#df3b3a',
+    backgroundColor: colorToken.black,
     transform: 'scale(1.05)',
-  },
-});
-
-const ClearStickersButton = styled.button({
-  width: '100%',
-  padding: '0.5rem',
-  fontSize: '0.8rem',
-  color: '#333',
-  backgroundColor: '#ffffff',
-  border: `1px solid #dee2e6`,
-  borderRadius: '4px',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    backgroundColor: '#df3b3a',
-    color: '#f8e4e2',
-    borderColor: '#df3b3a',
   },
 });
 
@@ -1323,20 +1013,17 @@ const FaceToggleButton = styled.button<{ isActive: boolean; disabled?: boolean }
   padding: '0.4rem 0.8rem',
   fontSize: '0.7rem',
   fontWeight: '500',
-  borderRadius: '0.35rem',
-  border: '1px solid #df3b3a',
-  backgroundColor: isActive ? '#df3b3a' : 'white',
-  color: isActive ? 'white' : '#df3b3a',
+  borderRadius: '12px',
+  backgroundColor: '#f5f5f5',
+  color: colorToken.black,
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   '&:hover': {
-    backgroundColor: isActive ? '#c23230' : '#fdf2f2',
-    borderColor: '#df3b3a',
+    backgroundColor: '#ddd',
   },
   '&:disabled': {
-    backgroundColor: '#ccc',
+    backgroundColor: '#ddd',
     cursor: 'not-allowed',
-    borderColor: '#ccc',
     color: '#666',
   },
 }));
@@ -1349,7 +1036,7 @@ const FaceDetectionInfo = styled.span({
 
 const FaceDetectionBox = styled.div({
   position: 'absolute',
-  border: '2px solid #df3b3a',
+  border: `2px solid ${colorToken.black}`,
   borderRadius: '4px',
   pointerEvents: 'none',
   zIndex: 5,
@@ -1364,22 +1051,10 @@ const TrackingIndicator = styled.div({
   zIndex: 15,
 });
 
-const StickerSubTitle = styled.h4({
-  fontSize: '0.7rem',
-  fontWeight: '600',
-  color: '#333',
-  marginBottom: '0.3rem',
-  marginTop: '0.5rem',
-  '&:first-of-type': {
-    marginTop: '0',
-  },
-});
-
 const FaceTrackingStickerButton = styled.button<{ disabled?: boolean }>(({ disabled }) => ({
   width: '32px',
   height: '32px',
   fontSize: '18px',
-  border: `2px solid ${disabled ? '#ccc' : '#df3b3a'}`,
   borderRadius: '8px',
   backgroundColor: disabled ? '#f5f5f5' : '#ffffff',
   cursor: disabled ? 'not-allowed' : 'pointer',
@@ -1390,31 +1065,137 @@ const FaceTrackingStickerButton = styled.button<{ disabled?: boolean }>(({ disab
   position: 'relative',
   opacity: disabled ? 0.5 : 1,
   '&:hover:not(:disabled)': {
-    backgroundColor: '#df3b3a',
-    borderColor: '#df3b3a',
+    backgroundColor: colorToken.black,
+    borderColor: colorToken.black,
     transform: 'scale(1.05)',
-  },
-  '&:after': disabled ? {} : {
-    content: '"🎯"',
-    position: 'absolute',
-    top: '-5px',
-    right: '-5px',
-    fontSize: '8px',
   },
 }));
 
 const CameraSwitchButton = styled.button({
-  position: 'absolute',
-  left: 0,
-  padding: '0.4rem 0.8rem',
+  width: '70px',
+  height: '26px',
   fontSize: '0.7rem',
   fontWeight: '600',
-  color: '#323232',
+  color: colorToken.black,
   backgroundColor: '#ffffff',
-  border: 'none',
+  border: `1px solid #ddd`,
   borderRadius: '15px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.3rem',
+  '&:hover': {
+    backgroundColor: '#ddd',
+  },
+});
+
+const CapturedPhoto = styled.img({
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  borderRadius: '4px',
+});
+
+const CaptureButtonContainer = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '1rem',
+  marginBottom: '0.5rem',
+  width: '100%',
+});
+
+const DownloadButton = styled.button<{ disabled?: boolean }>(({ disabled }) => ({
+  width: '70px',
+  height: '26px',
+  fontSize: '0.7rem',
+  fontWeight: '600',
+  color: disabled ? '#999' : colorToken.black,
+  backgroundColor: disabled ? '#f5f5f5' : '#ffffff',
+  border: `1px solid #ddd`,
+  borderRadius: '15px',
+  cursor: disabled ? 'not-allowed' : 'pointer',
+  transition: 'all 0.2s ease',
+  opacity: disabled ? 0.5 : 1,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '&:hover': {
+    backgroundColor: '#ddd',
+  },
+}));
+
+const CaptureButton = styled.button({
+  height: '40px',
+  fontSize: '0.7em',
+  fontWeight: '600',
+  color: '#fff',
+  backgroundColor: colorToken.black,
+  border: 'none',
+  borderRadius: '20px',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  minWidth: '120px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.5rem',
+  '&:hover:not(:disabled)': {
+    transform: 'scale(1.05)',
+  },
+  '&:disabled': {
+    backgroundColor: '#ccc',
+    color: '#666',
+    cursor: 'not-allowed',
+  },
+});
+
+const FilterButton = styled.button<{ isSelected: boolean }>(({ isSelected }) => ({
+  padding: '0.5rem 1rem',
+  fontSize: '0.7rem',
+  fontWeight: isSelected ? '800' : '400',
+  color: isSelected ? '#fff' : '#333',
+  backgroundColor: isSelected ? colorToken.black : '#ffffff',
+  border: `1px solid ${isSelected ? colorToken.black : '#dee2e6'}`,
+  borderRadius: '20px',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    backgroundColor: '#ddd',
+    border: `1px solid #ddd`,
+    color:  colorToken.black ,
+  },
+}));
+
+const SectionTitle = styled.h3({
+  fontSize: '0.8rem',
+  fontWeight: '600',
+  color: '#333',
+  marginBottom: '0.2rem',
+  marginTop: '0.4rem',
+  '&:first-of-type': {
+    marginTop: '0',
+  },
+});
+
+const CameraPlaceholder = styled.div({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#f5f5f5',
+  gap: '1rem',
+});
+
+const PlaceholderText = styled.p({
+  color: '#666',
+  fontSize: '0.9rem',
+  textAlign: 'center',
+  margin: 0,
 });
 
 export default PhotoBooth; 
