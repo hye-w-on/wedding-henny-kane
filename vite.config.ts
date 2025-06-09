@@ -24,4 +24,18 @@ export default defineConfig({
       usePolling: true,
     },
   },
+  assetsInclude: ['**/*.wasm', '**/*.data'],
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // MediaPipe 파일들은 원래 이름 유지
+          if (assetInfo.name && (assetInfo.name.endsWith('.wasm') || assetInfo.name.endsWith('.data'))) {
+            return 'mediapipe/[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
+      }
+    }
+  }
 });

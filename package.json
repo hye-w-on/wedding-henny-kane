@@ -7,10 +7,9 @@
   "scripts": {
     "dev": "vite --force",
     "build": "tsc -b && vite build",
+    "postbuild": "mkdir -p dist/mediapipe && cp -r node_modules/@mediapipe/face_detection/* dist/mediapipe/",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "yarn build",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -164,7 +164,11 @@ const PhotoBooth = () => {
     setIsMediaPipeLoading(true);
     
     try {
-      
+      // HTTPS 확인
+      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+        throw new Error('MediaPipe requires HTTPS in production');
+      }
+
       const [{ FaceDetection }, { Camera }] = await Promise.all([
         import('@mediapipe/face_detection'),
         import('@mediapipe/camera_utils')
@@ -172,7 +176,14 @@ const PhotoBooth = () => {
       
       const faceDetection = new FaceDetection({
         locateFile: (file: string) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
+          // 로컬 파일 우선 사용, 실패시 CDN fallback
+          const localPath = `/mediapipe/${file}`;
+          const cdnFallback = `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
+          
+          // 개발/배포 환경에서 로컬 파일 사용
+          return window.location.hostname === 'localhost' || window.location.protocol === 'https:' 
+            ? localPath 
+            : cdnFallback;
         }
       });
 
@@ -202,10 +213,30 @@ const PhotoBooth = () => {
 
       faceDetectionRef.current = faceDetection;
       setIsMediaPipeLoaded(true);
-      console.log('MediaPipe 로딩 완료!');
+      console.log('MediaPipe 로딩 완료! (로컬 파일 사용)');
     } catch (error) {
       console.error('MediaPipe 로딩 실패:', error);
-      alert('얼굴감지 기능 로딩에 실패했습니다. 네트워크 연결을 확인해주세요.');
+      
+      // 더 자세한 에러 메시지
+      let errorMessage = '얼굴감지 기능을 사용할 수 없습니다.';
+      
+      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+        errorMessage += ' HTTPS 연결이 필요합니다.';
+      } else if (error instanceof Error) {
+        if (error.message.includes('network') || error.message.includes('fetch')) {
+          errorMessage += ' 네트워크 연결을 확인해주세요.';
+        } else if (error.message.includes('CORS')) {
+          errorMessage += ' 브라우저 보안 정책 문제입니다.';
+        } else {
+          errorMessage += ' 지원되지 않는 브라우저이거나 리소스 로딩에 실패했습니다.';
+        }
+      }
+      
+      // alert 대신 console.warn으로 변경 (UX 개선)
+      console.warn(errorMessage);
+      
+      // 얼굴감지 버튼 비활성화
+      setIsFaceDetectionEnabled(false);
     } finally {
       setIsMediaPipeLoading(false);
     }
