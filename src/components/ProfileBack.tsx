@@ -81,7 +81,7 @@ function ProfileBack({ isVisible, type }: ProfileProps) {
       text: "일하는 모습이 멋있어",
     },
     {
-      id: 1,
+      id: 2,
       x: 110,
       y: 70,
       width: 75,
@@ -89,7 +89,7 @@ function ProfileBack({ isVisible, type }: ProfileProps) {
       text: "집안일도 잘함",
     },
     { id: 3, x: -10, y: 100, width: 95, height: 19, text: "운동신경이 좋아요" },
-    { id: 3, x: 60, y: 160, width: 70, height: 19, text: "차분한 성격" },
+    { id: 4, x: 60, y: 160, width: 70, height: 19, text: "차분한 성격" },
   ];
 
   const hennyBalloons = [
@@ -102,7 +102,7 @@ function ProfileBack({ isVisible, type }: ProfileProps) {
       text: "비슷한 사고방식, 웃음코드",
     },
     {
-      id: 1,
+      id: 2,
       x: 110,
       y: 80,
       width: 75,
@@ -110,7 +110,7 @@ function ProfileBack({ isVisible, type }: ProfileProps) {
       text: "주량도 비슷함",
     },
     { id: 3, x: 30, y: 65, width: 95, height: 19, text: "이쁨" },
-    { id: 3, x: 50, y: 160, width: 70, height: 19, text: "적극적인 성격" },
+    { id: 4, x: 50, y: 160, width: 70, height: 19, text: "적극적인 성격" },
   ];
 
   const labels = [

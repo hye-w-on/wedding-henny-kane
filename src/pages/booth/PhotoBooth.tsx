@@ -105,8 +105,8 @@ const FILTERS: Record<string, FilterStyle> = {
   },
 };
 
-const STICKER_OPTIONS = ['❤️', '💕', '⭐', '✨', '🎉', '💖', '🌟', '💍'];
-const FACE_TRACKING_STICKERS = ['😍', '🥰', '😘', '🤩', '😎', '😊', '😄','🕶️'];
+const STICKER_OPTIONS = ['❤️', '💕','🌟', '✨', '🎉', '💍','💋'];
+const FACE_TRACKING_STICKERS = ['😍', '😘', '🤩','😆','🕶️'];
 
 const FRAME_OPTIONS: Frame[] = [
   { id: 'none', name: '프레임 없음', src: '' },
@@ -150,34 +150,15 @@ const PhotoBooth = () => {
   const [isMediaPipeLoaded, setIsMediaPipeLoaded] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
 
   const videoConstraints = {
-    width: { min: 640, ideal: 1080, max: 1920 },
-    height: { min: 640, ideal: 1080, max: 1920 },
+    width: { min: 720, ideal: 1920, max: 2560 },
+    height: { min: 720, ideal: 1920, max: 2560 },
     facingMode: facingMode,
     aspectRatio: 1,
     frameRate: { ideal: 30 },
   };
-
-  const updateFaceTrackingStickers = useCallback((faces: FaceDetectionResult[]) => {
-    if (faces.length === 0) return;
-
-    setStickers(prev => {
-      const updated = prev.map(sticker => {
-        if (sticker.isAutoTracking && faces[0]) {
-          const face = faces[0];
-          return {
-            ...sticker,
-            x: face.x - 20,
-            y: Math.max(5, face.y - face.height * 0.5),
-          };
-        }
-        return sticker;
-      });
-      
-      return updated;
-    });
-  }, []);
 
   const loadMediaPipeViaScript = async (): Promise<{ FaceDetection: MediaPipeFaceDetectionClass; Camera: MediaPipeCameraClass }> => {
     return new Promise((resolve, reject) => {
@@ -243,7 +224,6 @@ const PhotoBooth = () => {
           });
           
           setFaceDetections(detections);
-          updateFaceTrackingStickers(detections);
         } else {
           setFaceDetections([]);
         }
@@ -251,7 +231,6 @@ const PhotoBooth = () => {
 
       faceDetectionRef.current = faceDetection;
       setIsMediaPipeLoaded(true);
-      console.log('MediaPipe 로딩 완료! (AWS Amplify 환경)');
     } catch (error) {
       console.error('MediaPipe 로딩 실패:', error);
       
@@ -291,7 +270,8 @@ const PhotoBooth = () => {
     if (webcamRef.current?.video) {
       videoRef.current = webcamRef.current.video;
       
-      if (faceDetectionRef.current && isFaceDetectionEnabled && isMediaPipeLoaded) {
+      // 기존 Camera가 없고 얼굴 감지가 활성화된 경우에만 새로 생성
+      if (faceDetectionRef.current && isFaceDetectionEnabled && isMediaPipeLoaded && !cameraRef.current) {
         const { Camera: CameraClass } = await loadMediaPipeViaScript();
         const camera = new CameraClass(videoRef.current, {
           onFrame: async () => {
@@ -314,19 +294,25 @@ const PhotoBooth = () => {
         await loadMediaPipe();
       }
       
-      if (isMediaPipeLoaded && videoRef.current && faceDetectionRef.current) {
-        const { Camera: CameraClass } = await loadMediaPipeViaScript();
-        const camera = new CameraClass(videoRef.current, {
-          onFrame: async () => {
-            if (faceDetectionRef.current && videoRef.current) {
-              await faceDetectionRef.current.send({ image: videoRef.current });
-            }
-          },
-          width: 640,
-          height: 640,
-        });
-        cameraRef.current = camera;
-        camera.start();
+      // MediaPipe 로딩 완료 후 확실히 Camera 시작
+      if (videoRef.current && faceDetectionRef.current) {
+        try {
+          const { Camera: CameraClass } = await loadMediaPipeViaScript();
+          const camera = new CameraClass(videoRef.current, {
+            onFrame: async () => {
+              if (faceDetectionRef.current && videoRef.current && !isCapturing) {
+                await faceDetectionRef.current.send({ image: videoRef.current });
+              }
+            },
+            width: 640,
+            height: 640,
+          });
+          cameraRef.current = camera;
+          camera.start();
+          console.log('MediaPipe Camera 시작 완료!');
+        } catch (error) {
+          console.error('MediaPipe Camera 시작 실패:', error);
+        }
       }
       
       setIsFaceDetectionEnabled(true);
@@ -370,12 +356,25 @@ const PhotoBooth = () => {
     }
 
     const face = faceDetections[0];
+    
+    // 브라우저 너비에 따라 스티커 크기 동적 조정
+    const browserWidth = window.innerWidth;
+    let stickerSize: number;
+    
+    if (browserWidth <= 768) {
+      // 모바일: 브라우저 너비의 반 정도, 최대 150px
+      stickerSize = Math.min(browserWidth * 0.5, 150);
+    } else {
+      // 데스크톱: 기존 크기 유지
+      stickerSize = 300;
+    }
+    
     const newSticker: Sticker = {
       id: Date.now().toString(),
       emoji,
-      x: face.x - 15,
-      y: Math.max(5, face.y - face.height * 0.4),
-      size: 300,
+      x: face.x,
+      y: face.y,
+      size: stickerSize,
       isAutoTracking: true,
     };
     
@@ -492,70 +491,81 @@ const PhotoBooth = () => {
     src: getFrameSrc(frame.id)
   }));
 
-  const captureWithStickers = async (): Promise<string | null> => {
-    if (!webcamRef.current || !canvasRef.current) return null;
-
-    const webcamImage = webcamRef.current.getScreenshot();
-    if (!webcamImage) return null;
+  const captureWithStickers = async (fixedStickers: Sticker[]): Promise<string | null> => {
+    if (!webcamRef.current || !canvasRef.current || !videoRef.current) return null;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = async () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
+    // 고해상도 캔버스 크기 설정 (최소 1080p, 이상적으로는 비디오 실제 크기)
+    const videoElement = videoRef.current;
+    const targetWidth = Math.max(videoElement.videoWidth || 1920, 1080);
+    const targetHeight = Math.max(videoElement.videoHeight || 1920, 1080);
+    
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
 
-        if (currentFilter !== 'none' && FILTERS[currentFilter].style.filter) {
-          ctx.filter = FILTERS[currentFilter].style.filter || 'none';
-        } else {
-          ctx.filter = 'none';
-        }
-
-        ctx.drawImage(img, 0, 0);
-
+    try {
+      // 필터 적용
+      if (currentFilter !== 'none' && FILTERS[currentFilter].style.filter) {
+        ctx.filter = FILTERS[currentFilter].style.filter || 'none';
+      } else {
         ctx.filter = 'none';
+      }
 
-        const containerRect = webcamContainerRef.current?.getBoundingClientRect();
-        if (containerRect && stickers.length > 0) {
-          stickers.forEach(sticker => {
-            const stickerX = (sticker.x / 100) * canvas.width;
-            const stickerY = (sticker.y / 100) * canvas.height;
-            const scaleFactor = canvas.width / containerRect.width;
-            const stickerSize = sticker.size * scaleFactor;
+      // 비디오 엘리먼트에서 직접 캔버스에 그리기 (고화질)
+      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-            ctx.font = `${stickerSize}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(sticker.emoji, stickerX, stickerY);
-          });
-        }
+      // 필터 초기화
+      ctx.filter = 'none';
 
-        if (currentFrame !== 'none') {
-          const frameSrc = getCurrentFrameSrc(currentFrame);
-          if (frameSrc) {
+      const stickerContainerRect = webcamContainerRef.current?.getBoundingClientRect();
+      
+      if (stickerContainerRect && fixedStickers.length > 0) {
+        fixedStickers.forEach(sticker => {
+          // 스티커 위치를 캔버스 좌표로 변환
+          const stickerX = (sticker.x / 100) * canvas.width;
+          const stickerY = (sticker.y / 100) * canvas.height;
+          
+          // 고해상도에 맞는 스케일링
+          const scaleFactor = canvas.width / stickerContainerRect.width;
+          const stickerSize = sticker.size * scaleFactor;
+
+          ctx.font = `${stickerSize}px Arial`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          ctx.fillText(sticker.emoji, stickerX, stickerY);
+        });
+      }
+
+      if (currentFrame !== 'none') {
+        const frameSrc = getCurrentFrameSrc(currentFrame);
+        if (frameSrc) {
+          return new Promise((resolve) => {
             const frameImg = new Image();
             frameImg.onload = () => {
               ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-              const dataURL = canvas.toDataURL('image/png');
+              // 최고 화질로 PNG 저장
+              const dataURL = canvas.toDataURL('image/png', 1.0);
               resolve(dataURL);
             };
             frameImg.onerror = () => {
-              const dataURL = canvas.toDataURL('image/png');
+              const dataURL = canvas.toDataURL('image/png', 1.0);
               resolve(dataURL);
             };
             frameImg.src = frameSrc;
-            return;
-          }
+          });
         }
+      }
 
-        const dataURL = canvas.toDataURL('image/png');
-        resolve(dataURL);
-      };
-      img.src = webcamImage;
-    });
+      // 최고 화질로 PNG 저장
+      const dataURL = canvas.toDataURL('image/png', 1.0);
+      return dataURL;
+    } catch (error) {
+      console.error('Canvas 작업 중 오류:', error);
+      return null;
+    }
   };
 
   const capture = async () => {
@@ -570,19 +580,59 @@ const PhotoBooth = () => {
       return;
     }
 
+    // 캡처 시작 - 얼굴 추적 완전 중단
+    setIsCapturing(true);
+
+    // 얼굴 추적을 즉시 중단하여 스티커 위치 고정
+    // onFrame에서 isCapturing 체크로 처리가 중단됨
+
+    // 얼굴 추적 스티커를 일반 스티커로 변환하고 현재 화면 위치로 고정
+    const fixedStickers = stickers.map(sticker => {
+      if (sticker.isAutoTracking && faceDetections.length > 0) {
+        // 현재 화면에서 보이는 위치를 퍼센트로 계산해서 고정
+        const face = faceDetections[0];
+        const adjustedX = face.x - 20;
+        const adjustedY = Math.max(5, face.y - face.height * 0.5);
+        
+        return {
+          ...sticker,
+          x: adjustedX,
+          y: adjustedY,
+          isAutoTracking: false
+        };
+      }
+      return {
+        ...sticker,
+        isAutoTracking: false
+      };
+    });
+    
+    setStickers(fixedStickers);
+
     if (webcamRef.current) {
       let imageSrc: string | null = null;
       
-      if (stickers.length > 0 || currentFrame !== 'none' || currentFilter !== 'none') {
-        imageSrc = await captureWithStickers();
+      if (fixedStickers.length > 0 || currentFrame !== 'none' || currentFilter !== 'none') {
+        imageSrc = await captureWithStickers(fixedStickers);
+        // captureWithStickers가 실패하면 기본 스크린샷 사용
+        if (!imageSrc) {
+          console.warn('captureWithStickers 실패, 기본 스크린샷 사용');
+          imageSrc = webcamRef.current.getScreenshot();
+        }
       } else {
         imageSrc = webcamRef.current.getScreenshot();
       }
 
       if (imageSrc) {
         setPhotos((prev) => [...prev, imageSrc]);
+      } else {
+        console.error('모든 캡처 방법 실패');
+        alert('사진 촬영에 실패했습니다. 다시 시도해주세요.');
       }
     }
+
+    // 캡처 완료
+    setIsCapturing(false);
   };
 
   const downloadPhoto = (photoSrc: string, index: number) => {
@@ -630,26 +680,6 @@ const PhotoBooth = () => {
             </DownloadButton>
           </CaptureButtonContainer>
         
-          <FaceDetectionToggle>
-            <FaceToggleButton
-              onClick={toggleFaceDetection}
-              isActive={isFaceDetectionEnabled}
-              disabled={isMediaPipeLoading}
-            >
-              {isMediaPipeLoading 
-                ? '⏳ 로딩 중...' 
-                : isFaceDetectionEnabled 
-                  ? '🔍 얼굴감지 ON' 
-                  : '👀 얼굴감지 OFF'
-              }
-            </FaceToggleButton>
-            {isFaceDetectionEnabled && faceDetections.length > 0 && (
-              <FaceDetectionInfo>
-                {faceDetections.length}개 얼굴 감지됨
-              </FaceDetectionInfo>
-            )}
-          </FaceDetectionToggle>
-          
           <WebcamWrapper ref={webcamContainerRef}>
             {photos.length > 0 ? (
               <CapturedPhoto 
@@ -681,28 +711,38 @@ const PhotoBooth = () => {
                   />
                 ))}
                 
-                {stickers.map(sticker => (
-                  <StickerOverlay
-                    key={sticker.id}
-                    style={{
-                      left: `${sticker.x}%`,
-                      top: `${sticker.y}%`,
-                      fontSize: `${sticker.size}px`,
-                      cursor: draggedSticker === sticker.id ? 'grabbing' : 'grab',
-                    }}
-                    onMouseDown={(e) => handleStickerMouseDown(e, sticker.id)}
-                    onTouchStart={(e) => handleStickerTouchStart(e, sticker.id)}
-                    onDoubleClick={(e) => removeSticker(sticker.id, e)}
-                  >
-                    {sticker.emoji}
-                    <DeleteButton
-                      onClick={(e) => removeSticker(sticker.id, e)}
-                      title="스티커 삭제 (또는 더블클릭)"
+                {stickers.map(sticker => {
+                  // 얼굴 추적 스티커는 실시간으로 화면 위치만 업데이트
+                  const displayX = sticker.isAutoTracking && faceDetections.length > 0 && !isCapturing
+                    ? faceDetections[0].x - 20 
+                    : sticker.x;
+                  const displayY = sticker.isAutoTracking && faceDetections.length > 0 && !isCapturing
+                    ? Math.max(5, faceDetections[0].y - faceDetections[0].height * 0.5) 
+                    : sticker.y;
+                    
+                  return (
+                    <StickerOverlay
+                      key={sticker.id}
+                      style={{
+                        left: `${displayX}%`,
+                        top: `${displayY}%`,
+                        fontSize: `${sticker.size}px`,
+                        cursor: draggedSticker === sticker.id ? 'grabbing' : 'grab',
+                      }}
+                      onMouseDown={(e) => handleStickerMouseDown(e, sticker.id)}
+                      onTouchStart={(e) => handleStickerTouchStart(e, sticker.id)}
+                      onDoubleClick={(e) => removeSticker(sticker.id, e)}
                     >
-                      ×
-                    </DeleteButton>
-                  </StickerOverlay>
-                ))}
+                      {sticker.emoji}
+                      <DeleteButton
+                        onClick={(e) => removeSticker(sticker.id, e)}
+                        title="스티커 삭제 (또는 더블클릭)"
+                      >
+                        ×
+                      </DeleteButton>
+                    </StickerOverlay>
+                  );
+                })}
                 {currentFrame !== 'none' && (
                   <FrameOverlay>
                     <FrameImage 
@@ -813,7 +853,37 @@ const PhotoBooth = () => {
                         {emoji}
                       </FaceTrackingStickerButton>
                     ))}
+                    
+                    <FaceToggleButton
+                      onClick={toggleFaceDetection}
+                      isActive={isFaceDetectionEnabled}
+                      disabled={isMediaPipeLoading || isFaceDetectionEnabled}
+                      style={{ 
+                        width: '5rem', 
+                        height: '32px', 
+                        fontSize: '0.7rem',
+                        borderRadius: '8px',
+                        padding: '0',
+                        minWidth: 'unset',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {isMediaPipeLoading 
+                        ? '⏳ 추적 중' 
+                        : isFaceDetectionEnabled 
+                          ? '🔍 추적 ON' 
+                          : '👀 추적 OFF'
+                      }
+                    </FaceToggleButton>
                   </StickerGrid>
+                  
+                  {isFaceDetectionEnabled && faceDetections.length > 0 && (
+                    <FaceDetectionInfo>
+                      {faceDetections.length}개 얼굴 감지됨
+                    </FaceDetectionInfo>
+                  )}
                 </StickerSection>
               )}
             </TabContent>
@@ -1041,11 +1111,13 @@ const NoFrameIndicator = styled.div({
 
 const StickerGrid = styled.div({
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(32px, 1fr))',
-  gap: '0.1rem',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(32px, max-content))',
+  gap: '0.35rem',
   marginBottom: '0.8rem',
   justifyItems: 'center',
   alignItems: 'center',
+  maxWidth: '100%',
+  justifyContent: 'center',
 });
 
 const StickerButton = styled.button({
@@ -1269,4 +1341,4 @@ declare global {
   }
 }
 
-export default PhotoBooth; 
+export default PhotoBooth;
