@@ -4,6 +4,8 @@ import Webcam from 'react-webcam';
 import { colorToken } from '../../utils/colorToken';
 import ChangeIcon from '../../assets/icons/change.svg';
 import CameraIcon from '../../assets/icons/camera.svg';
+import { FaceDetection } from '@mediapipe/face_detection';
+import { Camera } from '@mediapipe/camera_utils';
 
 interface FilterStyle {
   name: string;
@@ -158,6 +160,31 @@ const PhotoBooth = () => {
     });
   }, []);
 
+  const loadMediaPipeViaScript = async (): Promise<{ FaceDetection: typeof FaceDetection; Camera: typeof Camera }> => {
+    return new Promise((resolve, reject) => {
+      // 스크립트가 이미 로드되었는지 확인
+      if (window.FaceDetection && window.Camera) {
+        resolve({ FaceDetection: window.FaceDetection, Camera: window.Camera });
+        return;
+      }
+
+      // MediaPipe 스크립트 로드
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js';
+      script.onload = () => {
+        const cameraScript = document.createElement('script');
+        cameraScript.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js';
+        cameraScript.onload = () => {
+          resolve({ FaceDetection: window.FaceDetection, Camera: window.Camera });
+        };
+        cameraScript.onerror = reject;
+        document.head.appendChild(cameraScript);
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  };
+
   const loadMediaPipe = async () => {
     if (isMediaPipeLoaded || isMediaPipeLoading) return;
     
@@ -169,12 +196,21 @@ const PhotoBooth = () => {
         throw new Error('MediaPipe requires HTTPS in production');
       }
 
-      const [{ FaceDetection }, { Camera }] = await Promise.all([
-        import('@mediapipe/face_detection'),
-        import('@mediapipe/camera_utils')
-      ]);
-      
-      const faceDetection = new FaceDetection({
+      let FaceDetectionClass, CameraClass;
+
+      try {
+        // 정적 import 시도
+        FaceDetectionClass = FaceDetection;
+        CameraClass = Camera;
+      } catch (importError) {
+        console.warn('정적 import 실패, 스크립트 로딩 시도:', importError);
+        // 스크립트 방식으로 fallback
+        const { FaceDetection: ScriptFaceDetection, Camera: ScriptCamera } = await loadMediaPipeViaScript();
+        FaceDetectionClass = ScriptFaceDetection;
+        CameraClass = ScriptCamera;
+      }
+
+      const faceDetection = new FaceDetectionClass({
         locateFile: (file: string) => {
           // 로컬 파일 우선 사용, 실패시 CDN fallback
           const localPath = `/mediapipe/${file}`;
@@ -213,7 +249,7 @@ const PhotoBooth = () => {
 
       faceDetectionRef.current = faceDetection;
       setIsMediaPipeLoaded(true);
-      console.log('MediaPipe 로딩 완료! (로컬 파일 사용)');
+      console.log('MediaPipe 로딩 완료!');
     } catch (error) {
       console.error('MediaPipe 로딩 실패:', error);
       
@@ -227,15 +263,14 @@ const PhotoBooth = () => {
           errorMessage += ' 네트워크 연결을 확인해주세요.';
         } else if (error.message.includes('CORS')) {
           errorMessage += ' 브라우저 보안 정책 문제입니다.';
+        } else if (error.message.includes('constructor')) {
+          errorMessage += ' MediaPipe 라이브러리 호환성 문제입니다.';
         } else {
           errorMessage += ' 지원되지 않는 브라우저이거나 리소스 로딩에 실패했습니다.';
         }
       }
       
-      // alert 대신 console.warn으로 변경 (UX 개선)
       console.warn(errorMessage);
-      
-      // 얼굴감지 버튼 비활성화
       setIsFaceDetectionEnabled(false);
     } finally {
       setIsMediaPipeLoading(false);
@@ -260,7 +295,6 @@ const PhotoBooth = () => {
       videoRef.current = webcamRef.current.video;
       
       if (faceDetectionRef.current && isFaceDetectionEnabled && isMediaPipeLoaded) {
-        const { Camera } = await import('@mediapipe/camera_utils');
         const camera = new Camera(videoRef.current, {
           onFrame: async () => {
             if (faceDetectionRef.current && videoRef.current) {
@@ -283,7 +317,6 @@ const PhotoBooth = () => {
       }
       
       if (isMediaPipeLoaded && videoRef.current && faceDetectionRef.current) {
-        const { Camera } = await import('@mediapipe/camera_utils');
         const camera = new Camera(videoRef.current, {
           onFrame: async () => {
             if (faceDetectionRef.current && videoRef.current) {
@@ -1228,5 +1261,13 @@ const PlaceholderText = styled.p({
   textAlign: 'center',
   margin: 0,
 });
+
+// Window 객체에 MediaPipe 타입 확장
+declare global {
+  interface Window {
+    FaceDetection: typeof FaceDetection;
+    Camera: typeof Camera;
+  }
+}
 
 export default PhotoBooth; 

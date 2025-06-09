@@ -19,6 +19,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ['@mediapipe/face_detection', '@mediapipe/camera_utils'],
+    exclude: []
+  },
   server: {
     watch: {
       usePolling: true,
