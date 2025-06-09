@@ -52,15 +52,15 @@ const brideContacts: ContactInfo[] = [
   {
     role: "신부 어버지",
     name: "윤창기",
-    bank: "우리은행",
-    account: "1002945421947",
+    bank: "국민은행",
+    account: "27120104112973",
     phone: "010-9027-0559",
   },
   {
     role: "신부 어머니",
     name: "송영희",
-    bank: "우리은행",
-    account: "1002945421947",
+    bank: "국민은행",
+    account: "27120104124206",
     phone: "010-6486-3048",
   },
 ];
