@@ -20,8 +20,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['@mediapipe/face_detection', '@mediapipe/camera_utils'],
-    exclude: []
+    exclude: ['@mediapipe/face_detection', '@mediapipe/camera_utils']
   },
   server: {
     watch: {
@@ -31,6 +30,7 @@ export default defineConfig({
   assetsInclude: ['**/*.wasm', '**/*.data'],
   build: {
     rollupOptions: {
+      external: ['@mediapipe/face_detection', '@mediapipe/camera_utils'],
       output: {
         assetFileNames: (assetInfo) => {
           // MediaPipe 파일들은 원래 이름 유지

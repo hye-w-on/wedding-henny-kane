@@ -4,8 +4,27 @@ import Webcam from 'react-webcam';
 import { colorToken } from '../../utils/colorToken';
 import ChangeIcon from '../../assets/icons/change.svg';
 import CameraIcon from '../../assets/icons/camera.svg';
-import { FaceDetection } from '@mediapipe/face_detection';
-import { Camera } from '@mediapipe/camera_utils';
+
+// MediaPipe 타입 정의
+interface MediaPipeFaceDetectionInstance {
+  setOptions(options: { model: string; minDetectionConfidence: number }): void;
+  onResults(callback: (results: MediaPipeResults) => void): void;
+  send(inputs: { image: HTMLVideoElement }): Promise<void>;
+  close(): void;
+}
+
+interface MediaPipeFaceDetectionClass {
+  new (config: { locateFile: (file: string) => string }): MediaPipeFaceDetectionInstance;
+}
+
+interface MediaPipeCameraInstance {
+  start(): void;
+  stop(): void;
+}
+
+interface MediaPipeCameraClass {
+  new (videoElement: HTMLVideoElement, config: { onFrame: () => Promise<void>; width: number; height: number }): MediaPipeCameraInstance;
+}
 
 interface FilterStyle {
   name: string;
@@ -116,8 +135,8 @@ const PhotoBooth = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const webcamContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const faceDetectionRef = useRef<MediaPipeFaceDetection | null>(null);
-  const cameraRef = useRef<MediaPipeCamera | null>(null);
+  const faceDetectionRef = useRef<MediaPipeFaceDetectionInstance | null>(null);
+  const cameraRef = useRef<MediaPipeCameraInstance | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
   const [currentFilter, setCurrentFilter] = useState<FilterType>('none');
   const [stickers, setStickers] = useState<Sticker[]>([]);
@@ -160,7 +179,7 @@ const PhotoBooth = () => {
     });
   }, []);
 
-  const loadMediaPipeViaScript = async (): Promise<{ FaceDetection: typeof FaceDetection; Camera: typeof Camera }> => {
+  const loadMediaPipeViaScript = async (): Promise<{ FaceDetection: MediaPipeFaceDetectionClass; Camera: MediaPipeCameraClass }> => {
     return new Promise((resolve, reject) => {
       // 스크립트가 이미 로드되었는지 확인
       if (window.FaceDetection && window.Camera) {
@@ -191,35 +210,18 @@ const PhotoBooth = () => {
     setIsMediaPipeLoading(true);
     
     try {
-      // HTTPS 확인
+      // AWS Amplify는 HTTPS를 기본 제공하므로 확인 불필요하지만 안전장치로 유지
       if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
         throw new Error('MediaPipe requires HTTPS in production');
       }
 
-      let FaceDetectionClass, CameraClass;
-
-      try {
-        // 정적 import 시도
-        FaceDetectionClass = FaceDetection;
-        CameraClass = Camera;
-      } catch (importError) {
-        console.warn('정적 import 실패, 스크립트 로딩 시도:', importError);
-        // 스크립트 방식으로 fallback
-        const { FaceDetection: ScriptFaceDetection, Camera: ScriptCamera } = await loadMediaPipeViaScript();
-        FaceDetectionClass = ScriptFaceDetection;
-        CameraClass = ScriptCamera;
-      }
+      // 완전히 런타임 로딩 사용 (Amplify 환경에 최적화)
+      const { FaceDetection: FaceDetectionClass, Camera: CameraClass } = await loadMediaPipeViaScript();
 
       const faceDetection = new FaceDetectionClass({
         locateFile: (file: string) => {
-          // 로컬 파일 우선 사용, 실패시 CDN fallback
-          const localPath = `/mediapipe/${file}`;
-          const cdnFallback = `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
-          
-          // 개발/배포 환경에서 로컬 파일 사용
-          return window.location.hostname === 'localhost' || window.location.protocol === 'https:' 
-            ? localPath 
-            : cdnFallback;
+          // Amplify에서는 CDN 사용이 더 안정적
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
         }
       });
 
@@ -249,24 +251,19 @@ const PhotoBooth = () => {
 
       faceDetectionRef.current = faceDetection;
       setIsMediaPipeLoaded(true);
-      console.log('MediaPipe 로딩 완료!');
+      console.log('MediaPipe 로딩 완료! (AWS Amplify 환경)');
     } catch (error) {
       console.error('MediaPipe 로딩 실패:', error);
       
-      // 더 자세한 에러 메시지
       let errorMessage = '얼굴감지 기능을 사용할 수 없습니다.';
       
-      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
-        errorMessage += ' HTTPS 연결이 필요합니다.';
-      } else if (error instanceof Error) {
+      if (error instanceof Error) {
         if (error.message.includes('network') || error.message.includes('fetch')) {
           errorMessage += ' 네트워크 연결을 확인해주세요.';
         } else if (error.message.includes('CORS')) {
           errorMessage += ' 브라우저 보안 정책 문제입니다.';
-        } else if (error.message.includes('constructor')) {
-          errorMessage += ' MediaPipe 라이브러리 호환성 문제입니다.';
         } else {
-          errorMessage += ' 지원되지 않는 브라우저이거나 리소스 로딩에 실패했습니다.';
+          errorMessage += ' 브라우저가 지원되지 않거나 리소스 로딩에 실패했습니다.';
         }
       }
       
@@ -295,7 +292,8 @@ const PhotoBooth = () => {
       videoRef.current = webcamRef.current.video;
       
       if (faceDetectionRef.current && isFaceDetectionEnabled && isMediaPipeLoaded) {
-        const camera = new Camera(videoRef.current, {
+        const { Camera: CameraClass } = await loadMediaPipeViaScript();
+        const camera = new CameraClass(videoRef.current, {
           onFrame: async () => {
             if (faceDetectionRef.current && videoRef.current) {
               await faceDetectionRef.current.send({ image: videoRef.current });
@@ -317,7 +315,8 @@ const PhotoBooth = () => {
       }
       
       if (isMediaPipeLoaded && videoRef.current && faceDetectionRef.current) {
-        const camera = new Camera(videoRef.current, {
+        const { Camera: CameraClass } = await loadMediaPipeViaScript();
+        const camera = new CameraClass(videoRef.current, {
           onFrame: async () => {
             if (faceDetectionRef.current && videoRef.current) {
               await faceDetectionRef.current.send({ image: videoRef.current });
@@ -1262,11 +1261,11 @@ const PlaceholderText = styled.p({
   margin: 0,
 });
 
-// Window 객체에 MediaPipe 타입 확장
+// Window 객체에 MediaPipe 타입 확장 (AWS Amplify 환경용)
 declare global {
   interface Window {
-    FaceDetection: typeof FaceDetection;
-    Camera: typeof Camera;
+    FaceDetection: MediaPipeFaceDetectionClass;
+    Camera: MediaPipeCameraClass;
   }
 }
 
