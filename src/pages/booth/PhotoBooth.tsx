@@ -616,7 +616,6 @@ const PhotoBooth = () => {
         imageSrc = await captureWithStickers(fixedStickers);
         // captureWithStickers가 실패하면 기본 스크린샷 사용
         if (!imageSrc) {
-          console.warn('captureWithStickers 실패, 기본 스크린샷 사용');
           imageSrc = webcamRef.current.getScreenshot();
         }
       } else {
@@ -626,7 +625,6 @@ const PhotoBooth = () => {
       if (imageSrc) {
         setPhotos((prev) => [...prev, imageSrc]);
       } else {
-        console.error('모든 캡처 방법 실패');
         alert('사진 촬영에 실패했습니다. 다시 시도해주세요.');
       }
     }
@@ -859,7 +857,7 @@ const PhotoBooth = () => {
                       isActive={isFaceDetectionEnabled}
                       disabled={isMediaPipeLoading || isFaceDetectionEnabled}
                       style={{ 
-                        width: '5rem', 
+                        width: '4rem', 
                         height: '32px', 
                         fontSize: '0.7rem',
                         borderRadius: '8px',
@@ -871,10 +869,10 @@ const PhotoBooth = () => {
                       }}
                     >
                       {isMediaPipeLoading 
-                        ? '⏳ 추적 중' 
+                        ? '추적 중' 
                         : isFaceDetectionEnabled 
-                          ? '🔍 추적 ON' 
-                          : '👀 추적 OFF'
+                          ? '추적 ON' 
+                          : '추적 OFF'
                       }
                     </FaceToggleButton>
                   </StickerGrid>
@@ -1013,7 +1011,7 @@ const TabButton = styled.button<{ isActive: boolean }>(({ isActive }) => ({
 
 const TabContent = styled.div({
   padding: '1rem',
-  height: '160px',
+  height: '11rem',
   backgroundColor: '#eee',
   borderRadius: '20px',
 });
@@ -1264,7 +1262,7 @@ const DownloadButton = styled.button<{ disabled?: boolean }>(({ disabled }) => (
 
 const CaptureButton = styled.button({
   height: '40px',
-  fontSize: '0.7em',
+  fontSize: '0.7rem',
   fontWeight: '600',
   color: '#fff',
   backgroundColor: colorToken.black,
