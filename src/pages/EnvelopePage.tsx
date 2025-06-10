@@ -113,7 +113,7 @@ const EnvelopePage = () => {
         <ShowText isInView={isTextInView}>
           원활한 식사 제공을 위해 참석 인원 확인이 필요합니다
         </ShowText>
-        <ShowText isInView={isTextInView} delay={0.2}>
+        {/* <ShowText isInView={isTextInView} delay={0.2}>
           <b>
             <u>이명진</u>
           </b>
@@ -122,7 +122,7 @@ const EnvelopePage = () => {
             <u>윤혜원</u>
           </b>
           에게 연락부탁드립니다.
-        </ShowText>
+        </ShowText> */}
       </div>
 
       {/* 상단 박스 */}
