@@ -38,6 +38,11 @@ function Letter() {
     setIsLoading(true);
     setIsSaved(false);
 
+    setAlert({ message: "참석여부 확인이 끝났습니다. 연락 부탁드립니다.", type: "error" });
+    setIsLoading(false);
+    return;
+
+    /*
     if (name.trim() === "") {
       setAlert({ message: "이름을 입력해 주세요", type: "error" });
       setIsLoading(false);
@@ -76,6 +81,7 @@ function Letter() {
       setAlert({ message: ERROR_MESSAGE, type: "error" });
       setIsLoading(false);
     }
+    */
   };
 
   return (
